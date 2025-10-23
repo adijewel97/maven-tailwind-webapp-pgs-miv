@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+                             http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         version="3.0">
+  <display-name>Tailwind WebApp V2</display-name>
+
+  <!-- Login -->
+  <servlet>
+      <servlet-name>LoginServlet</servlet-name>
+      <servlet-class>com.example.controller.LoginServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+      <servlet-name>LoginServlet</servlet-name>
+      <url-pattern>/LoginServlet</url-pattern>
+  </servlet-mapping>
+
+  <!-- Logout -->
+  <servlet>
+      <servlet-name>LogoutServlet</servlet-name>
+      <servlet-class>com.example.controller.LogoutServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+      <servlet-name>LogoutServlet</servlet-name>
+      <url-pattern>/LogoutServlet</url-pattern>
+  </servlet-mapping>
+
+  <!-- Default welcome page -->
+  <welcome-file-list>
+      <welcome-file>views/templates/login.jsp</welcome-file>
+  </welcome-file-list>
+
+  <!-- tampil monitoring rekon PLN vs BANK -->
+    <servlet>
+        <servlet-name>MonRekonPerUpiController</servlet-name>
+        <servlet-class>com.example.controller.MonRekonPerUpiController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MonRekonPerUpiController</servlet-name>
+        <url-pattern>/mon-rekon-bankvsperupi</url-pattern>
+    </servlet-mapping>
+
+</web-app>

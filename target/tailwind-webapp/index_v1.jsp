@@ -1,0 +1,166 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    String currentPage = request.getParameter("page");
+    String currentMenu = request.getParameter("menu");
+
+    if (currentPage == null || currentPage.trim().isEmpty()) {
+        currentPage = "/views/dashboard/dashboard.jsp";
+    }
+
+    if (currentMenu == null || currentMenu.trim().isEmpty()) {
+        request.setAttribute("menu", "dashboard");
+    } else {
+        request.setAttribute("menu", currentMenu);
+    }
+%>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>MIV Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+
+  <!-- Tailwind CSS -->
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style_tailwind_adis.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/dataTables/css/jquery.dataTables.min.css">
+
+  <style>
+    /* --- Sidebar --- */
+    #sidebar {
+      width: 16rem;
+      transition: all 0.3s ease;
+    }
+    #sidebar.collapsed {
+      width: 4rem;
+    }
+    #sidebar.collapsed .sidebar-text,
+    #sidebar.collapsed .submenu {
+      display: none;
+    }
+    #sidebar.collapsed a[title]:hover::after {
+      content: attr(title);
+      position: absolute;
+      left: 70px;
+      background: #1f2937;
+      color: #fff;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      white-space: nowrap;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      z-index: 50;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col bg-gray-100">
+
+  <!-- Navbar -->
+  <div class="fixed top-0 left-0 right-0 bg-cyan-500 h-[50px] z-50 flex items-center justify-between px-4 md:px-6">
+    <!-- Toggle Sidebar (mobile & desktop) -->
+    <i class="toggleSidebar fa fa-bars text-white cursor-pointer text-xl"></i>
+
+    <!-- Title -->
+    <span class="text-white text-sm font-bold">MIV - Management Instansi Vertikal</span>
+
+    <!-- Right: Profil wrapper -->
+    <div class="relative">
+      <img src="${pageContext.request.contextPath}/assets/img/profile.jpg"
+           class="rounded-full cursor-pointer toggleSubmenuProfile transition-all duration-200 ease-in-out hover:scale-110 hover:shadow-lg hover:shadow-cyan-300/40"
+           width="34" alt="Profile">
+
+      <!-- Submenu Profil -->
+      <div id="submenu-profile"
+           class="absolute right-0 mt-2 w-48 bg-gray-700 text-white rounded-md shadow-lg z-50
+                  transform scale-95 opacity-0 -translate-y-2 pointer-events-none transition-all duration-200 ease-out origin-top">
+        <label class="block p-2 text-center border-b border-gray-600">
+          ${sessionScope.username} | ${sessionScope.userRole}
+        </label>
+        <a href="#" class="block px-4 py-2 hover:bg-gray-600 transition-all">Setting</a>
+        <a href="${pageContext.request.contextPath}/LogoutServlet" class="block px-4 py-2 hover:bg-gray-600 transition-all">Logout</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wrapper -->
+  <div class="flex pt-[50px] h-[calc(100vh-50px)] overflow-hidden">
+    <!-- Sidebar -->
+    <aside id="sidebar"
+           class="fixed top-[50px] left-0 h-[calc(100vh-50px)] w-64 bg-gray-800 text-gray-100 overflow-y-auto hidden md:flex flex-col z-40">
+      <jsp:include page="/views/templates/sidebar.jsp" />
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 ml-64 overflow-auto p-6 bg-gray-100 transition-all duration-300 ease-in-out">
+      <div class="bg-white rounded-xl shadow-md p-10 min-h-full w-full">
+        <jsp:include page="<%= currentPage %>" />
+      </div>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="${pageContext.request.contextPath}/assets/bootstrap/dist/js/jquery.min.js"></script>
+  <script src="${pageContext.request.contextPath}/assets/dataTables/js/jquery.dataTables.min.js"></script>
+  <script src="${pageContext.request.contextPath}/assets/dataTables/js/dataTables.buttons.min.js"></script>
+  <script src="${pageContext.request.contextPath}/assets/dataTables/js/buttons.html5.min.js"></script>
+  <script src="${pageContext.request.contextPath}/assets/dataTables/js/jszip.min.js"></script>
+  <script src="${pageContext.request.contextPath}/assets/bootstrap/dist/js/xlsx.full.min.js"></script>
+  <script src="${pageContext.request.contextPath}/assets/js/style_tailwind_adis.js"></script>
+
+  <script>
+    const sidebar = document.getElementById('sidebar');
+    const main = document.querySelector('main');
+
+    // --- Toggle sidebar (desktop & mobile) ---
+    document.querySelectorAll(".toggleSidebar").forEach(btn => {
+      btn.addEventListener("click", () => {
+        if (window.innerWidth >= 768) {
+          sidebar.classList.toggle("collapsed");
+          main.classList.toggle("ml-16");
+          main.classList.toggle("ml-64");
+        } else {
+          sidebar.classList.toggle("hidden");
+        }
+      });
+    });
+
+    // Reset sidebar saat resize
+    window.addEventListener("resize", () => {
+      if (window.innerWidth >= 768) {
+        sidebar.classList.remove("hidden");
+      } else {
+        sidebar.classList.remove("collapsed");
+        main.classList.add("ml-64");
+      }
+    });
+
+    // --- Submenu Profil ---
+    const profileToggle = document.querySelector(".toggleSubmenuProfile");
+    const profileMenu = document.getElementById("submenu-profile");
+
+    profileToggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const isVisible = profileMenu.classList.contains("opacity-100");
+
+      if (isVisible) {
+        profileMenu.classList.remove("opacity-100", "scale-100", "translate-y-0");
+        profileMenu.classList.add("opacity-0", "scale-95", "-translate-y-2", "pointer-events-none");
+      } else {
+        profileMenu.classList.remove("opacity-0", "scale-95", "-translate-y-2", "pointer-events-none");
+        profileMenu.classList.add("opacity-100", "scale-100", "translate-y-0");
+      }
+    });
+
+    // Tutup submenu saat klik di luar area
+    document.addEventListener("click", (e) => {
+      if (!profileMenu.contains(e.target) && !profileToggle.contains(e.target)) {
+        profileMenu.classList.remove("opacity-100", "scale-100", "translate-y-0");
+        profileMenu.classList.add("opacity-0", "scale-95", "-translate-y-2", "pointer-events-none");
+      }
+    });
+  </script>
+</body>
+</html>

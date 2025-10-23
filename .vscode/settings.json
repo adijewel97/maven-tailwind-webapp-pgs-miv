@@ -1,0 +1,33 @@
+{
+  // Biar di dalam string (misalnya class="...") tetap ada suggestion
+  "editor.quickSuggestions": {
+    "strings": true
+  },
+
+  // Mapping bahasa supaya Tailwind IntelliSense jalan di JSP
+  "tailwindCSS.includeLanguages": {
+    "jsp": "html",
+    "javascript": "javascript"
+  },
+
+  // Regex ekstra untuk cari class di JSP
+  "tailwindCSS.experimental.classRegex": [
+    "class\\s*=\\s*\"([^\"]*)\"",
+    "class\\s*=\\s*'([^']*)'",
+    "class: \"([^\"]*)\""
+  ],
+
+  // Supaya VSCode nggak kasih warning di @tailwind directives
+  "css.lint.unknownAtRules": "ignore",
+
+  // Kalau pakai Live Server
+  "liveServer.settings.port": 5501,
+
+  // Biar lebih cepat load Tailwind IntelliSense
+  "tailwindCSS.emmetCompletions": true,
+
+  // Opsional: treat *.jsp as HTML penuh
+  "files.associations": {
+    "*.jsp": "html"
+  }
+}

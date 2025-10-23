@@ -1,0 +1,43 @@
+perbaikan veri 3
+==================================
+--chek veri 
+    npm list tailwindcss
+
+🔽 Uninstall Tailwind v4
+    npm uninstall tailwindcss @tailwindcss/cli
+
+🔽 Install Tailwind v3 (misalnya versi stabil terakhir 3.4.x)
+    npm install -D tailwindcss@3.4.14 postcss autoprefixer
+
+⚙️ Setup Tailwind v3
+
+    Buat file config:
+        npx tailwindcss init -p
+
+
+    Ini akan membuat:
+    tailwind.config.js
+    postcss.config.js
+    
+    Edit tailwind.config.js biar scanning file JSP/HTML kamu:
+    module.exports = {
+    content: [
+        "./src/main/webapp/**/*.jsp",
+        "./src/main/webapp/**/*.html",
+        "./src/main/webapp/**/*.js",
+    ],
+    theme: {
+        extend: {},
+    },
+    plugins: [],
+    }
+
+
+    Di input.css tambahkan:
+
+    @tailwind base;
+    @tailwind components;
+    @tailwind utilities;
+
+▶️ Jalankan compiler Tailwind v3
+    npx tailwindcss -i ./src/main/webapp/assets/css/input.css -o ./src/main/webapp/assets/css/style_tailwind_adis.css --watch
