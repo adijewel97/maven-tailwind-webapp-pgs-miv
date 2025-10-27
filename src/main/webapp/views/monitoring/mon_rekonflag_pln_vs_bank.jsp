@@ -1,26 +1,38 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <style>
-   /* CSS TABLE REKAP - SAMAKAN DENGAN TABEL Detail */
+    /* CSS TABLE REKAP - SAMAKAN DENGAN TABEL Detail */
     #tablemon_upi {
-        table-layout: auto; /* Sama seperti #dataModal table */
-        font-size: 0.75rem; /* Sama dengan modal-body */
-        width: 100%;
+        table-layout: fixed;
+        width: 100%; /* Lebar default 100% */
     }
 
     #tablemon_upi th,
     #tablemon_upi td {
-        font-size: 0.7rem;      /* Sama seperti table detail */
-        padding: 4px 6px;       /* Sama seperti table detail */
-        white-space: nowrap;    /* Hindari wrap */
+        white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        padding: 4px 6px;
+        font-size: 0.7rem;
     }
 
-    #tablemon_upi th.sorting::after,
-    #tablemon_upi th.sorting_asc::after,
-    #tablemon_upi th.sorting_desc::after {
-        display: none !important;
+    /* Target wrapper DataTables untuk memastikan lebar 100% tidak terlampaui */
+    #tablemon_upi_wrapper {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .dataTables_scrollHeadInner, 
+    .dataTables_scrollHead table,
+    .dataTables_scrollBody table {
+        width: 100% !important;
+        /* Tambahkan min-width agar ketika DataTables kosong tidak terlalu menyusut */
+        min-width: 100%;
+    }
+
+    /* 💡 Tambahkan class untuk tabel itu sendiri untuk memastikan tidak melebihi 100% */
+    #tablemon_upi {
+        max-width: 100%; 
     }
 
      /* Tambahan jika mau batas tinggi + scroll seperti modal */
@@ -386,6 +398,7 @@
                     // Tambahkan notifikasi error jika perlu
                 }
             },
+            deferLoading: 0,
             columns: [
                 {
                     data: null, // NO
@@ -420,9 +433,9 @@
                 { data: 'SELISIH_RPTAG', render: function (data) { return formatNumber(data, 0); }, width: '120px' }
             ],
             columnDefs: [
-                { targets: '_all', className: 'text-center' },
-                { targets: [1, 3], className: 'text-left' },
-                { targets: [5, 6, 7, 8, 9, 10, 11], className: 'text-right' }
+                { targets: '_all', defaultContent: '', className: 'align-middle' },   // tengah vertikal
+                { targets: [1, 3, 4], className: 'text-left' },       // kolom kiri dulu
+                { targets: [0, 5, 6, 7, 8, 9, 10, 11], className: 'text-right' }, // sisanya kanan
             ],
             createdRow: function (row, data, dataIndex) {
                 // Styling untuk baris TOTAL
@@ -508,7 +521,8 @@
             autoWidth: false,
             info: true,
             stripeClasses: [],
-            lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+            lengthMenu: [ [10, 25, 50, 1000], [10, 25, 50, 1000] ],
+            pageLength: 10,
             ajax: {
                 url: getContextPath() + '//mon-rekon-bankvsperupi', // Perlu dicek apakah URL ini benar untuk detail
                 type: 'POST',
@@ -560,7 +574,8 @@
                 { targets: '_all', className: 'text-center' }
             ],
             // Konfigurasi Export Detail
-            dom: 'Bfrtip',
+            // dom: 'Bfrtip',
+            dom: 'lfrtip', 
             buttons: [
                 {
                     extend: 'excelHtml5',
@@ -607,14 +622,20 @@
         // ---------------------------------------------------------------------------------------------
         // 1A-1) Tampilkan monitoring Rekap
         // ---------------------------------------------------------------------------------------------
-        $('#btnTampil').on('click', function () {
-            if (!$('#bln_usulan_value').val()) {
-                alert("Silakan pilih Bulan Laporan terlebih dahulu!");
-                return;
-            }
-            // Tampilkan spinner Rekap secara manual sebelum reload
-            spinnerRekap.removeClass('hidden').addClass('flex');   
-            table.ajax.reload();
+        $(document).ready(function () {
+            $('#btnTampil').on('click', function () {
+                if (!$('#bln_usulan_value').val()) {
+                    alert("Silakan pilih Bulan Laporan terlebih dahulu!");
+                    return;
+                }
+                // Tampilkan spinner Rekap secara manual sebelum reload
+                spinnerRekap.removeClass('hidden').addClass('flex');  
+                 
+                // setelah inisialisasi
+                table.columns.adjust().draw();
+
+                table.ajax.reload();
+            });
         });
         
         // Trigger Download Excel Rekap

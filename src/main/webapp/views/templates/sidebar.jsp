@@ -86,13 +86,23 @@
               <span class="sidebar-text">Monitoring Rekon per UPI</span>
             </a>
           </li>
-
         </ul>
       </li>
+
+      <!-- 🔹 Tambahan: Logout di daftar menu -->
+      <li>
+        <a href="${pageContext.request.contextPath}/LogoutServlet"
+           title="Logout"
+           class="flex items-center gap-3 px-4 py-2 rounded-md transition text-gray-300 hover:bg-gray-700 hover:text-white">
+          <i class="fa fa-sign-out-alt w-5 text-center"></i>
+          <span class="sidebar-text">Logout</span>
+        </a>
+      </li>
+
     </ul>
   </nav>
 
-  <!-- Logout selalu di bawah -->
+  <!-- Logout versi bawah (opsional, bisa dihapus jika tidak perlu dua) -->
   <div class="mt-auto border-t border-gray-700">
     <a href="${pageContext.request.contextPath}/LogoutServlet"
        class="flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition">
@@ -100,7 +110,6 @@
       <span class="sidebar-text">Logout</span>
     </a>
   </div>
-
 </div>
 
 <script>

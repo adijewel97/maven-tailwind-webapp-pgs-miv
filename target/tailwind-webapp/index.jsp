@@ -122,17 +122,92 @@
             overflow: visible;
         }
 
-        /* Saat sidebar overlay muncul di mobile, footer tetap di bawah tapi tidak di atas overlay */
+        /* Saat sidebar overlay muncul di mobile, footer tetap di bawah tapi tidak di atas overlay
         #sidebar-overlay.show + main #mainFooter {
             z-index: 20;
+        } */
+
+        /* === SIDEBAR OVERLAY === */
+        /* --------------------------------------------------------------------------------------------- */
+        #sidebar-overlay {
+        position: fixed;
+        inset: 0; /* top:0; right:0; bottom:0; left:0 */
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 50; /* paling atas */
+        display: none;
         }
 
-        /* Footer link warna */
+        #sidebar-overlay.show {
+        display: block;
+        }
+
+        /* === FOOTER SELALU MENEMPEL DI BAWAH === */
+         /* --------------------------------------------------------------------------------------------- */
+        #mainFooter {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        z-index: 30; /* di bawah overlay (50), di atas konten biasa */
+        background-color: #ffffff;
+        border-top: 1px solid #e5e7eb; /* garis pemisah halus */
+        padding: 0.75rem 1rem; /* jarak dalam */
+        }
+
+        /* === LINK FOOTER === */
         #mainFooter a {
-            color: #0891b2;
+        color: #0891b2;
         }
         #mainFooter a:hover {
-            text-decoration: underline;
+        text-decoration: underline;
+        }
+
+        /* === WRAPPER UTAMA AGAR KONTEN TIDAK TERTUTUP FOOTER === */
+        #mainContentWrapper {
+        padding-bottom: var(--footer-height, 60px); /* pastikan ada ruang di bawah */
+        }
+
+        /* ✅ Scroll hanya di dalam mainContentCard saat tampilan mobile */
+        /* Pastikan konten tidak keluar dari card */
+        /* --------------------------------------------------------------------------------------------- */
+        /* ==================== DESKTOP DEFAULT ==================== */
+        #mainContentCard {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            width: 100%;
+            flex: 1;
+            overflow-y: auto;   /* Scroll vertikal */
+            overflow-x: auto;   /* ✅ Tambahkan scroll horizontal otomatis */
+            padding: 1rem;
+            box-sizing: border-box;
+            max-height: calc(100vh - 60px); /* agar tidak menabrak footer */
+        }
+
+        /* === Konten dalam include JSP (misal tabel besar) === */
+        #mainContentCard > * {
+            width: 100%;
+            min-width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* === Jika konten lebih lebar dari card (misal tabel lebar) === */
+        #mainContentCard table {
+            display: block;       /* ✅ Agar scroll-x aktif */
+            width: max-content;   /* Lebar mengikuti isi */
+            min-width: 100%;      /* Tapi minimal selebar container */
+            overflow-x: auto;     /* Aktifkan scroll-x */
+            white-space: nowrap;  /* Jangan wrap kolom */
+        }
+
+        /* === Mobile Friendly === */
+        @media (max-width: 768px) {
+            #mainContentCard {
+                max-height: none;
+                overflow-x: auto;  /* ✅ Pastikan scroll-x tetap muncul di mobile */
+                overflow-y: auto;
+                padding: 0.75rem;
+            }
         }
 
     </style>
@@ -178,23 +253,22 @@
             class="ml-64 bg-gray-100 flex flex-col min-h-screen p-4 transition-all duration-300 ease-in-out relative">
 
             <!-- ✅ Wrapper agar konten tidak tertutup footer -->
-            <div id="mainContentWrapper" class="pb-[var(--footer-height,60px)]">
-                <div id="mainContentCard" class="bg-white rounded-xl shadow content-card w-full mb-4 overflow-visible">
+            <div id="mainContentWrapper" class="pb-[var(--footer-height,60px)] flex-1">
+                <div id="mainContentCard"
+                    class="bg-white rounded-xl shadow content-card w-full mb-4 overflow-auto">
                     <jsp:include page="<%= currentPage %>" />
                 </div>
             </div>
 
-            <!-- ✅ Footer adaptif, menempel di bawah -->
+            <!-- ✅ Footer adaptif -->
             <footer id="mainFooter"
-                    class="fixed bottom-0 left-0 right-0 bg-gray-200 border-t border-gray-300 
-                        flex items-center justify-center text-xs text-gray-600 z-40 transition-all duration-300"
-                    style="height: 30px">
-                    <!-- style="height: var(--footer-height, 10px);"> -->
+                class="fixed bottom-0 left-0 right-0 bg-gray-200 border-t border-gray-300 
+                    flex items-center justify-center text-xs text-gray-600 z-40 transition-all duration-300"
+                style="height: 30px;">
                 <strong>MangAdi&copy; 2025 
                     <a href="#" class="text-cyan-600 hover:underline">MIV</a>.
                 </strong> All rights reserved.
             </footer>
-
         </main>
 
     </div>
@@ -281,6 +355,7 @@
                     if (sidebar.classList.contains("collapsed")) {
                         sidebar.classList.remove("collapsed");
                     }
+                    
                     // Sembunyikan sidebar, kecuali jika overlay sedang tampil (sidebar terbuka)
                     if (!sidebarOverlay.classList.contains("show")) {
                         sidebar.classList.add("hidden");

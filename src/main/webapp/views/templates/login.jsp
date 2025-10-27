@@ -124,6 +124,8 @@
         modal.classList.add("flex");
     }
 
+    document.getElementById('username').focus();
+
 </script>
 
 </body>
