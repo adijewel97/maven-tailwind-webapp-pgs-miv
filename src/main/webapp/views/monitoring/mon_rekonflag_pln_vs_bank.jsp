@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 <style>
    /* CSS TABLE REKAP - SAMAKAN DENGAN TABEL Detail */
     #tablemon_upi {
@@ -44,20 +45,16 @@
         table-layout: auto; /* Gunakan auto agar kolom menyesuaikan konten */
     }
 
-    #dataModal .datatable-container {
-        max-height: 65vh;    /* Batasi tinggi agar bisa scroll */
-        overflow-y: auto;
-    }
-
     /* Pastikan form-container relatif */
     .form-monitoring {
         position: relative;
     }
 
-    .datatable-container {
+    /* ✅ HAPUS .datatable-container jika tidak digunakan */
+    /* .datatable-container {
         overflow-x: auto;
         width: 100%;
-    }
+    } */
 
     /* Buat spinner tetap di tengah form tapi transparan */
     .loading-overlay {
@@ -117,7 +114,6 @@
         text-align: center;
     }
 
-
     #loadingSpinner .spinner-content {
         text-align: center;
         font-size: 1.2rem;
@@ -132,7 +128,16 @@
     }
     
 </style>
-<!-- modal menapilkan Rekap -->
+
+<!-- ✅ Spinner universal (bisa dipakai rekap & detail) -->
+<div id="spinnerOverlay"
+     class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
+            z-[9999] flex-col items-center justify-center bg-white bg-opacity-80 
+            p-4 rounded-lg shadow-lg pointer-events-none">
+    <div class="border-4 border-blue-500 border-t-transparent rounded-full w-8 h-8 animate-spin"></div>
+    <span class="text-xs text-gray-600 mt-2 font-medium">Loading...</span>
+</div>
+
 <fieldset class="border border-gray-300 rounded p-5 mt-4">
     <legend class="text-sm font-bold px-3">Monitoring Rekon PLN Vs Bank</legend>
 
@@ -172,32 +177,29 @@
             </button>
         </div>
 
-        <div id="spinnerOverlay" class="hidden absolute top-0 left-0 right-0 bottom-0 items-center justify-center z-10 bg-white bg-opacity-80">
-            <div class="spinner-border text-blue-600 animate-spin border-4 border-t-4 border-blue-600 border-opacity-20 rounded-full h-12 w-12" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
-        </div>
 
-        <div class="overflow-x-auto w-full">
-            <table id="tablemon_upi" class="table-auto border border-gray-300 w-full text-xs display">
-                <thead class="bg-gray-100">
-                    <tr>
-                        <th class="px-2 py-1 text-center border">NO</th>
-                        <th class="px-2 py-1 text-center border">NAMA_DIST</th>
-                        <th class="px-2 py-1 text-center border">PRODUK</th>
-                        <th class="px-2 py-1 text-center border">BANK</th>
-                        <th class="px-2 py-1 text-center border">BULAN</th>
-                        <th class="px-2 py-1 text-center border">PLN_IDPEL</th>
-                        <th class="px-2 py-1 text-center border">PLN_RPTAG</th>
-                        <th class="px-2 py-1 text-center border">PLN_LB_LUNAS</th>
-                        <th class="px-2 py-1 text-center border">PLN_RP_LUNAS</th>
-                        <th class="px-2 py-1 text-center border">BANK_IDPEL</th>
-                        <th class="px-2 py-1 text-center border">BANK_RPTAG</th>
-                        <th class="px-2 py-1 text-center border">SELISIH_RPTAG</th>
-                    </tr>
-                </thead>
-                <tbody class="text-xs"></tbody>
-            </table>
+        <div class="mt-4 relative">
+            <div class="overflow-x-auto w-full">
+                <table id="tablemon_upi" class="table-auto border border-gray-300 w-full text-xs display">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="px-2 py-1 text-center border">NO</th>
+                            <th class="px-2 py-1 text-center border">NAMA_DIST</th>
+                            <th class="px-2 py-1 text-center border">PRODUK</th>
+                            <th class="px-2 py-1 text-center border">BANK</th>
+                            <th class="px-2 py-1 text-center border">BULAN</th>
+                            <th class="px-2 py-1 text-center border">PLN_IDPEL</th>
+                            <th class="px-2 py-1 text-center border">PLN_RPTAG</th>
+                            <th class="px-2 py-1 text-center border">PLN_LB_LUNAS</th>
+                            <th class="px-2 py-1 text-center border">PLN_RP_LUNAS</th>
+                            <th class="px-2 py-1 text-center border">BANK_IDPEL</th>
+                            <th class="px-2 py-1 text-center border">BANK_RPTAG</th>
+                            <th class="px-2 py-1 text-center border">SELISIH_RPTAG</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-xs"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 </fieldset>
@@ -207,17 +209,12 @@
     <!-- <div class="bg-white rounded-lg w-[95%] max-w-7xl max-h-[90vh] overflow-hidden flex flex-col shadow-xl"> -->
     <div class="bg-white rounded-lg w-full max-w-full max-h-[90vh] overflow-hidden flex flex-col shadow-xl">
         <div class="flex justify-between items-center p-4 border-b bg-gray-50">
-            <h5 class="text-gray-700 font-bold text-lg">Detail Data Rekon <span id="detailTitle" class="text-blue-600 font-normal"></span></h5>
+            <h5 class="text-gray-700 font-bold text-lg">Detail Data Rekon 
+                <span id="detailTitle" class="text-blue-600 font-normal"></span></h5>
             <button id="closeModalBtn" class="text-gray-500 hover:text-gray-700 text-2xl font-bold transition duration-150 ease-in-out">&times;</button>
         </div>
         
         <div class="p-4 flex-1 overflow-auto relative"> 
-            <div id="spinnerOverlayDetail" class="hidden absolute top-0 left-0 right-0 bottom-0 items-center justify-center z-20 bg-white bg-opacity-90">
-                <div class="spinner-border text-blue-600 animate-spin border-4 border-t-4 border-blue-600 border-opacity-20 rounded-full h-12 w-12" role="status">
-                    <span class="sr-only">Loading Detail...</span>
-                </div>
-            </div>
-
             <div class="mb-2">
                 <button id="btnExportMonDftAllExcelOneSheet" class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded shadow flex items-center gap-2 transition duration-150 ease-in-out">
                     <i class="fa fa-file-excel"></i>
@@ -273,6 +270,19 @@
 </div>
 
 <script>
+    // Tampilkan spinner
+    function showSpinner() {
+        const spinner = document.getElementById('spinnerOverlay');
+        spinner.classList.remove('hidden');
+        spinner.classList.add('flex');
+    }
+
+    function hideSpinner() {
+        const spinner = document.getElementById('spinnerOverlay');
+        spinner.classList.add('hidden');
+        spinner.classList.remove('flex');
+    }
+
     // --- GLOBAL VARIABLES (Diambil dari JSP context) ---
     const CONTEXT_PATH = "${pageContext.request.contextPath}";
 
@@ -305,7 +315,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         // Mendapatkan referensi spinner
         const spinnerRekap = $('#spinnerOverlay');
-        const spinnerDetail = $('#spinnerOverlayDetail');
+        const spinnerDetail = $('#spinnerOverlay');
         
         // 1) --- Modal Setup ---
         const modal = document.getElementById('dataModal');
@@ -444,7 +454,7 @@
                                 };
                                 
                                 // Update judul modal
-                                detailTitle.textContent = `${data.KD_DIST} - ${data.NAMA_DIST} (${data.BANK})`;
+                                detailTitle.textContent = "("+data.KD_DIST+" - "+data.NAMA_DIST+" | "+data.BANK+")";
 
                                 // Tampilkan Modal
                                 modal.classList.remove('hidden');
@@ -570,28 +580,30 @@
 
         // 5) --- Event Handlers (Spinner) ---
         // Spinner Rekap (hanya untuk area tabel rekap)
-        table.on('preXhr.dt', function () {
-            spinnerRekap.removeClass('hidden').addClass('flex');  
+        // table.on('preXhr.dt', function () {
+        //     spinnerRekap.removeClass('hidden').addClass('flex');  
+        // });
+
+        table.on('preXhr.dt', function() {
+            showSpinner();
+        }).on('xhr.dt', function() {
+            hideSpinner();
         });
 
         table.on('xhr.dt', function () {
-            spinnerRekap.removeClass('flex').addClass('hidden');   
+            spinnerRekap.removeClass('flex').addClass('hidden');   
         });
+
 
         // Spinner Detail (hanya untuk area modal detail)
-        table_detail_upi.on('preXhr.dt', function () {
-            // Tampilkan spinner detail hanya jika DataTables yang memicu
-            spinnerDetail.removeClass('hidden').addClass('flex');  
-        });
-
-        table_detail_upi.on('xhr.dt', function () {
-            // Sembunyikan spinner detail
-            spinnerDetail.removeClass('flex').addClass('hidden');   
+        $('#table_mondaf_upi').on('preXhr.dt', function() {
+             showSpinner();
+        }).on('xhr.dt', function() {
+            hideSpinner();
         });
 
 
-        // 6) --- Event Handlers (Tombol) ---
-        
+        // 6) --- Event Handlers (Tombol) ---       
         // ---------------------------------------------------------------------------------------------
         // 1A-1) Tampilkan monitoring Rekap
         // ---------------------------------------------------------------------------------------------
@@ -601,7 +613,7 @@
                 return;
             }
             // Tampilkan spinner Rekap secara manual sebelum reload
-            spinnerRekap.removeClass('hidden').addClass('flex');   
+            spinnerRekap.removeClass('hidden').addClass('flex');   
             table.ajax.reload();
         });
         
@@ -678,13 +690,13 @@
             }
 
             let namaBank = '';
-            let namaUPI  = '';
+            let namaUPI  = '';
             try {
                 namaBank = await fetchNamaBank(vkd_bank);
                 if (vkd_dist === '00') {
-                    namaUPI  = '00 - SAKTI'
+                    namaUPI  = '00 - SAKTI'
                 } else {
-                    namaUPI  = vkd_dist + ' - ' + (await fetchNamaUnitUPI(vkd_dist));
+                    namaUPI  = (await fetchNamaUnitUPI(vkd_dist));
                 }
                 const pageSize = 1000;
                 let start = 0;
@@ -815,10 +827,10 @@
                 XLSX.utils.sheet_add_aoa(ws_info, ws_data, { origin: "A10" }); // Mulai data tabel dari baris A10
                 
                 // Styling (opsional, hanya untuk sel tertentu)
-                ws_info['A1'].s = { font: { bold: true, sz: 14 } }; // Judul
-                for (let i = 0; i < 7; i++) {
-                    ws_info['A' + (i + 2)].s = { font: { bold: true } }; // Label info
-                }
+                // ws_info['A1'].s = { font: { bold: true, sz: 14 } }; // Judul
+                // for (let i = 0; i < 7; i++) {
+                //     ws_info['A' + (i + 2)].s = { font: { bold: true } }; // Label info
+                // }
                 
                 // Tambahkan sheet ke Workbook
                 XLSX.utils.book_append_sheet(Workbook, ws_info, "Detail Rekon");

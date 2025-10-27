@@ -1,12 +1,21 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-    // Logic untuk menentukan halaman yang akan di-include dan menu aktif
+    // ===================================================
+    // ✅ PERBAIKAN 1: AUTHORIZATION CHECK KRUSIAL
+    // Memeriksa apakah sesi 'username' ada. Jika tidak, redirect ke login.
+    // ===================================================
+    if (session.getAttribute("username") == null) {
+        response.sendRedirect(request.getContextPath() + "/login.jsp");
+        return; // Hentikan pemrosesan halaman
+    }
+    // ===================================================
+
+    // Logic menentukan halaman & menu aktif
     String currentPage = request.getParameter("page");
     String currentMenu = request.getParameter("menu");
 
     if (currentPage == null || currentPage.trim().isEmpty()) {
-        // Default ke dashboard jika tidak ada parameter page
-        currentPage = "/views/dashboard/dashboard.jsp"; 
+        currentPage = "/views/dashboard/dashboard.jsp";
     }
 
     if (currentMenu == null || currentMenu.trim().isEmpty()) {
@@ -42,10 +51,9 @@
             color: #374151;
             font-family: 'Inter', Arial, sans-serif;
             background-color: #f3f4f6;
-            overflow-x: hidden;
+            overflow-x: hidden; /* Pertahankan ini agar seluruh halaman tidak bergeser */
         }
 
-        /* Sidebar Styling */
         #sidebar {
             width: 16rem;
             font-size: 12.5px;
@@ -55,39 +63,17 @@
             scrollbar-width: thin;
         }
 
-        #sidebar.collapsed {
-            width: 4rem;
-        }
+        #sidebar.collapsed { width: 4rem; }
+        #sidebar.collapsed .sidebar-text, #sidebar.collapsed .submenu { display: none; }
 
-        #sidebar.collapsed .sidebar-text,
-        #sidebar.collapsed .submenu {
-            display: none;
-        }
-
-        #sidebar.collapsed a[title]:hover::after {
-            content: attr(title);
-            position: absolute;
-            left: 70px;
-            background: #1f2937;
-            color: #fff;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 11.5px;
-            white-space: nowrap;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-            z-index: 50;
-        }
-
-        /* Content & Layout Adjustments */
         .content-card { padding: 1.5rem !important; }
         .navbar { height: 50px; }
-        
-        /* Main Content Margin */
+
         main { transition: margin-left 0.3s ease; }
         main.ml-64 { margin-left: 16rem; }
         main.ml-16 { margin-left: 4rem; }
 
-        /* Profile Submenu Arrow */
+        /* Submenu Profil CSS (tidak diubah) */
         #submenu-profile::before {
             content: "";
             position: absolute;
@@ -100,13 +86,12 @@
             transform: translateY(-4px);
             transition: all 0.2s ease-out;
         }
-
         #submenu-profile.show::before {
             opacity: 1;
             transform: translateY(0);
         }
 
-        /* Mobile Overlay */
+        /* Overlay Sidebar Mobile CSS (tidak diubah) */
         #sidebar-overlay {
             display: none;
             position: fixed;
@@ -116,11 +101,40 @@
             opacity: 0;
             transition: opacity 0.3s ease;
         }
-
         #sidebar-overlay.show {
             display: block;
             opacity: 1;
         }
+        #submenu-profile {
+            position: absolute;
+            top: 45px;
+            right: 0;
+            z-index: 9999;
+        }
+
+        /* --- */
+        :root {
+            --footer-height: 60px; /* tinggi footer default (bisa ubah di sini) */
+        }
+
+        /* Supaya konten panjang tetap muncul penuh */
+        #mainContentCard {
+            overflow: visible;
+        }
+
+        /* Saat sidebar overlay muncul di mobile, footer tetap di bawah tapi tidak di atas overlay */
+        #sidebar-overlay.show + main #mainFooter {
+            z-index: 20;
+        }
+
+        /* Footer link warna */
+        #mainFooter a {
+            color: #0891b2;
+        }
+        #mainFooter a:hover {
+            text-decoration: underline;
+        }
+
     </style>
 </head>
 
@@ -138,7 +152,7 @@
 
             <div id="submenu-profile"
                  class="absolute right-0 mt-3 w-48 bg-gray-700 text-white rounded-md shadow-2xl z-50
-                        transform scale-95 opacity-0 pointer-events-none transition-all duration-200 ease-out origin-top">
+                         transform scale-95 opacity-0 pointer-events-none transition-all duration-200 ease-out origin-top">
                 <div class="text-center border-b border-gray-600 p-3">
                     <span class="block text-sm font-semibold">${sessionScope.username}</span>
                     <span class="block text-xs text-gray-300">${sessionScope.userRole}</span>
@@ -154,157 +168,207 @@
     </nav>
 
     <div class="flex h-screen overflow-hidden" style="padding-top: 50px;">
-        <aside id="sidebar"
-               class="fixed top-[50px] left-0 h-full w-64 text-gray-100 hidden md:flex flex-col z-40">
+        <aside id="sidebar" class="fixed top-[50px] left-0 h-full w-64 text-gray-100 hidden md:flex flex-col z-40">
             <jsp:include page="/views/templates/sidebar.jsp" />
         </aside>
 
         <div id="sidebar-overlay"></div>
 
-        <main id="mainContent" class="flex-1 ml-64 overflow-y-auto bg-gray-100 p-4">
-            <div class="bg-white rounded-xl shadow content-card min-h-[calc(100%-60px)] w-full">
-                <jsp:include page="<%= currentPage %>" />
+        <main id="mainContent"
+            class="ml-64 bg-gray-100 flex flex-col min-h-screen p-4 transition-all duration-300 ease-in-out relative">
+
+            <!-- ✅ Wrapper agar konten tidak tertutup footer -->
+            <div id="mainContentWrapper" class="pb-[var(--footer-height,60px)]">
+                <div id="mainContentCard" class="bg-white rounded-xl shadow content-card w-full mb-4 overflow-visible">
+                    <jsp:include page="<%= currentPage %>" />
+                </div>
             </div>
 
-            <footer class="text-xs text-gray-500 text-center py-3 border-t border-gray-200 mt-4">
-                <strong>MangAdi&copy; 2025 <a href="#" class="text-cyan-600 hover:underline">MIV</a>.</strong> All rights reserved.
+            <!-- ✅ Footer adaptif, menempel di bawah -->
+            <footer id="mainFooter"
+                    class="fixed bottom-0 left-0 right-0 bg-gray-200 border-t border-gray-300 
+                        flex items-center justify-center text-xs text-gray-600 z-40 transition-all duration-300"
+                    style="height: 30px">
+                    <!-- style="height: var(--footer-height, 10px);"> -->
+                <strong>MangAdi&copy; 2025 
+                    <a href="#" class="text-cyan-600 hover:underline">MIV</a>.
+                </strong> All rights reserved.
             </footer>
+
         </main>
+
     </div>
 
-    <%-- PASTIKAN HANYA SATU JQUERY YANG DIMUAT --%>
     <script src="${pageContext.request.contextPath}/assets/js/jquery-3.7.1.min.js"></script>
-
-    <%-- DATATABLES CORE & BUTTONS --%>
     <script src="${pageContext.request.contextPath}/assets/dataTables/js/jquery.dataTables.min.js"></script>
     <script src="${pageContext.request.contextPath}/assets/dataTables/js/dataTables.buttons.min.js"></script>
     <script src="${pageContext.request.contextPath}/assets/dataTables/js/buttons.html5.min.js"></script>
     <script src="${pageContext.request.contextPath}/assets/dataTables/js/jszip.min.js"></script>
-    
-    <%-- FLATPCIKR --%>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/id.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
-
-    <%-- CUSTOM SCRIPTS --%>
     <script src="${pageContext.request.contextPath}/assets/excel/js/xlsx.full.min.js"></script>
     <script src="${pageContext.request.contextPath}/assets/js/style_tailwind_adis.js"></script>
 
     <script>
-        const sidebar = document.getElementById('sidebar');
-        const main = document.getElementById('mainContent');
-        const sidebarOverlay = document.getElementById('sidebar-overlay');
-        const profileToggle = document.querySelector(".toggleSubmenuProfile");
-        const profileMenu = document.getElementById("submenu-profile");
+        document.addEventListener("DOMContentLoaded", function () {
+            const sidebar = document.getElementById('sidebar');
+            const main = document.getElementById('mainContent');
+            const sidebarOverlay = document.getElementById('sidebar-overlay');
+            const profileToggle = document.querySelector(".toggleSubmenuProfile");
+            const profileMenu = document.getElementById("submenu-profile");
+            const footer = document.getElementById("mainFooter");
 
-        // --- Utility Functions ---
-        function showProfileMenu() {
-            profileMenu.classList.remove("opacity-0", "scale-95", "pointer-events-none");
-            profileMenu.classList.add("opacity-100", "scale-100", "show");
-        }
+            // Asumsikan div konten utama memiliki ID, atau kita seleksi berdasarkan class unik.
+            // Berdasarkan struktur HTML Anda, konten card adalah anak pertama dari main.
+            const mainContentCard = main.querySelector('.content-card'); 
 
-        function hideProfileMenu() {
-            profileMenu.classList.remove("opacity-100", "scale-100", "show");
-            profileMenu.classList.add("opacity-0", "scale-95", "pointer-events-none");
-        }
-        
-        // --- Sidebar & Layout Logic ---
-        document.addEventListener('DOMContentLoaded', () => {
-             // Set initial state for desktop
-             if (window.innerWidth >= 768) {
-                 // Pastikan class default ml-64 (16rem) sudah ada di <main>
-                 main.classList.add("ml-64");
-             } else {
-                 sidebar.classList.add("hidden");
-                 main.classList.remove("ml-64");
-             }
+            // ===================================================
+            // 1. Logic Profile Menu 
+            // ===================================================
+            if (profileToggle && profileMenu) {
+                function toggleProfileMenu(show) {
+                    const isVisible = (typeof show === 'boolean') ? show : !profileMenu.classList.contains("opacity-100");
+                    profileMenu.classList.toggle("opacity-100", isVisible);
+                    profileMenu.classList.toggle("scale-100", isVisible);
+                    profileMenu.classList.toggle("pointer-events-auto", isVisible);
+                    
+                    profileMenu.classList.toggle("opacity-0", !isVisible);
+                    profileMenu.classList.toggle("scale-95", !isVisible);
+                    profileMenu.classList.toggle("pointer-events-none", !isVisible);
+                }
 
-             // --- Toggle sidebar ---
-             document.querySelectorAll(".toggleSidebar").forEach(btn => {
-                 btn.addEventListener("click", () => {
-                     if (window.innerWidth >= 768) {
-                         // Desktop: Collapse / Expand
-                         sidebar.classList.toggle("collapsed");
-                         main.classList.toggle("ml-16");
-                         main.classList.toggle("ml-64");
-                     } else {
-                         // Mobile: Show / Hide with overlay
-                         const isHidden = sidebar.classList.toggle("hidden");
-                         if (isHidden) {
-                             sidebarOverlay.classList.remove("show");
-                         } else {
-                             sidebarOverlay.classList.add("show");
-                         }
-                     }
-                     
-                     // PERBAIKAN: Adjust DataTables setelah transisi sidebar selesai
-                     // Variabel `table` dan `table_detail_upi` diasumsikan dideklarasikan global
-                     setTimeout(() => {
-                         // DataTables rekap
-                         if (typeof table !== 'undefined' && table !== null) {
-                             table.columns.adjust().draw();
-                         }
-                         // DataTables detail (jika ada dan sedang ditampilkan)
-                         if (typeof table_detail_upi !== 'undefined' && table_detail_upi !== null) {
-                              table_detail_upi.columns.adjust().draw();
-                         }
-                     }, 350); // Jeda 350ms (lebih dari 0.3s transisi CSS)
+                profileToggle.addEventListener("click", function (e) {
+                    e.stopPropagation();
+                    toggleProfileMenu();
+                });
 
-                 });
-             });
+                // Klik di luar area submenu untuk menutupnya
+                document.addEventListener("click", function (e) {
+                    if (!profileMenu.contains(e.target) && !profileToggle.contains(e.target)) {
+                        toggleProfileMenu(false); // Sembunyikan
+                    }
+                });
+            }
 
-             // Klik overlay untuk tutup sidebar di mobile
-             sidebarOverlay.addEventListener("click", () => {
-                 sidebar.classList.add("hidden");
-                 sidebarOverlay.classList.remove("show");
-             });
+            // ===================================================
+            // 2. ✅ KUNCI PERBAIKAN: Logic Layout Responsif Terpusat
+            // ===================================================
 
-             // Reset sidebar saat resize (Tambahkan adjust DataTables juga di sini)
-             window.addEventListener("resize", () => {
-                 if (window.innerWidth >= 768) {
-                     sidebar.classList.remove("hidden");
-                     sidebarOverlay.classList.remove("show");
-                     
-                     // Jaga konsistensi margin saat resize dari mobile ke desktop
-                     if (!sidebar.classList.contains("collapsed")) {
-                         main.classList.add("ml-64");
-                         main.classList.remove("ml-16");
-                     } else {
-                         main.classList.add("ml-16");
-                         main.classList.remove("ml-64");
-                     }
-                 } else {
-                     // Mobile view
-                     sidebar.classList.add("hidden");
-                     main.classList.remove("ml-64");
-                     main.classList.remove("ml-16");
-                 }
-                 
-                 // PERBAIKAN: Adjust DataTables saat resize
-                 // Panggil tanpa jeda panjang, karena event resize sering dipicu
-                 if (typeof table !== 'undefined' && table !== null) {
-                     table.columns.adjust().draw();
-                 }
-             });
+            function adjustLayout() {
+                const isDesktop = window.innerWidth >= 768;
 
-             // --- Submenu Profil ---
-             profileToggle.addEventListener("click", (e) => {
-                 e.stopPropagation();
-                 const isVisible = profileMenu.classList.contains("opacity-100");
+                // --- Logika Margin (Mengatasi Isu Mobile Resize) ---
+                if (isDesktop) {
+                    // Pastikan sidebar terlihat di desktop
+                    sidebar.classList.remove("hidden");
+                    sidebarOverlay.classList.remove("show");
 
-                 if (isVisible) {
-                     hideProfileMenu();
-                 } else {
-                     showProfileMenu();
-                 }
-             });
+                    // Tentukan margin awal berdasarkan status collapsed/default
+                    if (!sidebar.classList.contains("collapsed")) {
+                        main.classList.remove("ml-16");
+                        main.classList.add("ml-64"); // Sidebar terlihat penuh (default)
+                    } else {
+                        main.classList.remove("ml-64");
+                        main.classList.add("ml-16"); // Sidebar collapsed
+                    }
+                } 
+                else {
+                    // ✅ Mobile: Hapus SEMUA margin kiri dan set sidebar ke hidden secara default
+                    main.classList.remove("ml-64", "ml-16");
+                    
+                    // Hapus collapsed class di mobile
+                    if (sidebar.classList.contains("collapsed")) {
+                        sidebar.classList.remove("collapsed");
+                    }
+                    // Sembunyikan sidebar, kecuali jika overlay sedang tampil (sidebar terbuka)
+                    if (!sidebarOverlay.classList.contains("show")) {
+                        sidebar.classList.add("hidden");
+                    }
+                }
 
-             document.addEventListener("click", (e) => {
-                 if (!profileMenu.contains(e.target) && !profileToggle.contains(e.target)) {
-                     hideProfileMenu();
-                 }
-             });
+                // --- Logika Konten Card (min-height) ---
+                if (mainContentCard) {
+                    // Terapkan min-h-[calc(100%-60px)] hanya jika di Desktop ATAU di Mobile saat sidebar terbuka (overlay show)
+                    const shouldBeTall = isDesktop || sidebarOverlay.classList.contains("show");
+                    mainContentCard.classList.toggle("min-h-[calc(100%-60px)]", shouldBeTall);
+                }
+                
+                // Adjust DataTables setelah layout berubah (penting untuk rendering)
+                setTimeout(() => {
+                    if (typeof table !== 'undefined' && table !== null) {
+                        table.columns.adjust().draw();
+                    }
+                    if (typeof table_detail_upi !== 'undefined' && table_detail_upi !== null) {
+                        table_detail_upi.columns.adjust().draw();
+                    }
+                }, 150);
+            }
+            
+            // Panggil fungsi adjustLayout saat halaman dimuat
+            adjustLayout(); 
+
+            // Panggil saat window resize (dengan debounce)
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(adjustLayout, 150);
+            });
+            
+            // ===================================================
+            // 3. Logic Toggle Sidebar 
+            // ===================================================
+            document.querySelectorAll(".toggleSidebar").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const isDesktop = window.innerWidth >= 768;
+                    
+                    if (isDesktop) {
+                        sidebar.classList.toggle("collapsed");
+                        main.classList.toggle("ml-16");
+                        main.classList.toggle("ml-64"); 
+                    } 
+                    else {
+                        const isHidden = sidebar.classList.toggle("hidden");
+                        sidebarOverlay.classList.toggle("show", !isHidden);
+                        
+                        // ✅ Update min-h konten saat toggle di mobile
+                        if (mainContentCard) {
+                            mainContentCard.classList.toggle("min-h-[calc(100%-60px)]", !isHidden);
+                        }
+                    }
+
+                    // Adjust DataTables 
+                    setTimeout(() => {
+                        if (typeof table !== 'undefined' && table !== null) {
+                            table.columns.adjust().draw();
+                        }
+                        if (typeof table_detail_upi !== 'undefined' && table_detail_upi !== null) {
+                            table_detail_upi.columns.adjust().draw();
+                        }
+                    }, 350);
+                });
+            });
+
+            // Sembunyikan footer saat sidebar overlay muncul di mobile
+            sidebarOverlay.addEventListener("click", () => {
+                sidebar.classList.add("hidden");
+                sidebarOverlay.classList.remove("show");
+                if (footer) footer.classList.remove("hidden");
+            });
+
+            document.querySelectorAll(".toggleSidebar").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const isMobile = window.innerWidth < 768;
+                    if (isMobile) {
+                        const isHidden = sidebar.classList.toggle("hidden");
+                        sidebarOverlay.classList.toggle("show", !isHidden);
+                        if (footer) footer.classList.toggle("hidden", !isHidden); // footer hilang saat overlay tampil
+                    }
+                });
+            });
+
         });
     </script>
+
 </body>
 </html>

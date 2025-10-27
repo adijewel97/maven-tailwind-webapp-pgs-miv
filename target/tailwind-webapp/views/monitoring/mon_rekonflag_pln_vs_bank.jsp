@@ -1,466 +1,345 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    // ===========================
+    // ✅ Inisialisasi parameter halaman
+    String currentPage = request.getParameter("page");
+    if (currentPage == null || currentPage.trim().isEmpty()) {
+        currentPage = "/views/dashboard/dashboard.jsp";
+    }
+%>
 
-<%-- PERBAIKAN: Spinner non-blocking di tengah layar --%>
-<div id="spinnerOverlay" class="hidden fixed inset-0 items-center justify-center z-[9999] pointer-events-none">
-    <div class="bg-white p-3 rounded-xl shadow-lg flex items-center justify-center">
-        <div class="spinner-border text-blue-600 animate-spin border-4 border-t-4 border-blue-600 border-opacity-20 rounded-full h-8 w-8" role="status">
-            <span class="sr-only">Loading...</span>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Monitoring Rekon PLN vs Bank</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+
+    <style>
+        /* =======================
+           ✅ STYLE UMUM
+        ========================*/
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-size: 14px;
+            margin: 0;
+            background-color: #f9fafb;
+        }
+
+        fieldset {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 16px;
+            position: relative;
+            background: #fff;
+        }
+
+        legend {
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        /* =======================
+           ✅ SPINNER UTAMA (Rekap)
+        ========================*/
+        .spinner-border {
+            border: 4px solid #d1d5db;
+            border-top: 4px solid #2563eb;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .spinner-border-mini {
+            border: 2px solid #d1d5db;
+            border-top: 2px solid #16a34a;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* =======================
+           ✅ TABLE STYLE
+        ========================*/
+        table.dataTable th,
+        table.dataTable td {
+            white-space: nowrap;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        table.dataTable thead th {
+            background-color: #f3f4f6;
+            font-weight: 600;
+        }
+
+        #tablemon_upi_wrapper {
+            margin-top: 8px;
+        }
+
+        /* Spinner overlay di tengah tabel utama */
+        #spinnerOverlayRekap {
+            position: absolute;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255, 255, 255, 0.6);
+            z-index: 20;
+        }
+
+        /* Spinner mini (modal) akan ditampilkan di tengah tabel detail */
+        #spinnerOverlayDetail {
+            position: absolute;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255, 255, 255, 0.3);
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===============================
+     ✅ FIELDSET MONITORING REKAP
+=================================-->
+<fieldset>
+    <legend>Monitoring Rekon PLN vs Bank</legend>
+
+    <!-- Form Filter -->
+    <div class="mb-3 grid grid-cols-12 gap-3 items-center">
+        <div class="col-span-3">
+            <label>Jenis Data:</label>
+            <select id="jenisData" class="form-control">
+                <option value="rekon">Rekonsiliasi</option>
+                <option value="bpbl">BPBL</option>
+            </select>
         </div>
-        <span class="ml-3 text-sm font-medium text-gray-700">Memuat data...</span>
+        <div class="col-span-3">
+            <label>Tahun:</label>
+            <input type="number" id="tahun" value="2025" class="form-control">
+        </div>
+        <div class="col-span-3">
+            <button id="btnTampil" class="btn btn-primary mt-4">Tampilkan</button>
+        </div>
     </div>
-</div>
 
-<fieldset class="border border-gray-300 rounded p-5 mt-4">
-    <legend class="text-sm font-bold px-3">Monitoring Rekon PLN Vs Bank</legend>
-
-    <div class="mt-1 relative">
-        <form id="form-monitoring">
-            <div class="grid grid-cols-12 gap-3 mb-2 items-end">
-                <div class="col-span-12 md:col-span-4 lg:col-span-3">
-                    <label for="bln_usulan" class="block text-gray-700 mb-1 font-medium">Bulan Laporan :</label>
-                    <div class="flex border border-gray-300 rounded items-center">
-                        <input 
-                            type="text" 
-                            id="bln_usulan" 
-                            class="flex-1 px-3 py-2 text-sm uppercase focus:outline-none focus:ring-1 focus:ring-blue-500" 
-                            placeholder="Pilih Bulan Laporan" 
-                            readonly
-                        >
-                        <i id="calendarIcon" class="fa fa-calendar text-gray-500 px-3 cursor-pointer hover:text-blue-600"></i>
-                    </div>
-                    <input type="hidden" id="bln_usulan_value" name="bln_usulan_value">
-                </div>
-
-                <div class="col-span-6 md:col-span-2">
-                    <label class="block md:hidden">&nbsp;</label>
-                    <button id="btnTampil" type="button" class="max-w-[120px] w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold px-3 py-2 rounded shadow flex items-center justify-center gap-2 transition duration-150 ease-in-out">
-                        <i class="fa fa-search"></i>
-                        <span>Tampilkan</span>
-                    </button>
-                </div>
-            </div>
-        </form>
+    <!-- ✅ Spinner Overlay untuk Rekap -->
+    <div id="spinnerOverlayRekap">
+        <div class="spinner-border"></div>
     </div>
 
-    <div class="mt-4">
-        <div class="mb-2">
-            <button id="btnExportMonRkpAllExcel2" class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded shadow flex items-center gap-2 transition duration-150 ease-in-out">
-                <i class="fa-solid fa-file-excel"></i> <span>Download Excel Rekap</span>
-            </button>
-        </div>
-
-        <div class="overflow-x-auto w-full">
-            <table id="tablemon_upi" class="table-auto border border-gray-300 w-full text-xs display">
-                <thead class="bg-gray-100">
-                    <tr>
-                        <th class="px-2 py-1 text-center border">NO</th>
-                        <th class="px-2 py-1 text-center border">NAMA_DIST</th>
-                        <th class="px-2 py-1 text-center border">PRODUK</th>
-                        <th class="px-2 py-1 text-center border">BANK</th>
-                        <th class="px-2 py-1 text-center border">BULAN</th>
-                        <th class="px-2 py-1 text-center border">PLN_IDPEL</th>
-                        <th class="px-2 py-1 text-center border">PLN_RPTAG</th>
-                        <th class="px-2 py-1 text-center border">PLN_LB_LUNAS</th>
-                        <th class="px-2 py-1 text-center border">PLN_RP_LUNAS</th>
-                        <th class="px-2 py-1 text-center border">BANK_IDPEL</th>
-                        <th class="px-2 py-1 text-center border">BANK_RPTAG</th>
-                        <th class="px-2 py-1 text-center border">SELISIH_RPTAG</th>
-                    </tr>
-                </thead>
-                <tbody class="text-xs"></tbody>
-            </table>
-        </div>
+    <!-- ✅ Tabel Rekap -->
+    <div class="relative">
+        <table id="tablemon_upi" class="display nowrap" style="width:100%">
+            <thead>
+                <tr>
+                    <th>URUT</th>
+                    <th>UPI</th>
+                    <th>BANK</th>
+                    <th>TOTAL TRANSAKSI</th>
+                    <th>TOTAL NILAI</th>
+                    <th>AKSI</th>
+                </tr>
+            </thead>
+        </table>
     </div>
 </fieldset>
 
-<div id="dataModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-    <div class="bg-white rounded-lg w-[95%] max-w-6xl max-h-[90vh] overflow-hidden flex flex-col shadow-xl">
-        
-        <div class="flex justify-between items-center p-4 border-b bg-gray-50">
-            <h5 class="text-gray-700 font-bold text-lg">Detail Data Rekon <span id="detailTitle" class="text-blue-600 font-normal"></span></h5>
-            <button id="closeModalBtn" class="text-gray-500 hover:text-gray-700 text-2xl font-bold transition duration-150 ease-in-out">&times;</button>
-        </div>
-        
-        <div class="p-4 flex-1 overflow-auto">
-            <div class="mb-2">
-                <button id="btnExportMonDftAllExcelOneSheet" class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded shadow flex items-center gap-2 transition duration-150 ease-in-out">
-                    <i class="fa fa-file-excel"></i>
-                    <span>Export Detail Per-UPI</span>
+<!-- ===============================
+     ✅ MODAL DETAIL DATA
+=================================-->
+<div class="modal fade" id="dataModal" tabindex="-1" role="dialog" aria-labelledby="dataModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content rounded-lg shadow">
+            <div class="modal-header bg-blue-600 text-white">
+                <h5 class="modal-title font-semibold" id="dataModalLabel">Detail Monitoring Rekon</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
                 </button>
             </div>
 
-            <div class="overflow-x-auto w-full">
-                <table id="table_mondaf_upi" class="table-auto border border-gray-300 w-full text-xs display">
-                    <thead class="bg-gray-100">
-                        <tr>
-                            <th class="px-2 py-1">NO</th>
-                            <th class="px-2 py-1">PRODUK</th>
-                            <th class="px-2 py-1">TGLAPPROVE</th>
-                            <th class="px-2 py-1">KD_DIST</th>
-                            <th class="px-2 py-1">VA</th>
-                            <th class="px-2 py-1">SATKER</th>
-                            <th class="px-2 py-1">PLN_NOUSULAN</th>
-                            <th class="px-2 py-1">PLN_IDPEL</th>
-                            <th class="px-2 py-1">PLN_BLTH</th>
-                            <th class="px-2 py-1">PLN_LUNAS_H0</th>
-                            <th class="px-2 py-1">PLN_RPTAG</th>
-                            <th class="px-2 py-1">PLN_RPBK</th>
-                            <th class="px-2 py-1">PLN_TGLBAYAR</th>
-                            <th class="px-2 py-1">PLN_JAMBAYAR</th>
-                            <th class="px-2 py-1">PLN_USERID</th>
-                            <th class="px-2 py-1">PLN_KDBANK</th>
-                            <th class="px-2 py-1">BANK_NOUSULAN</th>
-                            <th class="px-2 py-1">BANK_IDPEL</th>
-                            <th class="px-2 py-1">BANK_BLTH</th>
-                            <th class="px-2 py-1">BANK_RPTAG</th>
-                            <th class="px-2 py-1">BANK_RPBK</th>
-                            <th class="px-2 py-1">BANK_TGLBAYAR</th>
-                            <th class="px-2 py-1">BANK_JAMBAYAR</th>
-                            <th class="px-2 py-1">BANK_USERID</th>
-                            <th class="px-2 py-1">BANK_KDBANK</th>
-                            <th class="px-2 py-1">SELISIH_RPTAG</th>
-                            <th class="px-2 py-1">SELISIH_BK</th>
-                            <th class="px-2 py-1">KETERANGAN</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-xs">
-                    </tbody>
-                </table>
+            <div class="modal-body" style="max-height: 80vh; overflow-y: auto;">
+                <!-- Tombol Aksi -->
+                <div class="mb-3 flex justify-between items-center">
+                    <h6 class="font-semibold text-gray-700">Data Transaksi Detail</h6>
+                    <div>
+                        <button id="downloadMonDftExcelBtnAll" class="btn btn-success btn-sm">
+                            <i class="fa fa-file-excel-o"></i> Export Semua Data
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ✅ Wrapper tabel dengan spinner mini -->
+                <div class="relative">
+                    <div id="spinnerOverlayDetail" class="hidden absolute inset-0 flex items-center justify-center z-10 bg-white bg-opacity-30">
+                        <div class="spinner-border-mini"></div>
+                    </div>
+
+                    <!-- ✅ Tabel Detail -->
+                    <table id="table_mondaf_upi" class="display nowrap" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>NO</th>
+                                <th>IDPEL</th>
+                                <th>NAMA</th>
+                                <th>UPI</th>
+                                <th>BANK</th>
+                                <th>TGL BAYAR</th>
+                                <th>NILAI</th>
+                                <th>STATUS</th>
+                                <th>KETERANGAN</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
             </div>
         </div>
-        
-        <div class="p-4 border-t flex justify-end bg-gray-50">
-            <button id="closeModalBtn2" class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-2 rounded shadow transition duration-150 ease-in-out">Tutup</button>
-        </div>
-
     </div>
 </div>
 
 <script>
-    // --- GLOBAL VARIABLES (Diambil dari JSP context) ---
-    // Pastikan jQuery sudah dimuat sebelum script ini
-    
-    const CONTEXT_PATH = "${pageContext.request.contextPath}";
+$(document).ready(function() {
 
-    // --- UTILITY FUNCTIONS ---
-    function getContextPath() {
-        return CONTEXT_PATH;
-    }
-    
-    // Fungsi format angka (dipanggil dari DataTables render)
-    function formatNumber(value, fractionDigits = 0) {
-        if (value === null || value === undefined || String(value).trim() === '') return '0';
-        
-        let cleanValue = String(value).replace(/\./g, '').replace(/,/g, '.');
-
-        const number = parseFloat(cleanValue);
-        if (isNaN(number)) return value;
-
-        return number.toLocaleString('id-ID', {
-            minimumFractionDigits: fractionDigits,
-            maximumFractionDigits: fractionDigits
-        });
-    }
-    
-    // Parameter global untuk transfer data dari tabel Rekap ke tabel Detail
-    let detailFilterParams = {};
-    let table_detail_upi = null; // Deklarasi global agar dapat diakses oleh tombol Export dan Modal
-    var table; // Deklarasi global untuk table rekap
-
-    // --- END UTILITY FUNCTIONS ---
-
-    $(document).ready(function() { // Menggunakan jQuery $(document).ready
-        // 1) --- Modal Setup ---
-        const modal = $('#dataModal'); // Menggunakan jQuery
-        const detailTitle = document.getElementById('detailTitle');
-        
-        // Menutup modal
-        $('#closeModalBtn, #closeModalBtn2').on('click', function() {
-            modal.removeClass('flex').addClass('hidden');
-        });
-
-        // 2) --- Flatpickr Month Picker ---
-        const blnUsulan = document.getElementById('bln_usulan');
-        const blnUsulanValue = document.getElementById('bln_usulan_value');
-        const calendarIcon = document.getElementById('calendarIcon');
-
-        const fp = flatpickr(blnUsulan, {
-            locale: "id", 
-            plugins: [new monthSelectPlugin({
-                shorthand: false,
-                dateFormat: "F Y",
-                altFormat: "Y-m"
-            })],
-            defaultDate: new Date(),
-            onChange: function(selectedDates, dateStr, instance) {
-                const date = selectedDates[0];
-                if(date) {
-                    const yyyy = date.getFullYear();
-                    const mm = String(date.getMonth() + 1).padStart(2,'0');
-                    blnUsulanValue.value = yyyy+mm;
-                }
-            },
-            onReady: function(selectedDates, dateStr, instance) {
-                const date = selectedDates[0];
-                if(date) {
-                    const yyyy = date.getFullYear();
-                    const mm = String(date.getMonth() + 1).padStart(2,'0');
-                    blnUsulanValue.value = yyyy+mm;
+    // ===========================
+    // ✅ 1. Inisialisasi DataTables Rekap
+    // ===========================
+    var tableRekap = $('#tablemon_upi').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: '/api/rekon/list', // 🔧 Ganti sesuai endpoint kamu
+            type: 'POST',
+            data: function(d) {
+                d.jenis = $('#jenisData').val();
+                d.tahun = $('#tahun').val();
+            }
+        },
+        columns: [
+            { data: 'URUT', className: 'text-center' },
+            { data: 'UPI' },
+            { data: 'BANK' },
+            { data: 'TOTAL_TRANSAKSI', className: 'text-right' },
+            { data: 'TOTAL_NILAI', className: 'text-right' },
+            {
+                data: null,
+                orderable: false,
+                render: function(data, type, row) {
+                    return '<button class="btn btn-sm btn-info btnDetail" data-upi="'+row.UPI+'" data-bank="'+row.BANK+'">Detail</button>';
                 }
             }
-        });
-
-        $(calendarIcon).on('click', () => fp.open()); // Menggunakan jQuery
-
-        // 3) --- DataTables Rekap (tablemon_upi) ---
-        table = $('#tablemon_upi').DataTable({
-            processing: false,
-            serverSide: true,
-            scrollX: true, 
-            paging: false,
-            ordering: false,
-            searching: false, 
-            autoWidth: false,
-            info: false,
-            stripeClasses: [],
-            ajax: {
-                url: getContextPath() + '/mon-rekon-bankvsperupi',
-                type: 'POST',
-                data: function (d) {
-                    const yyyymm = $('#bln_usulan_value').val() ? $('#bln_usulan_value').val().replace('-', '') : '';
-                    d.vbln_usulan = yyyymm;
-                },
-                error: function (xhr, error, thrown) {
-                    // Sembunyikan spinner saat error
-                    $('#spinnerOverlay').removeClass('flex').addClass('hidden'); 
-                    console.error("DataTables Rekap Error:", error, thrown);
-                }
-            },
-            columns: [
-                {
-                    data: null,
-                    render: function (data, type, row, meta) {
-                        if (row.URUT != 5) {
-                            return meta.row + 1;
-                        } else {
-                            return ''; 
-                        }
-                    },
-                    width: '30px'
-                },
-                {
-                    data: null,
-                    render: function (data, type, row) {
-                        const text = row.KD_DIST && row.NAMA_DIST ? row.KD_DIST + ' - ' + row.NAMA_DIST : '';
-                        return row.URUT == 5 ? `<strong>TOTAL</strong>` : text;
-                    },
-                    width: '250px'
-                },
-                { data: 'PRODUK', defaultContent: '', width: '80px' },
-                { data: 'BANK' , defaultContent: '', width: '200px'},
-                { data: 'BLN_USULAN', defaultContent: '', width: '70px' },
-                // Angka
-                { data: 'PLN_IDPEL', render: function (data) { return formatNumber(data, 0); }, width: '100px' },
-                { data: 'PLN_RPTAG', render: function (data) { return formatNumber(data, 0); }, width: '120px' },
-                { data: 'PLN_LEBAR_LUNAS', render: function (data) { return formatNumber(data, 0); }, width: '100px' },
-                { data: 'PLN_RPTAG_LUNAS', render: function (data) { return formatNumber(data, 0); }, width: '120px' },
-                { data: 'BANK_IDPEL', render: function (data) { return formatNumber(data, 0); }, width: '100px' },
-                { data: 'BANK_RPTAG', render: function (data) { return formatNumber(data, 0); }, width: '120px' },
-                { data: 'SELISIH_RPTAG', render: function (data) { return formatNumber(data, 0); }, width: '120px' }
-            ],
-            columnDefs: [
-                { targets: '_all', className: 'text-center border' },
-                { targets: [1, 3], className: 'text-left border' },
-                { targets: [5, 6, 7, 8, 9, 10, 11], className: 'text-right border' }
-            ],
-            createdRow: function (row, data, dataIndex) {
-                if (data.URUT == 5) {
-                    $(row).addClass('font-bold bg-gray-200');
-                    $('td', row).css('border-top', '3px solid #000');
-                }
-
-                const clickableColumns = [5, 6, 9, 10]; 
-                const columnNames = ['PLN_IDPEL', 'PLN_RPTAG', 'BANK_IDPEL', 'BANK_RPTAG'];
-
-                $('td', row).each(function (colIndex) {
-                    if (clickableColumns.includes(colIndex)) {
-                        const columnIndexInArray = clickableColumns.indexOf(colIndex);
-                        const columnName = columnNames[columnIndexInArray];
-                        const cellValue = data[columnName];
-                        
-                        if (data.URUT != 5 && cellValue && parseFloat(String(cellValue).replace(/\./g, '').replace(/,/g, '.')) > 0) {
-                            $(this).addClass('cursor-pointer text-blue-600 underline').off('click').on('click', function () {
-                                // Set parameter filter global
-                                detailFilterParams = {
-                                    vbln_usulan: data.BLN_USULAN,
-                                    vkd_bank: data.BANK ? data.BANK.substring(0, 3) : '',
-                                    vkd_dist: data.KD_DIST,
-                                    vproduk: data.PRODUK
-                                };
-                                
-                                // Update judul modal
-                                detailTitle.textContent = `${data.KD_DIST} - ${data.NAMA_DIST} (${data.BANK})`;
-
-                                // Tampilkan Modal
-                                modal.removeClass('hidden').addClass('flex');
-                                
-                                // Muat ulang tabel detail dengan parameter baru
-                                if(table_detail_upi) {
-                                    table_detail_upi.ajax.reload(() => {
-                                        // PERBAIKAN: Adjust columns setelah modal terlihat dan data dimuat
-                                        table_detail_upi.columns.adjust().draw(); 
-                                    });
-                                }
-                            });
-                        }
-                    }
-                });
-            },
-            dom: 'lfrtip', 
-            buttons: [
-                {
-                    extend: 'excelHtml5',
-                    title: 'MIV_REKON_REKAP_' + ($('#bln_usulan_value').val() ? $('#bln_usulan_value').val().replace('-', '') : 'ALL'),
-                    className: 'd-none',
-                    exportOptions: {
-                        format: {
-                            body: function (data, row, column, node) {
-                                const columnsRaw = [5,6,7,8,9,10,11]; 
-                                if (columnsRaw.includes(column)) {
-                                    if (typeof data === 'string') {
-                                        // Hapus format ribuan sebelum export
-                                        return data.replace(/\./g, '').replace(/,/g, ''); 
-                                    }
-                                }
-                                return data;
-                            }
-                        }
-                    }
-                }
-            ] 
-        });
-
-        // 4) --- DataTables Detail (table_mondaf_upi) ---
-        table_detail_upi = $('#table_mondaf_upi').DataTable({
-            processing: true,
-            serverSide: true,
-            scrollX: true, 
-            paging: true,
-            ordering: false,
-            searching: false, 
-            autoWidth: false,
-            info: true,
-            stripeClasses: [],
-            lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
-            ajax: {
-                url: getContextPath() + '/mon-rekon-bankvsperupi-detail',
-                type: 'POST',
-                data: function (d) {
-                    d.vbln_usulan = detailFilterParams.vbln_usulan ? detailFilterParams.vbln_usulan.replace('-', '') : ''; 
-                    d.vkd_bank = detailFilterParams.vkd_bank || '';
-                    d.vkd_dist = detailFilterParams.vkd_dist || '';
-                    d.vproduk = detailFilterParams.vproduk || '';
-                },
-                error: function (xhr, error, thrown) {
-                    console.error("DataTables Detail Error:", error, thrown);
-                }
-            },
-            columns: [
-                { data: null, render: function (data, type, row, meta) { return meta.row + 1 + meta.settings._iDisplayStart; } },
-                { data: 'PRODUK', defaultContent: '' },
-                { data: 'TGLAPPROVE', defaultContent: '' },
-                { data: 'KD_DIST', defaultContent: '' },
-                { data: 'VA', defaultContent: '' },
-                { data: 'SATKER', defaultContent: '' },
-                { data: 'PLN_NOUSULAN', defaultContent: '' },
-                { data: 'PLN_IDPEL', defaultContent: '' },
-                { data: 'PLN_BLTH', defaultContent: '' },
-                { data: 'PLN_LUNAS_H0', defaultContent: '' },
-                { data: 'PLN_RPTAG', render: function (data) { return formatNumber(data, 0); } },
-                { data: 'PLN_RPBK', render: function (data) { return formatNumber(data, 0); } },
-                { data: 'PLN_TGLBAYAR', defaultContent: '' },
-                { data: 'PLN_JAMBAYAR', defaultContent: '' },
-                { data: 'PLN_USERID', defaultContent: '' },
-                { data: 'PLN_KDBANK', defaultContent: '' },
-                { data: 'BANK_NOUSULAN', defaultContent: '' },
-                { data: 'BANK_IDPEL', defaultContent: '' },
-                { data: 'BANK_BLTH', defaultContent: '' },
-                { data: 'BANK_RPTAG', render: function (data) { return formatNumber(data, 0); } },
-                { data: 'BANK_RPBK', render: function (data) { return formatNumber(data, 0); } },
-                { data: 'BANK_TGLBAYAR', defaultContent: '' },
-                { data: 'BANK_JAMBAYAR', defaultContent: '' },
-                { data: 'BANK_USERID', defaultContent: '' },
-                { data: 'BANK_KDBANK', defaultContent: '' },
-                { data: 'SELISIH_RPTAG', render: function (data) { return formatNumber(data, 0); } },
-                { data: 'SELISIH_BK', render: function (data) { return formatNumber(data, 0); } },
-                { data: 'KETERANGAN', defaultContent: '' }
-            ],
-            columnDefs: [
-                { targets: [10, 11, 19, 20, 25, 26], className: 'text-right border' }, 
-                { targets: '_all', className: 'text-center border' }
-            ],
-            dom: 'Bfrtip',
-            buttons: [
-                {
-                    extend: 'excelHtml5',
-                    title: function() {
-                        const bln = detailFilterParams.vbln_usulan ? detailFilterParams.vbln_usulan.replace('-', '') : 'ALL';
-                        const dist = detailFilterParams.vkd_dist || 'UNDEF';
-                        return `MIV_REKON_DETAIL_${dist}_${bln}`;
-                    },
-                    className: 'd-none',
-                    exportOptions: {
-                        // Export semua data dari API (server side processing)
-                    }
-                }
-            ]
-        });
-
-
-        // --- Event Handlers (Spinner) ---
-        // Sembunyikan/Tampilkan spinner saat request AJAX DataTables
-        const spinnerOverlay = $('#spinnerOverlay');
-
-        table.on('preXhr.dt', function () {
-            spinnerOverlay.removeClass('hidden').addClass('flex');  
-        });
-        table.on('xhr.dt', function () {
-            spinnerOverlay.removeClass('flex').addClass('hidden');   
-        });
-
-        table_detail_upi.on('preXhr.dt', function () {
-            spinnerOverlay.removeClass('hidden').addClass('flex');  
-        });
-        table_detail_upi.on('xhr.dt', function () {
-            spinnerOverlay.removeClass('flex').addClass('hidden');   
-        });
-
-
-        // --- Event Handlers (Tombol) ---
-        
-        // Trigger Tampilkan Data Rekap
-        $('#btnTampil').on('click', function () {
-            if (!$('#bln_usulan_value').val()) {
-                alert("Silakan pilih Bulan Laporan terlebih dahulu!");
-                return;
-            }
-            spinnerOverlay.removeClass('hidden').addClass('flex');   
-            table.ajax.reload();
-        });
-        
-        // Trigger Download Excel Rekap
-        $('#btnExportMonRkpAllExcel2').on('click', function () {
-            table.button(0).trigger();
-        });
-
-        // Trigger Download Excel Detail
-        $('#btnExportMonDftAllExcelOneSheet').on('click', function () {
-            if (table_detail_upi) {
-                // Trigger button excel yang tersembunyi
-                table_detail_upi.button(0).trigger(); 
-            } else {
-                 alert("Data detail belum dimuat.");
-            }
-        });
+        ],
+        responsive: true,
+        language: { emptyTable: "Tidak ada data ditemukan" }
     });
+
+    // ===========================
+    // ✅ 2. Spinner untuk DataTables Rekap
+    // ===========================
+    tableRekap.on('preXhr.dt', function() {
+        $('#spinnerOverlayRekap').css('display', 'flex');
+    });
+    tableRekap.on('xhr.dt', function() {
+        $('#spinnerOverlayRekap').hide();
+    });
+
+    // Tombol Tampilkan
+    $('#btnTampil').on('click', function() {
+        tableRekap.ajax.reload();
+    });
+
+    // ===========================
+    // ✅ 3. Modal Detail - Inisialisasi DataTables Detail
+    // ===========================
+    var tableDetail = $('#table_mondaf_upi').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: '/api/rekon/detail', // 🔧 Ganti sesuai endpoint kamu
+            type: 'POST',
+            data: function(d) {
+                d.upi = $('#dataModal').data('upi');
+                d.bank = $('#dataModal').data('bank');
+            }
+        },
+        columns: [
+            { data: 'NO', className: 'text-center' },
+            { data: 'IDPEL' },
+            { data: 'NAMA' },
+            { data: 'UPI' },
+            { data: 'BANK' },
+            { data: 'TGL_BAYAR', className: 'text-center' },
+            { data: 'NILAI', className: 'text-right' },
+            { data: 'STATUS', className: 'text-center' },
+            { data: 'KETERANGAN' }
+        ],
+        responsive: true,
+        language: { emptyTable: "Tidak ada data detail ditemukan" }
+    });
+
+    // ===========================
+    // ✅ 4. Spinner Mini di Modal
+    // ===========================
+    tableDetail.on('preXhr.dt', function() {
+        $('#spinnerOverlayDetail').css('display', 'flex');
+    });
+    tableDetail.on('xhr.dt', function() {
+        $('#spinnerOverlayDetail').hide();
+    });
+
+    // ===========================
+    // ✅ 5. Event Klik Tombol Detail
+    // ===========================
+    $('#tablemon_upi').on('click', '.btnDetail', function() {
+        const upi = $(this).data('upi');
+        const bank = $(this).data('bank');
+
+        // simpan data di modal
+        $('#dataModal').data('upi', upi);
+        $('#dataModal').data('bank', bank);
+
+        // ubah judul modal
+        $('#dataModalLabel').text('Detail Rekon - ' + upi + ' | ' + bank);
+
+        // tampilkan modal
+        $('#dataModal').modal('show');
+
+        // reload data detail
+        tableDetail.ajax.reload();
+    });
+
+    // ===========================
+    // ✅ 6. Export Excel Semua Data (Detail)
+    // ===========================
+    $('#downloadMonDftExcelBtnAll').on('click', function() {
+        const upi = $('#dataModal').data('upi');
+        const bank = $('#dataModal').data('bank');
+        const jenis = $('#jenisData').val();
+        const tahun = $('#tahun').val();
+
+        const url = `/api/rekon/export?upi=${upi}&bank=${bank}&jenis=${jenis}&tahun=${tahun}`;
+        window.open(url, '_blank');
+    });
+
+});
 </script>
+
+</body>
+</html>
