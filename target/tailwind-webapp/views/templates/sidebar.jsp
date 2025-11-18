@@ -5,7 +5,7 @@
 
     boolean monitoringActive =
         "monitoring-rekon-bank-upi".equals(menuAttr) ||
-        "Daftar-prov-upi".equals(menuAttr) ||
+        "Struk-bank-miv".equals(menuAttr) ||
         "monitoring-rekon-upi".equals(menuAttr);
 %>
 
@@ -55,29 +55,29 @@
             class="submenu pl-10 mt-1 space-y-1 transition-all duration-300 ease-in-out <%= monitoringActive ? "" : "hidden" %>">
 
           <li>
-            <a href="index.jsp?page=/views/monitoring/mon_rekonflag_pln_vs_bank.jsp&menu=monitoring-rekon-bank-upi"
+            <a href="index.jsp?page=/views/monitoring/mon01_rekonflag_pln_vs_bank.jsp&menu=monitoring-rekon-bank-upi"
                title="Mon Rekon BANK vs PLN (Per-UID/UIW)"
                class="block px-4 py-2 rounded-md transition
                       <%= "monitoring-rekon-bank-upi".equals(menuAttr)
                           ? "bg-cyan-700 text-white font-semibold"
                           : "text-gray-300 hover:bg-gray-700 hover:text-white" %>">
-              <span class="sidebar-text">Mon Rekon BANK vs PLN</span>
+              <span class="sidebar-text">Mon Rekon PLN vs BANK</span>
             </a>
           </li>
 
           <li>
-            <a href="index.jsp?page=/views/monitoring/v2a_daftar_prov_upi.jsp&menu=Daftar-prov-upi"
+            <a href="index.jsp?page=/views/monitoring/mon02_cetak_struk_mivbank.jsp&menu=Struk-bank-miv"
                title="Daftar Provinsi / UPI"
                class="block px-4 py-2 rounded-md transition
-                      <%= "Daftar-prov-upi".equals(menuAttr)
+                      <%= "Struk-bank-miv".equals(menuAttr)
                           ? "bg-cyan-700 text-white font-semibold"
                           : "text-gray-300 hover:bg-gray-700 hover:text-white" %>">
-              <span class="sidebar-text">Daftar Provinsi / UPI</span>
+              <span class="sidebar-text">Cetak Struk - BANK MIV</span>
             </a>
           </li>
 
           <li>
-            <a href="index.jsp?page=/views/monitoring/v3a_rekon_per_upi.jsp&menu=monitoring-rekon-upi"
+            <a href="index.jsp?page=/views/monitoring/mon02_cetak_struk_mivbank.jsp&menu=monitoring-rekon-upi"
                title="Monitoring Rekon per UPI"
                class="block px-4 py-2 rounded-md transition
                       <%= "monitoring-rekon-upi".equals(menuAttr)
@@ -86,13 +86,23 @@
               <span class="sidebar-text">Monitoring Rekon per UPI</span>
             </a>
           </li>
-
         </ul>
       </li>
+
+      <!-- 🔹 Tambahan: Logout di daftar menu -->
+      <li>
+        <a href="${pageContext.request.contextPath}/LogoutServlet"
+           title="Logout"
+           class="flex items-center gap-3 px-4 py-2 rounded-md transition text-gray-300 hover:bg-gray-700 hover:text-white">
+          <i class="fa fa-sign-out-alt w-5 text-center"></i>
+          <span class="sidebar-text">Logout</span>
+        </a>
+      </li>
+
     </ul>
   </nav>
 
-  <!-- Logout selalu di bawah -->
+  <!-- Logout versi bawah (opsional, bisa dihapus jika tidak perlu dua) -->
   <div class="mt-auto border-t border-gray-700">
     <a href="${pageContext.request.contextPath}/LogoutServlet"
        class="flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition">
@@ -100,7 +110,6 @@
       <span class="sidebar-text">Logout</span>
     </a>
   </div>
-
 </div>
 
 <script>

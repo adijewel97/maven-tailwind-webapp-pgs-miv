@@ -21,10 +21,10 @@
         <i class="fa fa-shield-alt text-6xl mb-4"></i>
         <!-- <h2 class="text-2xl font-bold mb-2">Selamat Datang di WebApp \n MIV - PLN P2APST</h2> -->
          <h2 class="text-2xl font-bold mb-2 whitespace-pre-line">
-            Webapp MIV - P2APST
+            Webapp Tools MIV - P2APST 
         </h2>
         <p class="text-center text-sm leading-relaxed text-teal-100">
-            Sistem ini digunakan untuk monitoring Untuk Pelanggan PLN MIV - Management Instansi Vertikal.  
+            Sistem ini digunakan untuk Tools monitoring Untuk Pelanggan PLN MIV - Management Instansi Vertikal.  
             Pastikan kredensial Anda valid untuk mengakses sistem ini.
         </p>
         <div class="mt-6 border-t border-teal-300 w-1/2"></div>
@@ -46,7 +46,7 @@
                 <label for="username" class="block text-gray-600 text-sm font-semibold mb-1">Username</label>
                 <div class="flex items-center border border-gray-300 rounded-lg px-3 focus-within:ring-2 focus-within:ring-teal-400">
                     <i class="fa fa-user text-gray-400 mr-2"></i>
-                    <input id="username" name="username" type="text" class="w-full p-2 focus:outline-none text-gray-700" placeholder="Masukkan username">
+                    <input id="username" name="username" value="adi_setiadi" type="text" class="w-full p-2 focus:outline-none text-gray-700" placeholder="Masukkan username">
                 </div>
             </div>
 
@@ -54,7 +54,7 @@
                 <label for="password" class="block text-gray-600 text-sm font-semibold mb-1">Password</label>
                 <div class="flex items-center border border-gray-300 rounded-lg px-3 focus-within:ring-2 focus-within:ring-teal-400">
                     <i class="fa fa-lock text-gray-400 mr-2"></i>
-                    <input id="password" name="password" type="password" class="w-full p-2 focus:outline-none text-gray-700" placeholder="Masukkan password">
+                    <input id="password" name="password" value="Sangkuriang@2007"  type="password" class="w-full p-2 focus:outline-none text-gray-700" placeholder="Masukkan password">
                 </div>
             </div>
 

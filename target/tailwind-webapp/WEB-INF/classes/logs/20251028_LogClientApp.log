@@ -1,0 +1,219 @@
+2025-10-28 08:12:47.455 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 08:12:50.055 - INFO: Jumlah file ditemukan: 641
+2025-10-28 08:12:50.062 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 09:48:23.666 - INFO: draw = 1
+2025-10-28 09:48:23.666 - INFO: offset (startIndex) = 0
+2025-10-28 09:48:23.666 - INFO: limit (length) = 10
+2025-10-28 09:48:23.666 - INFO: sortBy = KD_DIST ASC
+2025-10-28 09:48:23.666 - INFO: searchValue = 
+2025-10-28 09:48:23.666 - INFO: vbln_usulan = 
+2025-10-28 09:48:23.666 - INFO: vkd_bank = 
+2025-10-28 09:48:23.667 - INFO: vkd_dist = 
+2025-10-28 09:55:29.141 - INFO: draw = 1
+2025-10-28 09:55:29.142 - INFO: offset (startIndex) = 0
+2025-10-28 09:55:29.142 - INFO: limit (length) = 10
+2025-10-28 09:55:29.142 - INFO: sortBy = KD_DIST ASC
+2025-10-28 09:55:29.143 - INFO: searchValue = 
+2025-10-28 09:55:29.143 - INFO: vbln_usulan = 
+2025-10-28 09:55:29.143 - INFO: vkd_bank = 
+2025-10-28 09:55:29.143 - INFO: vkd_dist = 
+2025-10-28 09:55:34.350 - INFO: draw = 1
+2025-10-28 09:55:34.350 - INFO: offset (startIndex) = 0
+2025-10-28 09:55:34.350 - INFO: limit (length) = 10
+2025-10-28 09:55:34.350 - INFO: sortBy = KD_DIST ASC
+2025-10-28 09:55:34.350 - INFO: searchValue = 
+2025-10-28 09:55:34.350 - INFO: vbln_usulan = 
+2025-10-28 09:55:34.350 - INFO: vkd_bank = 
+2025-10-28 09:55:34.350 - INFO: vkd_dist = 
+2025-10-28 09:57:49.620 - INFO: draw = 1
+2025-10-28 09:57:49.621 - INFO: offset (startIndex) = 0
+2025-10-28 09:57:49.621 - INFO: limit (length) = 10
+2025-10-28 09:57:49.621 - INFO: sortBy = KD_DIST ASC
+2025-10-28 09:57:49.621 - INFO: searchValue = 
+2025-10-28 09:57:49.621 - INFO: vbln_usulan = 
+2025-10-28 09:57:49.621 - INFO: vkd_bank = 
+2025-10-28 09:57:49.621 - INFO: vkd_dist = 
+2025-10-28 12:26:32.439 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:26:32.509 - INFO: Jumlah file ditemukan: 8
+2025-10-28 12:26:32.509 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:27:10.862 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:27:10.893 - INFO: Jumlah file ditemukan: 8
+2025-10-28 12:27:10.893 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:27:38.914 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:27:38.951 - INFO: Jumlah file ditemukan: 8
+2025-10-28 12:27:38.952 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:29:54.924 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:29:54.956 - INFO: Jumlah file ditemukan: 8
+2025-10-28 12:29:54.956 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:30:47.477 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:30:47.509 - INFO: Jumlah file ditemukan: 8
+2025-10-28 12:30:47.509 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:31:44.340 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:31:44.388 - INFO: Jumlah file ditemukan: 8
+2025-10-28 12:31:44.390 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:31:56.964 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:31:56.993 - INFO: Jumlah file ditemukan: 8
+2025-10-28 12:31:56.993 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:33:02.488 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:33:02.522 - INFO: Jumlah file ditemukan: 8
+2025-10-28 12:33:02.522 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:33:59.589 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:33:59.619 - INFO: Jumlah file ditemukan: 8
+2025-10-28 12:33:59.619 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:34:15.472 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:34:15.502 - INFO: Jumlah file ditemukan: 8
+2025-10-28 12:34:15.502 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:35:38.752 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:35:38.785 - INFO: Jumlah file ditemukan: 8
+2025-10-28 12:35:38.785 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:35:55.249 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:35:55.276 - INFO: Jumlah file ditemukan: 8
+2025-10-28 12:35:55.276 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:36:13.614 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:36:13.644 - INFO: Jumlah file ditemukan: 8
+2025-10-28 12:36:13.644 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:36:55.656 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:36:55.703 - INFO: Jumlah file ditemukan: 8
+2025-10-28 12:36:55.703 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:39:05.556 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:39:05.633 - INFO: Jumlah file ditemukan: 8
+2025-10-28 12:39:05.633 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:44:55.769 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:44:55.818 - INFO: Jumlah file ditemukan: 8
+2025-10-28 12:44:55.818 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:55:38.773 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:55:38.828 - INFO: Jumlah file ditemukan: 8
+2025-10-28 12:55:38.828 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:55:41.167 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:55:41.206 - INFO: Jumlah file ditemukan: 8
+2025-10-28 12:55:41.206 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:55:47.796 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 12:55:47.827 - INFO: Jumlah file ditemukan: 8
+2025-10-28 12:55:47.827 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 13:00:37.931 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 13:00:37.975 - INFO: Jumlah file ditemukan: 8
+2025-10-28 13:00:37.975 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 13:14:25.605 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 13:14:25.661 - INFO: Jumlah file ditemukan: 8
+2025-10-28 13:14:25.661 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 13:21:27.873 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 13:21:27.931 - INFO: Jumlah file ditemukan: 8
+2025-10-28 13:21:27.931 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 13:24:37.695 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 13:24:37.795 - INFO: Jumlah file ditemukan: 8
+2025-10-28 13:24:37.796 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 13:28:32.480 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 13:28:32.576 - INFO: Jumlah file ditemukan: 8
+2025-10-28 13:28:32.577 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 13:28:39.134 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 13:28:39.176 - INFO: Jumlah file ditemukan: 8
+2025-10-28 13:28:39.176 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 13:44:38.617 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 13:44:38.674 - INFO: Jumlah file ditemukan: 8
+2025-10-28 13:44:38.674 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 13:47:28.186 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 13:47:28.272 - INFO: Jumlah file ditemukan: 8
+2025-10-28 13:47:28.272 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 13:56:41.461 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 13:56:41.512 - INFO: Jumlah file ditemukan: 8
+2025-10-28 13:56:41.512 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 13:58:10.372 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 13:58:10.459 - INFO: Jumlah file ditemukan: 8
+2025-10-28 13:58:10.459 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 13:58:20.157 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 13:58:20.203 - INFO: Jumlah file ditemukan: 8
+2025-10-28 13:58:20.203 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 13:59:51.949 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 13:59:51.986 - INFO: Jumlah file ditemukan: 8
+2025-10-28 13:59:51.986 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 14:03:59.546 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 14:03:59.604 - INFO: Jumlah file ditemukan: 8
+2025-10-28 14:03:59.604 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 14:04:39.915 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 14:04:39.954 - INFO: Jumlah file ditemukan: 8
+2025-10-28 14:04:39.954 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 14:15:58.499 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 14:15:58.553 - INFO: Jumlah file ditemukan: 8
+2025-10-28 14:15:58.554 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 14:32:14.881 - INFO: ðŸ”? Memanggil service.getMasterBank()...
+2025-10-28 14:32:14.973 - INFO: âœ… Berhasil ambil data bank. Jumlah data: 6
+2025-10-28 14:33:33.710 - INFO: ðŸ”? Memanggil service.getMasterBank()...
+2025-10-28 14:33:33.774 - INFO: âœ… Berhasil ambil data bank. Jumlah data: 6
+2025-10-28 14:34:10.128 - INFO: ðŸ”? Memanggil service.getMasterBank()...
+2025-10-28 14:34:10.187 - INFO: âœ… Berhasil ambil data bank. Jumlah data: 6
+2025-10-28 15:25:57.788 - INFO: ðŸ”? Memanggil service.getMasterBank()...
+2025-10-28 15:25:57.866 - INFO: âœ… Berhasil ambil data bank. Jumlah data: 6
+2025-10-28 15:26:31.523 - INFO: ðŸ”? Memanggil service.getMasterBank()...
+2025-10-28 15:26:31.591 - INFO: âœ… Berhasil ambil data bank. Jumlah data: 6
+2025-10-28 15:34:35.166 - INFO: ðŸ”? Memanggil service.getMasterBank()...
+2025-10-28 15:34:35.246 - INFO: âœ… Berhasil ambil data bank. Jumlah data: 6
+2025-10-28 15:35:33.024 - INFO: ðŸ”? Memanggil service.getMasterBank()...
+2025-10-28 15:35:33.105 - INFO: âœ… Berhasil ambil data bank. Jumlah data: 6
+2025-10-28 15:37:50.293 - INFO: ðŸ”? Memanggil service.getMasterBank()...
+2025-10-28 15:37:50.361 - INFO: âœ… Berhasil ambil data bank. Jumlah data: 6
+2025-10-28 15:48:39.856 - INFO: ðŸ”? Memanggil service.getMasterBank()...
+2025-10-28 15:48:39.926 - INFO: âœ… Berhasil ambil data bank. Jumlah data: 6
+2025-10-28 15:49:57.490 - INFO: ðŸ”? Memanggil service.getMasterBank()...
+2025-10-28 15:49:57.563 - INFO: âœ… Berhasil ambil data bank. Jumlah data: 6
+2025-10-28 15:49:57.568 - INFO: âœ… Berhasil ambil data UNITUPI, jumlah data: 22
+2025-10-28 15:58:58.545 - INFO: ðŸ”? Memanggil service.getMasterBank()...
+2025-10-28 15:58:58.907 - INFO: âœ… Berhasil ambil data bank. Jumlah data: 6
+2025-10-28 15:58:58.907 - INFO: âœ… Berhasil ambil data UNITUPI, jumlah data: 22
+2025-10-28 16:00:24.837 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 16:00:24.969 - INFO: Jumlah file ditemukan: 8
+2025-10-28 16:00:24.970 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 16:00:59.123 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 16:00:59.164 - INFO: Jumlah file ditemukan: 8
+2025-10-28 16:00:59.164 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 16:01:01.103 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 16:01:01.140 - INFO: Jumlah file ditemukan: 8
+2025-10-28 16:01:01.141 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 16:03:24.491 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 16:03:24.545 - INFO: Jumlah file ditemukan: 8
+2025-10-28 16:03:24.545 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 16:05:24.523 - INFO: === [START] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 16:05:26.150 - INFO: Jumlah file ditemukan: 8
+2025-10-28 16:05:26.150 - INFO: === [END] Mon02StrukMivBankPdfListController.doGet ===
+2025-10-28 16:08:21.198 - INFO: ðŸ”? Memanggil service.getMasterBank()...
+2025-10-28 16:08:21.295 - INFO: âœ… Berhasil ambil data bank. Jumlah data: 6
+2025-10-28 16:08:21.326 - INFO: âœ… Berhasil ambil data UNITUPI, jumlah data: 22
+2025-10-28 16:08:29.471 - SEVERE: Gagal ambil data UP3
+2025-10-28 16:11:05.200 - INFO: ðŸ”? Memanggil service.getMasterBank()...
+2025-10-28 16:11:05.294 - INFO: âœ… Berhasil ambil data bank. Jumlah data: 6
+2025-10-28 16:11:05.308 - INFO: âœ… Berhasil ambil data UNITUPI, jumlah data: 22
+2025-10-28 16:11:10.598 - SEVERE: Gagal ambil data UP3
+2025-10-28 16:13:19.512 - INFO: ðŸ”? Memanggil service.getMasterBank()...
+2025-10-28 16:13:19.580 - INFO: âœ… Berhasil ambil data UNITUPI, jumlah data: 22
+2025-10-28 16:13:19.581 - INFO: âœ… Berhasil ambil data bank. Jumlah data: 6
+2025-10-28 16:13:23.289 - SEVERE: Gagal ambil data UP3
+2025-10-28 16:16:22.215 - INFO: ðŸ”? Memanggil service.getMasterBank()...
+2025-10-28 16:16:22.286 - INFO: âœ… Berhasil ambil data bank. Jumlah data: 6
+2025-10-28 16:16:22.286 - INFO: âœ… Berhasil ambil data UNITUPI, jumlah data: 22
+2025-10-28 16:18:22.884 - INFO: ðŸ”? Memanggil service.getMasterBank()...
+2025-10-28 16:18:22.951 - INFO: âœ… Berhasil ambil data bank. Jumlah data: 6
+2025-10-28 16:18:22.957 - INFO: âœ… Berhasil ambil data UNITUPI, jumlah data: 22
+2025-10-28 16:19:30.577 - INFO: ðŸ”? Memanggil service.getMasterBank()...
+2025-10-28 16:19:30.649 - INFO: âœ… Berhasil ambil data bank. Jumlah data: 6
+2025-10-28 16:19:30.650 - INFO: âœ… Berhasil ambil data UNITUPI, jumlah data: 22
+2025-10-28 16:20:33.906 - INFO: ðŸ”? Memanggil service.getMasterBank()...
+2025-10-28 16:20:33.954 - INFO: âœ… Berhasil ambil data bank. Jumlah data: 6
+2025-10-28 16:20:33.966 - INFO: âœ… Berhasil ambil data UNITUPI, jumlah data: 22
+2025-10-28 16:20:39.641 - SEVERE: Gagal ambil data UP3
+2025-10-28 16:33:12.519 - INFO: ðŸ”? Memanggil service.getMasterBank()...
+2025-10-28 16:33:12.583 - INFO: âœ… Berhasil ambil data bank. Jumlah data: 6
+2025-10-28 16:33:12.583 - INFO: âœ… Berhasil ambil data UNITUPI, jumlah data: 22
+2025-10-28 16:33:44.655 - SEVERE: Gagal ambil data UP3
+2025-10-28 16:39:34.662 - INFO: ðŸ”? Memanggil service.getMasterBank()...
+2025-10-28 16:39:34.723 - INFO: âœ… Berhasil ambil data bank. Jumlah data: 6
+2025-10-28 16:39:34.727 - INFO: âœ… Berhasil ambil data UNITUPI, jumlah data: 22
+2025-10-28 16:39:39.821 - SEVERE: Gagal ambil data UP3
+2025-10-28 16:42:46.123 - INFO: ðŸ”? Memanggil service.getMasterBank()...
+2025-10-28 16:42:46.189 - INFO: âœ… Berhasil ambil data UNITUPI, jumlah data: 22
+2025-10-28 16:42:46.194 - INFO: âœ… Berhasil ambil data bank. Jumlah data: 6
+2025-10-28 16:43:02.731 - SEVERE: Gagal ambil data UP3
+2025-10-28 16:44:50.395 - INFO: ðŸ”? Memanggil service.getMasterBank()...
+2025-10-28 16:44:50.452 - INFO: âœ… Berhasil ambil data bank. Jumlah data: 6
+2025-10-28 16:44:50.458 - INFO: âœ… Berhasil ambil data UNITUPI, jumlah data: 22
+2025-10-28 16:44:50.531 - SEVERE: Gagal ambil data UP3
+2025-10-28 16:44:57.088 - SEVERE: Gagal ambil data UP3
+2025-10-28 16:45:08.449 - SEVERE: Gagal ambil data UP3
