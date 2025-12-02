@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.example.utils.FTPConfig;
 import com.example.utils.FTPUtil;
 import com.example.utils.LoggerUtil;
 
@@ -20,9 +21,16 @@ public class Mon02StrukBankController extends HttpServlet {
 
     private static final Logger logger = LoggerUtil.getLogger(Mon02StrukBankController.class);
 
+    // private final FTPUtil ftpUtil =
+    //         new FTPUtil("10.71.1.177", 21, "rekon", "rekon");
     private final FTPUtil ftpUtil =
-            new FTPUtil("10.71.1.177", 21, "rekon", "rekon");
-
+        new FTPUtil(
+            FTPConfig.getHost(),
+            FTPConfig.getPort(),
+            FTPConfig.getUsername(),
+            FTPConfig.getPassword()
+        );
+        
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

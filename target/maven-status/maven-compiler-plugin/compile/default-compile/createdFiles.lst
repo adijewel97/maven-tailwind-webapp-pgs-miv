@@ -1,6 +1,8 @@
 com\example\controller\MstGlobalController.class
 com\example\utils\LoggerUtil.class
+com\example\controller\Mon03ChekFileTxtController.class
 com\example\controller\LogoutServlet.class
+com\example\utils\FTPConfig.class
 com\example\controller\Mon01RekonPerUpiController.class
 com\example\controller\Mon02StrukBankController.class
 com\example\service\DbService.class

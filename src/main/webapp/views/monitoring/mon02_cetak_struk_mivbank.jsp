@@ -72,7 +72,7 @@
             <select id="thelist" size="10" class="border border-gray-300 rounded w-full md:w-[720px] p-2" multiple></select>
         </div>
         <div class="flex justify-center mt-4">
-            <button id="btnPrint" type="button" class="max-w-[160px] w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded shadow flex items-center justify-center gap-2 transition duration-150 ease-in-out">
+            <button id="btnPrint" type="button" class="max-w-[160px] w-full bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded shadow flex items-center justify-center gap-2 transition duration-150 ease-in-out">
                 <i class="fa fa-print"></i> <span>Print PDF</span>
             </button>
         </div>

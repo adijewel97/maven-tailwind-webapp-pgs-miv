@@ -6,7 +6,8 @@
     boolean monitoringActive =
         "monitoring-rekon-bank-upi".equals(menuAttr) ||
         "Struk-bank-miv".equals(menuAttr) ||
-        "monitoring-rekon-upi".equals(menuAttr);
+        "chek-filertxt-bank".equals(menuAttr) ||
+        "upload-filercn-bank".equals(menuAttr);
 %>
 
 <div class="flex flex-col h-full">
@@ -77,13 +78,23 @@
           </li>
 
           <li>
-            <a href="index.jsp?page=/views/monitoring/mon02_cetak_struk_mivbank.jsp&menu=monitoring-rekon-upi"
-               title="Monitoring Rekon per UPI"
+            <a href="index.jsp?page=/views/monitoring/mon03_chek_filetxt_mivbank.jsp&menu=chek-filertxt-bank"
+               title="Chek File Daftar Ke Bank (TXT)"
                class="block px-4 py-2 rounded-md transition
-                      <%= "monitoring-rekon-upi".equals(menuAttr)
+                      <%= "chek-filertxt-bank".equals(menuAttr)
                           ? "bg-cyan-700 text-white font-semibold"
                           : "text-gray-300 hover:bg-gray-700 hover:text-white" %>">
-              <span class="sidebar-text">Monitoring Rekon per UPI</span>
+              <span class="sidebar-text">Chek File Daftar Ke Bank (TXT)</span>
+            </a>
+          </li>
+          <li>
+            <a href="index.jsp?page=/views/monitoring/mon04_upload_filercn_mivbank..jsp&menu=upload-filercn-bank"
+               title="Upload File Pelunasan Dari Bank (RCN)"
+               class="block px-4 py-2 rounded-md transition
+                      <%= "upload-filercn-bank".equals(menuAttr)
+                          ? "bg-cyan-700 text-white font-semibold"
+                          : "text-gray-300 hover:bg-gray-700 hover:text-white" %>">
+              <span class="sidebar-text">Upload File Pelunasan dari Bank (RCN)</span>
             </a>
           </li>
         </ul>
