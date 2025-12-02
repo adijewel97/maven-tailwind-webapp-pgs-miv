@@ -1,0 +1,11 @@
+127.0.0.1 - - [02/Dec/2025:15:53:18 +0700] "GET /miv-p2apst HTTP/1.1" 302 - http-bio-8080-exec-1 0
+127.0.0.1 - - [02/Dec/2025:15:53:19 +0700] "GET /miv-p2apst/ HTTP/1.1" 200 6090 http-bio-8080-exec-3 738
+127.0.0.1 - - [02/Dec/2025:15:53:32 +0700] "POST /miv-p2apst/LoginServlet HTTP/1.1" 302 - http-bio-8080-exec-4 3370
+127.0.0.1 - - [02/Dec/2025:15:53:33 +0700] "GET /miv-p2apst/index.jsp HTTP/1.1" 200 15654 http-bio-8080-exec-5 435
+127.0.0.1 - - [02/Dec/2025:15:53:35 +0700] "GET /miv-p2apst/index.jsp?page=/views/monitoring/mon03_chek_filetxt_mivbank.jsp&menu=chek-filertxt-bank HTTP/1.1" 200 36623 http-bio-8080-exec-6 239
+127.0.0.1 - - [02/Dec/2025:15:53:35 +0700] "POST /miv-p2apst/mst-global HTTP/1.1" 200 436 http-bio-8080-exec-7 235
+127.0.0.1 - - [02/Dec/2025:15:54:10 +0700] "GET /miv-p2apst/mon3ChekfileTxt?act=listtxt&thbl=202512&bankmiv=2000001 HTTP/1.1" 200 1489 http-bio-8080-exec-8 26966
+127.0.0.1 - - [02/Dec/2025:15:55:31 +0700] "GET /miv-p2apst/mon3ChekfileTxt?act=listrcn&thbl=202512&bankmiv=2000001 HTTP/1.1" 200 1884 http-bio-8080-exec-9 23902
+127.0.0.1 - - [02/Dec/2025:15:56:02 +0700] "GET /miv-p2apst/mon3ChekfileTxt?act=download&file=%2Fvertikal%2F2000001%2F200CA01%2FPOSTPAID%2Flunas%2Fgagal%2FPOS11SBS20251201002-20251201-200CA01.rcn HTTP/1.1" 200 332 http-bio-8080-exec-10 252
+127.0.0.1 - - [02/Dec/2025:15:56:19 +0700] "GET /miv-p2apst/LogoutServlet HTTP/1.1" 302 - http-bio-8080-exec-10 2
+127.0.0.1 - - [02/Dec/2025:15:56:19 +0700] "GET /miv-p2apst/views/templates/login.jsp HTTP/1.1" 200 6090 http-bio-8080-exec-10 7
