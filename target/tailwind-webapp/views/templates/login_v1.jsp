@@ -1,0 +1,97 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - MIV PLN P2APST</title>
+
+    <!-- TailwindCSS -->
+    <link href="${pageContext.request.contextPath}/assets/css/style_tailwind_adis.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body class="bg-gradient-to-br from-cyan-500 to-teal-600 min-h-screen flex items-center justify-center">
+
+<!-- 🔥 Modal Global -->
+<jsp:include page="/components/modalMessage.jsp" />
+
+<!-- Container utama -->
+<div class="flex flex-col md:flex-row bg-white shadow-2xl rounded-2xl overflow-hidden w-full max-w-4xl mx-4">
+
+    <!-- Kiri -->
+    <div class="hidden md:flex w-1/2 bg-gradient-to-br from-teal-600 to-cyan-500 text-white flex-col justify-center items-center p-8">
+        <i class="fa fa-shield-alt text-6xl mb-4"></i>
+        <h2 class="text-2xl font-bold mb-2 whitespace-pre-line">Webapp Tools MIV - P2APST</h2>
+        <p class="text-center text-sm leading-relaxed text-teal-100">
+            Sistem ini digunakan untuk Tools monitoring Untuk Pelanggan PLN MIV - Management Instansi Vertikal.  
+        </p>
+        <div class="mt-6 border-t border-teal-300 w-1/2"></div>
+        <p class="text-xs mt-4 text-teal-200">Keamanan data Anda adalah prioritas kami 🔒</p>
+    </div>
+
+    <!-- Kanan -->
+    <div class="w-full md:w-1/2 p-8 flex flex-col justify-center">
+        <div class="text-center mb-6">
+            <img src="${pageContext.request.contextPath}/assets/img/logo.png" class="mx-auto w-16 mb-3" alt="Logo">
+            <h1 class="text-2xl font-bold text-gray-800">Login Aplikasi</h1>
+            <p class="text-gray-500 text-sm">Masuk untuk melanjutkan</p>
+        </div>
+
+        <!-- Form Login -->
+        <form id="loginForm" action="${pageContext.request.contextPath}/LoginServlet" method="post" class="space-y-5">
+
+            <div>
+                <label class="block text-gray-600 text-sm font-semibold mb-1">Username</label>
+                <div class="flex items-center border border-gray-300 rounded-lg px-3 focus-within:ring-2 focus-within:ring-teal-400">
+                    <i class="fa fa-user text-gray-400 mr-2"></i>
+                    <input id="username" value="adi_setiadi" type="text" class="w-full p-2 focus:outline-none text-gray-700" placeholder="Masukkan username">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-gray-600 text-sm font-semibold mb-1">Password</label>
+                <div class="flex items-center border border-gray-300 rounded-lg px-3 focus-within:ring-2 focus-within:ring-teal-400">
+                    <i class="fa fa-lock text-gray-400 mr-2"></i>
+                    <input id="password" value="Sangkuriang@2007" name="password" type="password" class="w-full p-2 focus:outline-none text-gray-700" placeholder="Masukkan password">
+                </div>
+            </div>
+
+            <button type="submit"
+                class="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2 rounded-lg transition duration-200">
+                <i class="fa fa-sign-in mr-1"></i> Login
+            </button>
+        </form>
+
+        <p class="text-center text-gray-500 text-xs mt-6">© 2025 by Mang Adis</p>
+    </div>
+</div>
+
+<!-- ===========================
+        SCRIPT LOGIN
+=========================== -->
+<script>
+    // Validasi input kosong
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+        const user = document.getElementById("username").value.trim();
+        const pass = document.getElementById("password").value.trim();
+
+        if (user === "" || pass === "") {
+            e.preventDefault();
+            showMessage("User ID/Password tidak boleh kosong");
+        }
+    });
+
+    // Tampilkan modal jika login gagal (error=1)
+    const urlParams = new URLSearchParams(window.location.search);
+
+    if (urlParams.has("error")) {
+        showMessage("Username atau password salah!");
+    }
+
+    document.getElementById('username').focus();
+</script>
+
+</body>
+</html>

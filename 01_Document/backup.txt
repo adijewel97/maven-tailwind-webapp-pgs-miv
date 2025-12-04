@@ -1,0 +1,149 @@
+package com.example.controller;
+
+import com.example.service.FtpService;
+import com.google.gson.Gson;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+@WebServlet("/mon3ChekfileTxt")
+public class Mon03ChekFileTxtController extends HttpServlet {
+
+    private final FtpService ftpService = new FtpService();
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String act = request.getParameter("act");
+
+        if (act == null) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write("Missing parameter 'act'");
+            return;
+        }
+
+        switch (act) {
+
+            case "listtxt":
+                listFiles(request, response, "daftar");     // LIST TXT
+                break;
+
+            case "listrcn":
+                listFiles(request, response, "lunas");      // LIST RCN
+                break;
+
+            case "download":
+                downloadFile(request, response);
+                break;
+
+            default:
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write("Invalid act parameter");
+        }
+    }
+
+    // ==========================================================================
+    // LIST FILES (TXT/RCN)
+    // ==========================================================================
+    private void listFiles(HttpServletRequest request, HttpServletResponse response, String tipeFolder)
+            throws IOException {
+
+        String bankmiv = request.getParameter("bankmiv");
+        String thbl    = request.getParameter("thbl");
+        String idtrans = request.getParameter("idtrans");
+
+        if (bankmiv == null || bankmiv.length() < 3) {
+            response.getWriter().write("{\"error\":\"bankmiv tidak valid\"}");
+            return;
+        }
+
+        if (thbl == null || thbl.length() != 6) {
+            response.getWriter().write("{\"error\":\"thbl harus 6 digit (YYYYMM)\"}");
+            return;
+        }
+
+        String kdbankmiv = bankmiv.substring(0, 3) + "CA01";
+
+        String[] produkArray = {"NTLS", "POSTPAID", "PREPAID"};
+
+        List<String> hasil = new ArrayList<>();
+
+        for (String produk : produkArray) {
+
+            String remoteDir = "/vertikal/" + bankmiv + "/" + kdbankmiv + "/" + produk + "/" + tipeFolder + "/";
+
+            List<String> files = ftpService.listFiles(remoteDir);  // hanya file, bukan folder
+            if (files == null) continue;
+
+            for (String fp : files) {
+
+                String filename = fp.substring(fp.lastIndexOf('/') + 1).toUpperCase();
+
+                // Bila idtrans kosong -> filter BLTH saja
+                if (idtrans == null || idtrans.trim().equals("") || idtrans.equals("*")) {
+                    if (filename.contains(thbl)) {
+                        hasil.add(fp);
+                    }
+                    continue;
+                }
+
+                String id = idtrans.trim().toUpperCase();
+
+                // Filter IDTRANS
+                if (filename.contains(id)) {
+                    hasil.add(fp);
+                    continue;
+                }
+
+                // Backup filter BLTH
+                if (filename.contains(thbl)) {
+                    hasil.add(fp);
+                }
+            }
+        }
+
+        // Output JSON
+        response.setContentType("application/json");
+        response.getWriter().write(new Gson().toJson(hasil));
+    }
+
+    // ==========================================================================
+    // DOWNLOAD FILE FTP → langsung stream ke browser
+    // ==========================================================================
+    private void downloadFile(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+
+        String remotePath = request.getParameter("file");
+
+        if (remotePath == null || remotePath.isEmpty()) {
+            response.getWriter().write("Parameter 'file' kosong");
+            return;
+        }
+
+        String fileName = remotePath.substring(remotePath.lastIndexOf('/') + 1);
+
+        // Set header
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+        response.setContentType("application/octet-stream");
+
+        OutputStream os = response.getOutputStream();
+
+        // Download langsung ke OutputStream
+        boolean ok = ftpService.downloadFile(remotePath, os);
+
+        if (!ok) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            response.getWriter().write("File tidak ditemukan di FTP!");
+        }
+
+        os.flush();
+    }
+}

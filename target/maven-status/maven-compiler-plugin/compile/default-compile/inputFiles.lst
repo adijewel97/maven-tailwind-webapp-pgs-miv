@@ -5,7 +5,8 @@ D:\00_database_docker\APP_MAVEN\PRJ_JAVA_MAVEN\maven-tailwind-webapp-pgs-miv\src
 D:\00_database_docker\APP_MAVEN\PRJ_JAVA_MAVEN\maven-tailwind-webapp-pgs-miv\src\main\java\com\example\controller\Mon03ChekFileTxtController.java
 D:\00_database_docker\APP_MAVEN\PRJ_JAVA_MAVEN\maven-tailwind-webapp-pgs-miv\src\main\java\com\example\controller\MstGlobalController.java
 D:\00_database_docker\APP_MAVEN\PRJ_JAVA_MAVEN\maven-tailwind-webapp-pgs-miv\src\main\java\com\example\service\DbService.java
-D:\00_database_docker\APP_MAVEN\PRJ_JAVA_MAVEN\maven-tailwind-webapp-pgs-miv\src\main\java\com\example\service\FtpService.java
+D:\00_database_docker\APP_MAVEN\PRJ_JAVA_MAVEN\maven-tailwind-webapp-pgs-miv\src\main\java\com\example\service\FtpStrukService.java
+D:\00_database_docker\APP_MAVEN\PRJ_JAVA_MAVEN\maven-tailwind-webapp-pgs-miv\src\main\java\com\example\service\FtpTxtService.java
 D:\00_database_docker\APP_MAVEN\PRJ_JAVA_MAVEN\maven-tailwind-webapp-pgs-miv\src\main\java\com\example\service\MonRekonPerUpiService.java
 D:\00_database_docker\APP_MAVEN\PRJ_JAVA_MAVEN\maven-tailwind-webapp-pgs-miv\src\main\java\com\example\service\MstGlobalService.java
 D:\00_database_docker\APP_MAVEN\PRJ_JAVA_MAVEN\maven-tailwind-webapp-pgs-miv\src\main\java\com\example\utils\FTPConfig.java

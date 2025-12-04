@@ -4,9 +4,11 @@
     // AUTH CHECK
     // =====================================================================
     if (session.getAttribute("username") == null) {
-        response.sendRedirect(request.getContextPath() + "/login.jsp");
+        // response.sendRedirect(request.getContextPath() + "/login.jsp");
+        response.sendRedirect(request.getContextPath() + "/views/templates/login.jsp");
         return;
     }
+
 
     String currentPage = request.getParameter("page");
     String currentMenu  = request.getParameter("menu");

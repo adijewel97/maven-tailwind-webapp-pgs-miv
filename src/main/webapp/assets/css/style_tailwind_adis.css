@@ -636,10 +636,6 @@ video {
   right: 0px;
 }
 
-.right-3 {
-  right: 0.75rem;
-}
-
 .top-0 {
   top: 0px;
 }
@@ -1172,10 +1168,6 @@ video {
   white-space: nowrap;
 }
 
-.whitespace-nowrap {
-  white-space: nowrap;
-}
-
 .whitespace-pre-line {
   white-space: pre-line;
 }
@@ -1202,6 +1194,11 @@ video {
 
 .rounded-xl {
   border-radius: 0.75rem;
+}
+
+.rounded-l {
+  border-top-left-radius: 0.25rem;
+  border-bottom-left-radius: 0.25rem;
 }
 
 .border {
@@ -1486,10 +1483,6 @@ video {
 
 .pl-6 {
   padding-left: 1.5rem;
-}
-
-.pr-10 {
-  padding-right: 2.5rem;
 }
 
 .pr-6 {
@@ -1795,6 +1788,17 @@ video {
   transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
 }
 
+.focus-within\:border-black:focus-within {
+  --tw-border-opacity: 1;
+  border-color: rgb(0 0 0 / var(--tw-border-opacity, 1));
+}
+
+.focus-within\:ring-0:focus-within {
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(0px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+}
+
 .focus-within\:ring-2:focus-within {
   --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
   --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
@@ -1949,10 +1953,6 @@ video {
     grid-column: span 6 / span 6;
   }
 
-  .md\:col-span-9 {
-    grid-column: span 9 / span 9;
-  }
-
   .md\:ml-4 {
     margin-left: 1rem;
   }
@@ -1977,6 +1977,10 @@ video {
     width: 16rem;
   }
 
+  .md\:w-\[1000px\] {
+    width: 1000px;
+  }
+
   .md\:w-\[640px\] {
     width: 640px;
   }
@@ -1989,8 +1993,8 @@ video {
     width: 760px;
   }
 
-  .md\:w-\[900px\] {
-    width: 900px;
+  .md\:w-\[980px\] {
+    width: 980px;
   }
 
   .md\:grid-cols-2 {

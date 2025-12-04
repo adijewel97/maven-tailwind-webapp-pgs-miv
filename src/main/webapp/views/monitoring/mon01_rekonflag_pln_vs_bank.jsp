@@ -858,7 +858,7 @@
                 XLSX.utils.book_append_sheet(Workbook, ws_info, "Detail Rekon");
 
                 // Nama File
-                const fileName = `MIV_REKON_DETAIL_${vkd_dist}_${vbln_usulan}.xlsx`;
+                const fileName = 'MIV_REKON_DETAIL_'+namaUPI+'_'+vbln_usulan+'.xlsx';
                 
                 // Tulis dan download file
                 XLSX.writeFile(Workbook, fileName);

@@ -1,16 +1,12 @@
 package com.example.utils;
 
+import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPFile;
 
-import java.io.OutputStream;     // ← WAJIB ADA!
-import java.io.IOException;
-
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-
-
 
 public class FTPUtil {
 
@@ -21,6 +17,7 @@ public class FTPUtil {
     private String user;
     private String pass;
 
+    // === CONSTRUCTOR YANG DIBUTUHKAN ===
     public FTPUtil(String server, int port, String user, String pass) {
         this.server = server;
         this.port = port;
@@ -28,77 +25,49 @@ public class FTPUtil {
         this.pass = pass;
     }
 
-    public List<String> listAllFiles(String remoteDirPath) {
-        FTPClient ftpClient = new FTPClient();
-        List<String> allFiles = new ArrayList<>();
+    public List<String> listAllFiles(String remoteDirOrPattern) {
+        FTPClient ftp = new FTPClient();
+        List<String> result = new ArrayList<>();
+
         try {
-            logger.info("Connecting to FTP server " + server + ":" + port);
-            ftpClient.connect(server, port);
-            ftpClient.login(user, pass);
-            ftpClient.enterLocalPassiveMode();
+            ftp.connect(server, port);
+            ftp.login(user, pass);
+            ftp.enterLocalPassiveMode();
 
-            logger.info("Start traversing folder: " + remoteDirPath);
-            traverseFiles(ftpClient, remoteDirPath, allFiles);
+            String[] names = ftp.listNames(remoteDirOrPattern);
+            if (names != null) {
+                for (String n : names) {
+                    result.add(n.replace("\\", "/"));
+                }
+            }
 
-        } catch (IOException ex) {
-            logger.severe("FTP error: " + ex.getMessage());
-            ex.printStackTrace();
+        } catch (Exception e) {
+            logger.severe("FTP list error: " + e.getMessage());
         } finally {
-            try {
-                if (ftpClient.isConnected()) {
-                    ftpClient.logout();
-                    ftpClient.disconnect();
-                    logger.info("Disconnected from FTP server");
-                }
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            try { ftp.disconnect(); } catch (Exception ignored) {}
         }
-        logger.info("Total files found: " + allFiles.size());
-        return allFiles;
-    }
 
-    private void traverseFiles(FTPClient ftpClient, String dirPath, List<String> allFiles) throws IOException {
-        logger.info("Checking folder: " + dirPath);
-        FTPFile[] ftpFiles = ftpClient.listFiles(dirPath);
-
-        for (FTPFile file : ftpFiles) {
-            if (file.isDirectory()) {
-                if (!file.getName().equals(".") && !file.getName().equals("..")) {
-                    traverseFiles(ftpClient, dirPath + "/" + file.getName(), allFiles);
-                }
-            } else if (file.isFile()) {
-                String filePath = dirPath + "/" + file.getName();
-                logger.info("Found file: " + filePath);
-                allFiles.add(filePath);
-            }
-        }
+        return result;
     }
 
     public boolean downloadFile(String remoteFilePath, OutputStream outputStream) {
-        FTPClient ftpClient = new FTPClient();
-
+        FTPClient ftp = new FTPClient();
         try {
-            logger.info("Connecting to FTP server " + server + ":" + port);
-            ftpClient.connect(server, port);
-            ftpClient.login(user, pass);
-            ftpClient.enterLocalPassiveMode();
-            ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
+            ftp.connect(server, port);
+            ftp.login(user, pass);
+            ftp.enterLocalPassiveMode();
+            ftp.setFileType(FTP.BINARY_FILE_TYPE);
 
-            logger.info("Start downloading: " + remoteFilePath);
+            boolean ok = ftp.retrieveFile(remoteFilePath, outputStream);
 
-            boolean success = ftpClient.retrieveFile(remoteFilePath, outputStream);
+            try { ftp.disconnect(); } catch (Exception ignored) {}
 
-            ftpClient.logout();
-            ftpClient.disconnect();
+            return ok;
 
-            return success;
-
-        } catch (IOException ex) {
-            logger.severe("FTP download error: " + ex.getMessage());
+        } catch (Exception e) {
+            logger.severe("FTP download error: " + e.getMessage());
+            try { ftp.disconnect(); } catch (Exception ignored) {}
             return false;
         }
     }
-
-
 }

@@ -1,159 +1,138 @@
 package com.example.controller;
 
+import com.example.service.FtpStrukService;
 import com.example.utils.FTPConfig;
-import com.example.utils.FTPUtil;
-import com.example.utils.LoggerUtil;
+import com.google.gson.Gson;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
+import javax.servlet.http.*;
+import java.io.*;
+import java.util.*;
 import java.util.logging.Logger;
+import java.util.logging.Level;
 
 @WebServlet("/mon2strukbank")
 public class Mon02StrukBankController extends HttpServlet {
 
-    private static final Logger logger = LoggerUtil.getLogger(Mon02StrukBankController.class);
+    private FtpStrukService ftpStrukService;
+    private static final Logger logger = Logger.getLogger(Mon02StrukBankController.class.getName());
+    private static final Gson gson = new Gson();
 
-    // private final FTPUtil ftpUtil =
-    //         new FTPUtil("10.71.1.177", 21, "rekon", "rekon");
-    private final FTPUtil ftpUtil =
-        new FTPUtil(
-            FTPConfig.getHost(),
-            FTPConfig.getPort(),
-            FTPConfig.getUsername(),
-            FTPConfig.getPassword()
-        );
-        
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    public void init() throws ServletException {
+        ftpStrukService = new FtpStrukService(
+                FTPConfig.getHost(),
+                FTPConfig.getPort(),
+                FTPConfig.getUsername(),
+                FTPConfig.getPassword()
+        );
+        logger.info("=== Mon02StrukBankController INIT OK ===");
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-
-        String act = request.getParameter("act");
-
-        if (act == null) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().write("Missing parameter 'act'");
-            return;
-        }
-
-        switch (act) {
-
-            // ===========================================================
-            // =========== 1. LIST FILE FROM FTP ==========================
-            // ===========================================================
-            case "list":
-                handleList(request, response);
-                break;
-
-            // ===========================================================
-            // =========== 2. DOWNLOAD FILE FROM FTP ======================
-            // ===========================================================
-            case "download":
-                handleDownload(request, response);
-                break;
-
-            default:
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.getWriter().write("Invalid act parameter");
-        }
+        process(req, resp);
     }
 
-    // ===============================================================
-    //  LIST FILE FTP (NTLS, POSTPAID, PREPAID)
-    // ===============================================================
-    private void handleList(HttpServletRequest request, HttpServletResponse response)
-        throws IOException {
-
-        String bankmiv = request.getParameter("bankmiv");   // contoh: 2000001
-        String thbl    = request.getParameter("thbl");      // contoh: 202511
-        String upi     = request.getParameter("upi");       // contoh: 14
-        String up3     = request.getParameter("up3");       // contoh: 14BKL
-
-        String kdbankmiv = bankmiv.substring(0, 3) + "CA01";   // contoh: 200CA01
-
-        logger.info("=== FILTER PARAM ===");
-        logger.info("THBL       = " + thbl);
-        logger.info("BANK_MIV   = " + bankmiv);
-        logger.info("UPI        = " + upi);
-        logger.info("UP3        = " + up3);
-        logger.info("KDBANKMIV  = " + kdbankmiv);
-
-        // Folder array
-        String[] produkArray = {"NTLS", "POSTPAID", "PREPAID"};
-
-        List<String> allFiles = new ArrayList<>();
-
-        for (String produk : produkArray) {
-
-            String remoteDir = "/vertikal/" + bankmiv + "/" + kdbankmiv + "/" + produk + "/lunas/struk/";
-            logger.info("📂 Scan folder FTP: " + remoteDir);
-
-            List<String> files = ftpUtil.listAllFiles(remoteDir);
-
-            if (files == null) continue;
-
-            // ========== FILTER FILE ================
-            for (String f : files) {
-
-                // filter (versi contains)
-                boolean match =
-                    f.contains("POS" + up3 + thbl) &&
-                    f.contains(kdbankmiv + ".pdf");
-
-                if (match) {
-                    allFiles.add(f);
-                }
-            }
-        }
-
-        // --- Convert List<String> to JSON ---
-        StringBuilder json = new StringBuilder("[");
-        for (int i = 0; i < allFiles.size(); i++) {
-            json.append("\"").append(allFiles.get(i)).append("\"");
-            if (i < allFiles.size() - 1) json.append(",");
-        }
-        json.append("]");
-
-        response.setContentType("application/json");
-        response.getWriter().write(json.toString());
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        process(req, resp);
     }
 
-    // ===============================================================
-    //  DOWNLOAD FILE FTP
-    // ===============================================================
-    private void handleDownload(HttpServletRequest request, HttpServletResponse response)
+    private void process(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
-        String filePath = request.getParameter("file");
+        try {
+            String act = request.getParameter("act");
 
-        if (filePath == null || filePath.isEmpty()) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().write("Parameter 'file' kosong");
-            return;
+            // =============================
+            // PARAMETER FROM JSP
+            // =============================
+            String bank = request.getParameter("bankmiv");
+            if (bank == null || bank.length() < 3) bank = "200"; // default jika kosong
+            String swbank = bank.length() >= 3 ? bank.substring(0, 3) + "CA01" : bank + "CA01";
+
+            String up3 = request.getParameter("up3");
+            String blth = request.getParameter("thbl");
+            String file = request.getParameter("file");
+
+            logger.info(String.format("[REQUEST] act=%s, bank=%s, swbank=%s, up3=%s, blth=%s, file=%s",
+                    act, bank, swbank, up3, blth, file));
+
+            // =============================
+            // LIST FILES
+            // =============================
+            if ("list".equalsIgnoreCase(act)) {
+                List<String> listFiles = ftpStrukService.listStrukFiles(bank, swbank, up3, blth);
+                Map<String, Object> result = new HashMap<>();
+                result.put("files", listFiles != null ? listFiles : Collections.emptyList());
+                response.setCharacterEncoding("UTF-8");
+                response.setContentType("application/json;charset=UTF-8");
+                try (PrintWriter out = response.getWriter()) {
+                    out.print(gson.toJson(result));
+                }
+                return;
+            }
+
+            // =============================
+            // DOWNLOAD FILE
+            // =============================
+            if ("download".equalsIgnoreCase(act)) {
+
+                if (file == null || file.trim().isEmpty() || "undefined".equals(file)) {
+                    sendJsonError(response, "Parameter file kosong/null");
+                    return;
+                }
+
+                if (file.contains("..")) { // proteksi path traversal
+                    sendJsonError(response, "Invalid file path");
+                    return;
+                }
+
+                String filename = file.substring(file.lastIndexOf('/') + 1);
+
+                response.setContentType("application/pdf");
+                response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+
+                try (OutputStream os = response.getOutputStream()) {
+                    ftpStrukService.downloadFile(file, os);
+                    os.flush();
+                } catch (IOException e) {
+                    logger.log(Level.SEVERE, "Error download file", e);
+                    // Reset response untuk mengirim JSON error
+                    response.reset();
+                    sendJsonError(response, e.getMessage());
+                }
+
+                return;
+            }
+
+            // =============================
+            // ACT TIDAK DIKENAL
+            // =============================
+            sendJsonError(response, "Action tidak dikenali: " + act);
+
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "[ERROR IN CONTROLLER]", e);
+            String msg = e.getMessage() != null ? e.getMessage() : e.toString();
+            sendJsonError(response, msg);
         }
+    }
 
-        String fileName = filePath.substring(filePath.lastIndexOf('/') + 1);
-
-        response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition",
-                "attachment; filename=\"" + fileName + "\"");
-
-        OutputStream os = response.getOutputStream();
-
-        boolean ok = ftpUtil.downloadFile(filePath, os);
-
-        if (!ok) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            response.getWriter().write("File tidak ditemukan di FTP!");
+    // =============================
+    // Helper untuk kirim JSON error
+    // =============================
+    private void sendJsonError(HttpServletResponse response, String message) throws IOException {
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json;charset=UTF-8");
+        Map<String, String> error = new HashMap<>();
+        error.put("status", "error");
+        error.put("message", message);
+        try (PrintWriter out = response.getWriter()) {
+            out.print(gson.toJson(error));
         }
-
-        os.flush();
     }
 }
