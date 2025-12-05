@@ -78,13 +78,13 @@
           </li>
 
           <li>
-            <a href="index.jsp?page=/views/monitoring/mon03_chek_filetxt_mivbank.jsp&menu=chek-filertxt-bank"
+            <a href="index.jsp?page=/views/monitoring/mon03_chek_filetxtrcn_mivbank.jsp&menu=chek-filertxt-bank"
                title="Chek File Daftar Ke Bank (TXT)"
                class="block px-4 py-2 rounded-md transition
                       <%= "chek-filertxt-bank".equals(menuAttr)
                           ? "bg-cyan-700 text-white font-semibold"
                           : "text-gray-300 hover:bg-gray-700 hover:text-white" %>">
-              <span class="sidebar-text">Chek File Daftar Ke Bank (TXT)</span>
+              <span class="sidebar-text">Chek File Daftar Ke Bank (TXT & RCN)</span>
             </a>
           </li>
           <li>

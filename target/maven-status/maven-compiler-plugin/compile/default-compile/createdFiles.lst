@@ -1,15 +1,15 @@
 com\example\controller\MstGlobalController.class
 com\example\controller\Mon01RekonPerUpiController.class
+com\example\service\FtpTxtRcnService.class
 com\example\controller\Mon02StrukBankController.class
 com\example\service\DbService.class
 com\example\utils\LoggerUtil.class
-com\example\controller\Mon03ChekFileTxtController.class
 com\example\controller\LogoutServlet.class
 com\example\service\MonRekonPerUpiService.class
-com\example\service\FtpTxtService.class
 com\example\utils\FTPUtil.class
 com\example\controller\LoginServlet.class
 com\example\utils\LoggerUtil$1.class
 com\example\service\MstGlobalService.class
 com\example\service\FtpStrukService.class
+com\example\controller\Mon03ChekFileTxtRcnController.class
 com\example\utils\FTPConfig.class
