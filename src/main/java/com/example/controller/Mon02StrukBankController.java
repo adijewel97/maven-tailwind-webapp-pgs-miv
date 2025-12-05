@@ -48,91 +48,65 @@ public class Mon02StrukBankController extends HttpServlet {
         try {
             String act = request.getParameter("act");
 
-            // =============================
-            // PARAMETER FROM JSP
-            // =============================
             String bank = request.getParameter("bankmiv");
-            if (bank == null || bank.length() < 3) bank = "200"; // default jika kosong
-            String swbank = bank.length() >= 3 ? bank.substring(0, 3) + "CA01" : bank + "CA01";
+            if (bank == null || bank.length() < 3) bank = "200";
+            String swbank = bank.substring(0, 3) + "CA01";
 
             String up3 = request.getParameter("up3");
             String blth = request.getParameter("thbl");
+            String idtrans = request.getParameter("idtransaksi");
             String file = request.getParameter("file");
-
-            logger.info(String.format("[REQUEST] act=%s, bank=%s, swbank=%s, up3=%s, blth=%s, file=%s",
-                    act, bank, swbank, up3, blth, file));
 
             // =============================
             // LIST FILES
             // =============================
             if ("list".equalsIgnoreCase(act)) {
-                List<String> listFiles = ftpStrukService.listStrukFiles(bank, swbank, up3, blth);
+                List<String> listFiles = ftpStrukService.listStrukFiles(bank, swbank, up3, blth, idtrans);
                 Map<String, Object> result = new HashMap<>();
                 result.put("files", listFiles != null ? listFiles : Collections.emptyList());
-                response.setCharacterEncoding("UTF-8");
+
                 response.setContentType("application/json;charset=UTF-8");
-                try (PrintWriter out = response.getWriter()) {
-                    out.print(gson.toJson(result));
-                }
+                response.getWriter().print(gson.toJson(result));
                 return;
             }
 
             // =============================
-            // DOWNLOAD FILE
+            // DOWNLOAD ONLY FILE SELECTED
             // =============================
             if ("download".equalsIgnoreCase(act)) {
 
-                if (file == null || file.trim().isEmpty() || "undefined".equals(file)) {
-                    sendJsonError(response, "Parameter file kosong/null");
-                    return;
-                }
-
-                if (file.contains("..")) { // proteksi path traversal
-                    sendJsonError(response, "Invalid file path");
+                if (file == null || file.trim().isEmpty()) {
+                    sendJsonError(response, "Parameter file kosong");
                     return;
                 }
 
                 String filename = file.substring(file.lastIndexOf('/') + 1);
 
                 response.setContentType("application/pdf");
-                response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+                response.setHeader("Content-Disposition",
+                        "attachment; filename=\"" + filename + "\"");
 
                 try (OutputStream os = response.getOutputStream()) {
                     ftpStrukService.downloadFile(file, os);
-                    os.flush();
-                } catch (IOException e) {
-                    logger.log(Level.SEVERE, "Error download file", e);
-                    // Reset response untuk mengirim JSON error
-                    response.reset();
-                    sendJsonError(response, e.getMessage());
                 }
 
                 return;
             }
 
-            // =============================
-            // ACT TIDAK DIKENAL
-            // =============================
             sendJsonError(response, "Action tidak dikenali: " + act);
 
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "[ERROR IN CONTROLLER]", e);
-            String msg = e.getMessage() != null ? e.getMessage() : e.toString();
-            sendJsonError(response, msg);
+            logger.log(Level.SEVERE, "ERROR CONTROLLER", e);
+            sendJsonError(response, e.getMessage());
         }
     }
 
-    // =============================
-    // Helper untuk kirim JSON error
-    // =============================
-    private void sendJsonError(HttpServletResponse response, String message) throws IOException {
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("application/json;charset=UTF-8");
+    private void sendJsonError(HttpServletResponse response, String msg) throws IOException {
         Map<String, String> error = new HashMap<>();
         error.put("status", "error");
-        error.put("message", message);
-        try (PrintWriter out = response.getWriter()) {
-            out.print(gson.toJson(error));
-        }
+        error.put("message", msg);
+
+        response.setContentType("application/json;charset=UTF-8");
+        response.getWriter().print(gson.toJson(error));
     }
 }

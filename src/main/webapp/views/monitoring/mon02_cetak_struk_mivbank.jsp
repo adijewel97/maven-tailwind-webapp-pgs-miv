@@ -64,9 +64,7 @@
         <legend class="text-sm font-bold px-3 text-left">Download/Print Struk - Bank MIV</legend>
 
         <form id="form-monitoring" class="w-full">
-            <!-- === ROW INPUT (1 BARIS, 4 KOLOM) === -->
             <div class="grid grid-cols-12 gap-4 mb-4">
-
                 <!-- Bulan Laporan -->
                 <div class="col-span-12 md:col-span-3">
                     <label for="bln_usulan" class="block text-gray-700 mb-1 font-medium">Bulan Laporan :</label>
@@ -107,18 +105,22 @@
                     </select>
                 </div>
 
+                <!-- ID Transaksi -->
+                <div class="col-span-12 md:col-span-3 mt-2">
+                    <label for="id_transaksi" class="block text-gray-700 mb-1 font-medium">ID Transaksi :</label>
+                    <input type="text" id="id_transaksi" name="id_transaksi"
+                        class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-1 focus:ring-blue-500"
+                        placeholder="Isi ID Transaksi atau '*' untuk semua">
+                </div>
             </div>
 
-            <!-- Tombol Tampilkan -->
             <div class="flex justify-center mt-2">
                 <button id="btnTampil" type="button"
                         class="max-w-[160px] w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold px-3 py-2 rounded shadow flex items-center justify-center gap-2 transition">
                     <i class="fa fa-search"></i> <span>Tampilkan</span>
                 </button>
             </div>
-
         </form>
-
     </fieldset>
 </div>
 
@@ -167,29 +169,21 @@ document.addEventListener("DOMContentLoaded", function () {
     // 1) Load FTP files (AJAX)
     // -------------------------
     async function loadStrukFiles() {
-        // tampilkan loading
         const loading = document.getElementById('loading');
         const list = document.getElementById('thelist');
-
-        // note: menjaga nama variable/ID sesuai request (tidak mengubah flow)
-        // perhatikan: beberapa ID mungkin berbeda di versi lain, ini adalah versi rapih saja
         showSpinner();
+        loading.style.display = 'block';
+        loading.textContent = "Memuat daftar file dari FTP...";
+        list.innerHTML = '';
+
         try {
-            // ambil parameter dari form
             const raw = document.getElementById("bln_usulan").value;
             const thblalp = convertBulanTahunToYYYYMM(raw);
             const bank_miv = document.getElementById("bank_miv").value;
             const diswil = document.getElementById("diswil").value;
             const up3 = document.getElementById("up3").value;
+            const idTransaksiFilter = document.getElementById("id_transaksi").value.trim().toUpperCase();
 
-            console.log("Param - thblalp:", thblalp, "bank_miv:", bank_miv, "diswil:", diswil, "up3:", up3);
-
-            // tampilkan loading
-            loading.style.display = 'block';
-            loading.textContent = "Memuat daftar file dari FTP...";
-            list.innerHTML = '';
-
-            // bangun URL (sesuai flow Anda)
             const url = getContextPath()
                 + "/mon2strukbank?act=list"
                 + "&thbl=" + encodeURIComponent(thblalp)
@@ -197,35 +191,40 @@ document.addEventListener("DOMContentLoaded", function () {
                 + "&upi=" + encodeURIComponent(diswil)
                 + "&up3=" + encodeURIComponent(up3);
 
-            // panggil API
             const res = await fetch(url);
             if (!res.ok) throw new Error("Gagal memuat data dari server");
 
-            // response diharapkan { files: [...] } sesuai controller Anda
             const json = await res.json();
             const files = json.files || [];
 
-            loading.style.display = 'none';
+            // =======================
+            // FILTER BERDASARKAN ID TRANSAKSI
+            // =======================
+            let filteredFiles = files;
 
-            if (!files || files.length === 0) {
+            if (idTransaksiFilter && idTransaksiFilter !== '*') {
+                filteredFiles = files.filter(f => f.split('/').pop().includes(idTransaksiFilter));
+            }
+
+            if (!filteredFiles || filteredFiles.length === 0) {
                 const opt = document.createElement('option');
-                opt.textContent = "Tidak ada file di folder FTP.";
+                opt.textContent = "Tidak ada file sesuai filter.";
                 list.appendChild(opt);
                 return;
             }
 
-            files.forEach(filePath => {
+            filteredFiles.forEach(filePath => {
                 const opt = document.createElement('option');
                 opt.value = filePath;
                 opt.textContent = filePath.split('/').pop();
                 list.appendChild(opt);
             });
 
+            loading.style.display = 'none';
         } catch (err) {
             loading.innerHTML = '<span class="text-red-600">Terjadi kesalahan: ' + err.message + '</span>';
             console.error("ERROR loadStrukFiles:", err);
-            hideSpinner();
-        }finally{
+        } finally {
             hideSpinner();
         }
     }
@@ -455,8 +454,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Tombol Print (download multiple)
     document.getElementById("btnPrint").addEventListener("click", function () {
+        console.log("📌 [PRINT] Tombol Print diklik");
+
         const list = document.getElementById("thelist");
+        console.log("📄 List element:", list);
+
         const selected = Array.from(list.selectedOptions).map(opt => opt.value);
+        console.log("📂 File terpilih:", selected);
 
         if (selected.length === 0) {
             alert("⚠ Silakan pilih minimal 1 file PDF!");
@@ -464,13 +468,17 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         selected.forEach((filePath, index) => {
-            console.log("DOWNLOAD:", filePath);
+            const safeURL = getContextPath() 
+                + "/mon2strukbank?act=download&file=" 
+                + encodeURIComponent(filePath);
 
-            setTimeout(function () {
-                window.open(getContextPath() + "/mon2strukbank?act=download&file=" + encodeURIComponent(filePath), "_blank");
+            console.log(`🔗 Download[${index}] =`, safeURL);
+
+            setTimeout(() => {
+                window.open(safeURL, "_blank");
+                console.log(`▶️ Membuka file[${index}]:`, filePath);
             }, index * 500);
         });
-
     });
 
 }); // end DOMContentLoaded
