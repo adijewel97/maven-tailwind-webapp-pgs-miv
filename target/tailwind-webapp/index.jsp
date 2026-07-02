@@ -41,6 +41,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/style.css">
 
+    <!-- exel css export-->
+    <script src="${pageContext.request.contextPath}/assets/excel/js/xlsx.full.min.js"></script>
+
     <style>
         /* GLOBAL */
         html, body {
@@ -315,5 +318,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 </script>
+
+<jsp:include page="/components/modalMessage.jsp" />
+
 </body>
 </html>

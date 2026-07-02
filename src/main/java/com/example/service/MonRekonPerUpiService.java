@@ -11,10 +11,12 @@ public class MonRekonPerUpiService {
     private DataSource dataSource;
     private static final Logger logger = LoggerUtil.getLogger(MonRekonPerUpiService.class);
 
+    //1 service koneksi kan dengan DB INIT/SETTING
     public MonRekonPerUpiService(DataSource dataSource) {
         this.dataSource = dataSource;
     }
     
+    //2 service untuk panggil package/sql db "REKAP LAORAN REKON PLN VS BANK"
     public List<Map<String, Object>> getDataMPerPerUpi(String vbln_usulan,  List<String> pesanOutput) {
 
         List<Map<String, Object>> result = new ArrayList<>();
@@ -74,8 +76,10 @@ public class MonRekonPerUpiService {
         return result;
     }
 
+    //3 service untuk panggil package/sql db "DETAIL LAORAN REKON PLN VS BANK"
     public List<Map<String, Object>> getDataMDftPerUpi(int start, int length, String sortBy, String sortDir, String search,
-                                                 String vbln_usulan, String vkd_bank, String vkd_dist,  List<String> pesanOutput) {
+                                                String vbln_usulan, String vkd_bank, String vkd_dist, 
+                                                List<String> pesanMsg, List<Boolean> statusMsg) {
 
         List<Map<String, Object>> result = new ArrayList<>();
        
@@ -153,11 +157,13 @@ public class MonRekonPerUpiService {
             }
 
             String pesan = stmt.getString(10);
-            pesanOutput.add(pesan);
+            pesanMsg.add(pesan);
+            statusMsg.add(true);
 
         } catch (SQLException e) {
             logger.severe("Kesalahan database: " + e.getMessage());
-            pesanOutput.add("Terjadi kesalahan koneksi ke database: " + e.getMessage());
+            pesanMsg.add("Terjadi kesalahan koneksi ke database !... " + e.getMessage());
+            statusMsg.add(false);
         }
 
         return result;

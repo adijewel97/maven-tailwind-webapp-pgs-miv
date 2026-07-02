@@ -9,7 +9,8 @@
     <!-- TailwindCSS -->
     <link href="${pageContext.request.contextPath}/assets/css/style_tailwind_adis.css" rel="stylesheet">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="${pageContext.request.contextPath}/assets/font-awesome/css/all.min.css" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"> -->
 </head>
 
 <body class="bg-gradient-to-br from-cyan-500 to-teal-600 min-h-screen flex items-center justify-center">

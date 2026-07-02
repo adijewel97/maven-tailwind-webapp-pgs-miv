@@ -419,11 +419,6 @@
                         } else {
                             return ''; 
                         }
-
-                        // if (row.URUT == 5) {
-                        //     return '';
-                        // }
-                        // return text;
                     },
                     width: '250px'
                 },
@@ -441,8 +436,8 @@
             ],
             columnDefs: [
                 { targets: '_all', className: 'text-center' },
-                { targets: [1, 3], className: 'text-left' },
-                { targets: [5, 6, 7, 8, 9, 10, 11], className: 'text-right' }
+                { targets: [1, 3], className: '!text-left' }, // Tambahkan tanda seru (!) untuk Tailwind
+                { targets: [5, 6, 7, 8, 9, 10, 11], className: '!text-right' }
             ],
             createdRow: function (row, data, dataIndex) {
                 // Styling untuk baris TOTAL
@@ -502,28 +497,98 @@
             },
             // Konfigurasi Export
             dom: 'lfrtip', 
-            buttons: [
-                {
-                    extend: 'excelHtml5',
-                    title: 'MIV_REKON_REKAP_' + ($('#bln_usulan_value').val() ? $('#bln_usulan_value').val() : 'ALL'),
-                    className: 'd-none',
-                    exportOptions: {
-                        format: {
-                            body: function (data, row, column, node) {
-                                // Kolom angka (index 5 sampai 11) di-export tanpa format ribuan
-                                const columnsRaw = [5,6,7,8,9,10,11]; 
-                                if (columnsRaw.includes(column)) {
-                                    if (typeof data === 'string') {
-                                        // Hapus format ribuan (titik) sebelum diekspor
-                                        return data.replace(/\./g, '').replace(/,/g, ''); 
-                                    }
+            buttons: [{
+                extend: 'excelHtml5',
+                className: 'd-none',
+                title: null,
+                filename: function () {
+                    var bln = $('#bln_usulan_value').val() || 'ALL';
+                    return 'MIV_REKON_REKAP_PLN_Vs_BANK' + bln;
+                },
+                exportOptions: {
+                    format: {
+                        body: function (data, row, column, node) {
+                            // Kolom angka (index 5 sampai 11) di-export tanpa format ribuan
+                            const columnsRaw = [5,6,7,8,9,10,11]; 
+                            if (columnsRaw.includes(column)) {
+                                if (typeof data === 'string') {
+                                    // Hapus format ribuan (titik) sebelum diekspor
+                                    return data.replace(/\./g, '').replace(/,/g, ''); 
                                 }
-                                return data;
                             }
+                            return data;
                         }
                     }
+                },
+                customize: function (xlsx) {
+                    var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                    
+                    // 1. Ambil nilai dinamis judul
+                    var bulan = $('#bln_usulan_value').val() || 'ALL';
+                    var now = new Date();
+                    var tanggalCetak =
+                        ("0" + now.getDate()).slice(-2) + "-" +
+                        ("0" + (now.getMonth() + 1)).slice(-2) + "-" +
+                        now.getFullYear() + " " +
+                        ("0" + now.getHours()).slice(-2) + ":" +
+                        ("0" + now.getMinutes()).slice(-2);
+
+                    // 2. Geser indeks baris asli bawaan DataTables ke bawah sebanyak 5 baris
+                    $('row', sheet).each(function () {
+                        var currentAttrRow = parseInt($(this).attr('r'));
+                        var newAttrRow = currentAttrRow + 5; // Tetap ditambah 5 karena total baris kustom kita ada 5
+                        $(this).attr('r', newAttrRow);
+                        
+                        $('c', this).each(function () {
+                            var currentAttrCell = $(this).attr('r');
+                            var newAttrCell = currentAttrCell.replace(/[0-9]+/, newAttrRow);
+                            $(this).attr('r', newAttrCell);
+                        });
+                    });
+
+                    // 3. Susun XML baris judul baru dengan tambahan s="2" untuk BOLD
+                    var header =
+                        '<row r="1">' +
+                            '<c t="inlineStr" r="B1" s="2">' + // <-- s="2" membuat text BOLD
+                                '<is><t>MANAGEMENT INSTANSI VERTIKAL</t></is>' +
+                            '</c>' +
+                        '</row>' +
+                        '<row r="2">' +
+                            '<c t="inlineStr" r="B2" s="2">' + // <-- s="2" membuat text BOLD
+                                '<is><t>REKAP REKONSILIASI PLN VS BANK</t></is>' +
+                            '</c>' +
+                        '</row>' +
+                        
+                        // --- BARIS 3: Label BULAN dibuat Bold ---
+                        '<row r="3">' +
+                            '<c t="inlineStr" r="B3" s="2">' + // <-- Bold
+                                '<is><t>BULAN</t></is>' +
+                            '</c>' +
+                            '<c t="inlineStr" r="C3" s="2">' + // <-- Bold (Isi titik dua dan nilai bulan)
+                                '<is><t>: ' + bulan + '</t></is>' +
+                            '</c>' +
+                        '</row>' +
+                        
+                        // --- BARIS 4: Label TANGGAL CETAK dibuat Bold ---
+                        '<row r="4">' +
+                            '<c t="inlineStr" r="B4" s="2">' + // <-- Bold
+                                '<is><t>TANGGAL CETAK</t></is>' +
+                            '</c>' +
+                            '<c t="inlineStr" r="C4" s="2">' + // <-- Bold (Isi titik dua dan nilai tanggal)
+                                '<is><t>: ' + tanggalCetak + '</t></is>' +
+                            '</c>' +
+                        '</row>' +
+                        
+                        '<row r="5">' +
+                            '<c t="inlineStr" r="A5">' +
+                                '<is><t></t></is>' + 
+                            '</c>' +
+                        '</row>';
+
+                    // 4. Masukkan judul ke bagian paling atas sheetData
+                    $('sheetData', sheet).prepend(header);
                 }
-            ] 
+            }]
         });
 
         // 4) --- DataTables Detail (table_mondaf_upi) ---
@@ -539,19 +604,51 @@
             stripeClasses: [],
             lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
             ajax: {
-                url: getContextPath() + '//mon-rekon-bankvsperupi', // Perlu dicek apakah URL ini benar untuk detail
+                url: getContextPath() + '/mon-rekon-bankvsperupi', // ✅ Double slash (//) sudah diperbaiki menjadi single slash (/)
                 type: 'POST',
                 data: function (d) {
                     // Gunakan parameter yang disimpan dari klik rekap
-                    d.act       = 'detailData';
+                    d.act         = 'detailData';
                     d.vbln_usulan = detailFilterParams.vbln_usulan || ''; 
-                    d.vkd_bank  = detailFilterParams.vkd_bank || '';
-                    d.vkd_dist  = detailFilterParams.vkd_dist || '';
-                    d.vproduk   = detailFilterParams.vproduk || '';
+                    d.vkd_bank    = detailFilterParams.vkd_bank || '';
+                    d.vkd_dist    = detailFilterParams.vkd_dist || '';
+                    d.vproduk     = detailFilterParams.vproduk || '';
+                },
+                // 🔴 Blok ini yang bertugas membedah JSON baru Anda
+                dataSrc: function (json) {
+                    if (json.success === false || json.success === "false") {
+                        
+                        // 1. Matikan spinner loading
+                        if (typeof hideSpinner === "function") {
+                            hideSpinner();
+                        } else if (typeof spinnerDetail !== 'undefined') {
+                            spinnerDetail.removeClass('flex').addClass('hidden');
+                        }
+                        
+                        // 2. Tutup modal detail agar user tidak melihat tabel kosong
+                        const modalDetail = document.getElementById('dataModal');
+                        if (modalDetail) {
+                            modalDetail.classList.add('hidden');
+                            modalDetail.classList.remove('flex');
+                        }
+
+                        // 3. ✅ AMBIL PESAN ERROR DINAMIS DARI ORACLE
+                        // Ini akan otomatis mengambil teks: "Terjadi kesalahan koneksi ke database: IO Error:..."
+                        let errorServiceMessage = json.message || "Database tidak terkoneksi, silakan login ulang";
+                        showMessage(errorServiceMessage);
+
+                        // Kembalikan array kosong sebagai tanda potong kompas proses DataTable
+                        return [];
+                    }
+
+                    // Jika json.success === true, loloskan data ke dalam tabel
+                    return json.data;
                 },
                 error: function (xhr, error, thrown) {
-                    spinnerDetail.removeClass('flex').addClass('hidden');
-                    // Handle error detail
+                    if (typeof hideSpinner === "function") hideSpinner();
+                    if (typeof showMessage === "function") {
+                        showMessage("Gagal menghubungi server aplikasi (Network Error).");
+                    }
                 }
             },
             columns: [
@@ -595,15 +692,13 @@
                     'vertical-align': 'middle'
                 });
             },
-            // Konfigurasi Export Detail
-            dom: 'Bfrtip',
             buttons: [
                 {
                     extend: 'excelHtml5',
                     title: function() {
                         const bln = detailFilterParams.vbln_usulan || 'ALL';
                         const dist = detailFilterParams.vkd_dist || 'UNDEF';
-                        return `MIV_REKON_DETAIL_${dist}_${bln}`;
+                        return 'MIV_REKON_DETAIL_'+ dist +'_' + bln;
                     },
                     className: 'd-none',
                     exportOptions: {
@@ -613,13 +708,11 @@
             ]
         });
 
-
         // 5) --- Event Handlers (Spinner) ---
         // Spinner Rekap (hanya untuk area tabel rekap)
         // table.on('preXhr.dt', function () {
         //     spinnerRekap.removeClass('hidden').addClass('flex');  
         // });
-
         table.on('preXhr.dt', function() {
             showSpinner();
         }).on('xhr.dt', function() {

@@ -1,0 +1,650 @@
+2026-07-02 07:18:48.084 - INFO: vbln_usulan: 202607
+2026-07-02 07:18:48.085 - INFO: draw = 1
+2026-07-02 07:18:48.087 - INFO: offset (startIndex) = 0
+2026-07-02 07:18:48.087 - INFO: limit (length) = 10
+2026-07-02 07:18:48.087 - INFO: sortBy = KD_DIST ASC
+2026-07-02 07:18:48.088 - INFO: searchValue = 
+2026-07-02 07:18:48.088 - INFO: vbln_usulan = 
+2026-07-02 07:18:48.088 - INFO: vkd_bank = 
+2026-07-02 07:18:48.088 - INFO: vkd_dist = 
+2026-07-02 07:18:49.295 - INFO: vbln_usulan: 202607
+2026-07-02 07:18:56.213 - INFO: Jumlah data dikembalikan: 2
+2026-07-02 07:18:56.213 - INFO: Jumlah data dikembalikan: 2
+2026-07-02 07:20:35.189 - INFO: vbln_usulan: 202607
+2026-07-02 07:20:35.197 - INFO: draw = 1
+2026-07-02 07:20:35.197 - INFO: offset (startIndex) = 0
+2026-07-02 07:20:35.197 - INFO: limit (length) = 10
+2026-07-02 07:20:35.197 - INFO: sortBy = KD_DIST ASC
+2026-07-02 07:20:35.197 - INFO: searchValue = 
+2026-07-02 07:20:35.197 - INFO: vbln_usulan = 
+2026-07-02 07:20:35.197 - INFO: vkd_bank = 
+2026-07-02 07:20:35.197 - INFO: vkd_dist = 
+2026-07-02 07:20:40.292 - INFO: Jumlah data dikembalikan: 2
+2026-07-02 07:20:42.994 - INFO: draw = 2
+2026-07-02 07:20:42.995 - INFO: offset (startIndex) = 0
+2026-07-02 07:20:42.995 - INFO: limit (length) = 10
+2026-07-02 07:20:42.995 - INFO: sortBy = KD_DIST ASC
+2026-07-02 07:20:42.995 - INFO: searchValue = 
+2026-07-02 07:20:42.995 - INFO: vbln_usulan = 202607
+2026-07-02 07:20:42.995 - INFO: vkd_bank = 200
+2026-07-02 07:20:42.995 - INFO: vkd_dist = 55
+2026-07-02 07:23:28.407 - INFO: vbln_usulan: 202607
+2026-07-02 07:23:28.408 - INFO: draw = 1
+2026-07-02 07:23:28.411 - INFO: offset (startIndex) = 0
+2026-07-02 07:23:28.411 - INFO: limit (length) = 10
+2026-07-02 07:23:28.411 - INFO: sortBy = KD_DIST ASC
+2026-07-02 07:23:28.411 - INFO: searchValue = 
+2026-07-02 07:23:28.411 - INFO: vbln_usulan = 
+2026-07-02 07:23:28.411 - INFO: vkd_bank = 
+2026-07-02 07:23:28.411 - INFO: vkd_dist = 
+2026-07-02 07:23:29.215 - INFO: vbln_usulan: 202607
+2026-07-02 07:23:34.074 - INFO: Jumlah data dikembalikan: 2
+2026-07-02 07:23:34.241 - INFO: Jumlah data dikembalikan: 2
+2026-07-02 07:23:37.268 - INFO: draw = 2
+2026-07-02 07:23:37.268 - INFO: offset (startIndex) = 0
+2026-07-02 07:23:37.268 - INFO: limit (length) = 10
+2026-07-02 07:23:37.268 - INFO: sortBy = KD_DIST ASC
+2026-07-02 07:23:37.268 - INFO: searchValue = 
+2026-07-02 07:23:37.268 - INFO: vbln_usulan = 202607
+2026-07-02 07:23:37.269 - INFO: vkd_bank = 200
+2026-07-02 07:23:37.269 - INFO: vkd_dist = 55
+2026-07-02 07:23:44.466 - INFO: draw = 1
+2026-07-02 07:23:44.466 - INFO: offset (startIndex) = 0
+2026-07-02 07:23:44.466 - INFO: limit (length) = 1000
+2026-07-02 07:23:44.468 - INFO: sortBy = KD_DIST asc
+2026-07-02 07:23:44.468 - INFO: searchValue = 
+2026-07-02 07:23:44.468 - INFO: vbln_usulan = 202607
+2026-07-02 07:23:44.468 - INFO: vkd_bank = 200
+2026-07-02 07:23:44.468 - INFO: vkd_dist = 55
+2026-07-02 07:23:56.984 - INFO: draw = 1
+2026-07-02 07:23:56.984 - INFO: offset (startIndex) = 0
+2026-07-02 07:23:56.984 - INFO: limit (length) = 1000
+2026-07-02 07:23:56.984 - INFO: sortBy = KD_DIST asc
+2026-07-02 07:23:56.984 - INFO: searchValue = 
+2026-07-02 07:23:56.984 - INFO: vbln_usulan = 202607
+2026-07-02 07:23:56.984 - INFO: vkd_bank = 200
+2026-07-02 07:23:56.984 - INFO: vkd_dist = 55
+2026-07-02 07:25:09.064 - INFO: draw = 3
+2026-07-02 07:25:09.064 - INFO: offset (startIndex) = 0
+2026-07-02 07:25:09.064 - INFO: limit (length) = 10
+2026-07-02 07:25:09.064 - INFO: sortBy = KD_DIST ASC
+2026-07-02 07:25:09.064 - INFO: searchValue = 
+2026-07-02 07:25:09.064 - INFO: vbln_usulan = 202607
+2026-07-02 07:25:09.064 - INFO: vkd_bank = 200
+2026-07-02 07:25:09.064 - INFO: vkd_dist = 55
+2026-07-02 07:25:22.157 - INFO: draw = 1
+2026-07-02 07:25:22.157 - INFO: offset (startIndex) = 0
+2026-07-02 07:25:22.157 - INFO: limit (length) = 1000
+2026-07-02 07:25:22.157 - INFO: sortBy = KD_DIST asc
+2026-07-02 07:25:22.157 - INFO: searchValue = 
+2026-07-02 07:25:22.157 - INFO: vbln_usulan = 202607
+2026-07-02 07:25:22.157 - INFO: vkd_bank = 200
+2026-07-02 07:25:22.157 - INFO: vkd_dist = 55
+2026-07-02 07:25:54.697 - INFO: draw = 1
+2026-07-02 07:25:54.697 - INFO: offset (startIndex) = 0
+2026-07-02 07:25:54.697 - INFO: limit (length) = 1000
+2026-07-02 07:25:54.697 - INFO: sortBy = KD_DIST asc
+2026-07-02 07:25:54.697 - INFO: searchValue = 
+2026-07-02 07:25:54.698 - INFO: vbln_usulan = 202607
+2026-07-02 07:25:54.698 - INFO: vkd_bank = 200
+2026-07-02 07:25:54.698 - INFO: vkd_dist = 55
+2026-07-02 07:37:03.866 - INFO: vbln_usulan: 202607
+2026-07-02 07:37:03.867 - INFO: draw = 1
+2026-07-02 07:37:03.868 - INFO: offset (startIndex) = 0
+2026-07-02 07:37:03.868 - INFO: limit (length) = 10
+2026-07-02 07:37:03.868 - INFO: sortBy = KD_DIST ASC
+2026-07-02 07:37:03.868 - INFO: searchValue = 
+2026-07-02 07:37:03.868 - INFO: vbln_usulan = 
+2026-07-02 07:37:03.868 - INFO: vkd_bank = 
+2026-07-02 07:37:03.868 - INFO: vkd_dist = 
+2026-07-02 07:37:05.334 - INFO: vbln_usulan: 202607
+2026-07-02 07:37:09.406 - INFO: Jumlah data dikembalikan: 2
+2026-07-02 07:37:10.397 - INFO: Jumlah data dikembalikan: 2
+2026-07-02 07:37:12.813 - INFO: draw = 2
+2026-07-02 07:37:12.813 - INFO: offset (startIndex) = 0
+2026-07-02 07:37:12.813 - INFO: limit (length) = 10
+2026-07-02 07:37:12.813 - INFO: sortBy = KD_DIST ASC
+2026-07-02 07:37:12.813 - INFO: searchValue = 
+2026-07-02 07:37:12.813 - INFO: vbln_usulan = 202607
+2026-07-02 07:37:12.814 - INFO: vkd_bank = 200
+2026-07-02 07:37:12.814 - INFO: vkd_dist = 55
+2026-07-02 07:37:18.630 - INFO: draw = 1
+2026-07-02 07:37:18.630 - INFO: offset (startIndex) = 0
+2026-07-02 07:37:18.630 - INFO: limit (length) = 1000
+2026-07-02 07:37:18.630 - INFO: sortBy = KD_DIST asc
+2026-07-02 07:37:18.631 - INFO: searchValue = 
+2026-07-02 07:37:18.631 - INFO: vbln_usulan = 202607
+2026-07-02 07:37:18.631 - INFO: vkd_bank = 200
+2026-07-02 07:37:18.631 - INFO: vkd_dist = 55
+2026-07-02 07:50:39.041 - INFO: vbln_usulan: 202607
+2026-07-02 07:50:39.043 - INFO: draw = 1
+2026-07-02 07:50:39.044 - INFO: offset (startIndex) = 0
+2026-07-02 07:50:39.045 - INFO: limit (length) = 10
+2026-07-02 07:50:39.045 - INFO: sortBy = KD_DIST ASC
+2026-07-02 07:50:39.045 - INFO: searchValue = 
+2026-07-02 07:50:39.045 - INFO: vbln_usulan = 
+2026-07-02 07:50:39.045 - INFO: vkd_bank = 
+2026-07-02 07:50:39.045 - INFO: vkd_dist = 
+2026-07-02 07:50:40.316 - INFO: vbln_usulan: 202607
+2026-07-02 07:50:44.535 - INFO: Jumlah data dikembalikan: 2
+2026-07-02 07:50:45.364 - INFO: Jumlah data dikembalikan: 2
+2026-07-02 08:08:27.422 - INFO: vbln_usulan: 202607
+2026-07-02 08:08:27.423 - INFO: draw = 1
+2026-07-02 08:08:27.424 - INFO: offset (startIndex) = 0
+2026-07-02 08:08:27.426 - INFO: limit (length) = 10
+2026-07-02 08:08:27.426 - INFO: sortBy = KD_DIST ASC
+2026-07-02 08:08:27.426 - INFO: searchValue = 
+2026-07-02 08:08:27.426 - INFO: vbln_usulan = 
+2026-07-02 08:08:27.426 - INFO: vkd_bank = 
+2026-07-02 08:08:27.426 - INFO: vkd_dist = 
+2026-07-02 08:08:32.846 - INFO: vbln_usulan: 202607
+2026-07-02 08:08:33.267 - INFO: Jumlah data dikembalikan: 2
+2026-07-02 08:08:38.221 - INFO: Jumlah data dikembalikan: 2
+2026-07-02 08:12:22.570 - INFO: vbln_usulan: 202607
+2026-07-02 08:12:22.572 - INFO: draw = 1
+2026-07-02 08:12:22.574 - INFO: offset (startIndex) = 0
+2026-07-02 08:12:22.574 - INFO: limit (length) = 10
+2026-07-02 08:12:22.574 - INFO: sortBy = KD_DIST ASC
+2026-07-02 08:12:22.574 - INFO: searchValue = 
+2026-07-02 08:12:22.574 - INFO: vbln_usulan = 
+2026-07-02 08:12:22.574 - INFO: vkd_bank = 
+2026-07-02 08:12:22.574 - INFO: vkd_dist = 
+2026-07-02 08:12:23.908 - INFO: vbln_usulan: 202607
+2026-07-02 08:12:27.727 - INFO: Jumlah data dikembalikan: 2
+2026-07-02 08:12:28.927 - INFO: Jumlah data dikembalikan: 2
+2026-07-02 09:39:19.166 - INFO: vbln_usulan: 202607
+2026-07-02 09:39:19.166 - INFO: draw = 1
+2026-07-02 09:39:19.168 - INFO: offset (startIndex) = 0
+2026-07-02 09:39:19.169 - INFO: limit (length) = 10
+2026-07-02 09:39:19.169 - INFO: sortBy = KD_DIST ASC
+2026-07-02 09:39:19.169 - INFO: searchValue = 
+2026-07-02 09:39:19.169 - INFO: vbln_usulan = 
+2026-07-02 09:39:19.169 - INFO: vkd_bank = 
+2026-07-02 09:39:19.169 - INFO: vkd_dist = 
+2026-07-02 09:39:21.371 - INFO: vbln_usulan: 202607
+2026-07-02 09:39:24.598 - INFO: Jumlah data dikembalikan: 2
+2026-07-02 09:39:26.918 - INFO: Jumlah data dikembalikan: 2
+2026-07-02 09:42:01.841 - INFO: vbln_usulan: 202607
+2026-07-02 09:42:01.843 - INFO: draw = 1
+2026-07-02 09:42:01.844 - INFO: offset (startIndex) = 0
+2026-07-02 09:42:01.844 - INFO: limit (length) = 10
+2026-07-02 09:42:01.844 - INFO: sortBy = KD_DIST ASC
+2026-07-02 09:42:01.844 - INFO: searchValue = 
+2026-07-02 09:42:01.844 - INFO: vbln_usulan = 
+2026-07-02 09:42:01.844 - INFO: vkd_bank = 
+2026-07-02 09:42:01.845 - INFO: vkd_dist = 
+2026-07-02 09:42:04.716 - INFO: vbln_usulan: 202607
+2026-07-02 09:42:07.374 - INFO: Jumlah data dikembalikan: 2
+2026-07-02 09:42:10.484 - INFO: Jumlah data dikembalikan: 2
+2026-07-02 09:49:45.111 - INFO: vbln_usulan: 202607
+2026-07-02 09:49:45.113 - INFO: draw = 1
+2026-07-02 09:49:45.115 - INFO: offset (startIndex) = 0
+2026-07-02 09:49:45.115 - INFO: limit (length) = 10
+2026-07-02 09:49:45.115 - INFO: sortBy = KD_DIST ASC
+2026-07-02 09:49:45.115 - INFO: searchValue = 
+2026-07-02 09:49:45.115 - INFO: vbln_usulan = 
+2026-07-02 09:49:45.115 - INFO: vkd_bank = 
+2026-07-02 09:49:45.115 - INFO: vkd_dist = 
+2026-07-02 09:49:46.018 - INFO: vbln_usulan: 202607
+2026-07-02 09:49:50.136 - INFO: Jumlah data dikembalikan: 2
+2026-07-02 09:49:50.793 - INFO: Jumlah data dikembalikan: 2
+2026-07-02 09:54:40.332 - INFO: vbln_usulan: 202607
+2026-07-02 09:54:40.332 - INFO: draw = 1
+2026-07-02 09:54:40.338 - INFO: offset (startIndex) = 0
+2026-07-02 09:54:40.338 - INFO: limit (length) = 10
+2026-07-02 09:54:40.338 - INFO: sortBy = KD_DIST ASC
+2026-07-02 09:54:40.338 - INFO: searchValue = 
+2026-07-02 09:54:40.338 - INFO: vbln_usulan = 
+2026-07-02 09:54:40.338 - INFO: vkd_bank = 
+2026-07-02 09:54:40.338 - INFO: vkd_dist = 
+2026-07-02 09:54:41.641 - INFO: vbln_usulan: 202607
+2026-07-02 09:54:46.131 - INFO: Jumlah data dikembalikan: 3
+2026-07-02 09:54:47.235 - INFO: Jumlah data dikembalikan: 3
+2026-07-02 09:58:32.832 - INFO: vbln_usulan: 202607
+2026-07-02 09:58:32.834 - INFO: draw = 1
+2026-07-02 09:58:32.835 - INFO: offset (startIndex) = 0
+2026-07-02 09:58:32.835 - INFO: limit (length) = 10
+2026-07-02 09:58:32.835 - INFO: sortBy = KD_DIST ASC
+2026-07-02 09:58:32.835 - INFO: searchValue = 
+2026-07-02 09:58:32.835 - INFO: vbln_usulan = 
+2026-07-02 09:58:32.835 - INFO: vkd_bank = 
+2026-07-02 09:58:32.835 - INFO: vkd_dist = 
+2026-07-02 09:58:34.559 - INFO: vbln_usulan: 202607
+2026-07-02 09:58:37.961 - INFO: Jumlah data dikembalikan: 3
+2026-07-02 09:58:39.436 - INFO: Jumlah data dikembalikan: 3
+2026-07-02 10:02:34.257 - INFO: vbln_usulan: 202607
+2026-07-02 10:02:34.258 - INFO: draw = 1
+2026-07-02 10:02:34.261 - INFO: offset (startIndex) = 0
+2026-07-02 10:02:34.261 - INFO: limit (length) = 10
+2026-07-02 10:02:34.261 - INFO: sortBy = KD_DIST ASC
+2026-07-02 10:02:34.261 - INFO: searchValue = 
+2026-07-02 10:02:34.261 - INFO: vbln_usulan = 
+2026-07-02 10:02:34.261 - INFO: vkd_bank = 
+2026-07-02 10:02:34.261 - INFO: vkd_dist = 
+2026-07-02 10:02:36.058 - INFO: vbln_usulan: 202607
+2026-07-02 10:02:39.905 - INFO: Jumlah data dikembalikan: 3
+2026-07-02 10:02:41.227 - INFO: Jumlah data dikembalikan: 3
+2026-07-02 10:07:33.211 - INFO: vbln_usulan: 202607
+2026-07-02 10:07:33.213 - INFO: draw = 1
+2026-07-02 10:07:33.214 - INFO: offset (startIndex) = 0
+2026-07-02 10:07:33.214 - INFO: limit (length) = 10
+2026-07-02 10:07:33.214 - INFO: sortBy = KD_DIST ASC
+2026-07-02 10:07:33.215 - INFO: searchValue = 
+2026-07-02 10:07:33.215 - INFO: vbln_usulan = 
+2026-07-02 10:07:33.215 - INFO: vkd_bank = 
+2026-07-02 10:07:33.215 - INFO: vkd_dist = 
+2026-07-02 10:07:34.369 - INFO: vbln_usulan: 202607
+2026-07-02 10:07:39.327 - INFO: Jumlah data dikembalikan: 3
+2026-07-02 10:07:39.376 - INFO: Jumlah data dikembalikan: 3
+2026-07-02 10:10:14.163 - INFO: draw = 2
+2026-07-02 10:10:14.163 - INFO: offset (startIndex) = 0
+2026-07-02 10:10:14.163 - INFO: limit (length) = 10
+2026-07-02 10:10:14.163 - INFO: sortBy = KD_DIST ASC
+2026-07-02 10:10:14.163 - INFO: searchValue = 
+2026-07-02 10:10:14.163 - INFO: vbln_usulan = 202607
+2026-07-02 10:10:14.163 - INFO: vkd_bank = 200
+2026-07-02 10:10:14.163 - INFO: vkd_dist = 55
+2026-07-02 10:10:41.426 - INFO: draw = 1
+2026-07-02 10:10:41.426 - INFO: offset (startIndex) = 0
+2026-07-02 10:10:41.426 - INFO: limit (length) = 1000
+2026-07-02 10:10:41.426 - INFO: sortBy = KD_DIST asc
+2026-07-02 10:10:41.427 - INFO: searchValue = 
+2026-07-02 10:10:41.427 - INFO: vbln_usulan = 202607
+2026-07-02 10:10:41.427 - INFO: vkd_bank = 200
+2026-07-02 10:10:41.427 - INFO: vkd_dist = 55
+2026-07-02 10:16:16.799 - INFO: vbln_usulan: 202607
+2026-07-02 10:16:16.800 - INFO: draw = 1
+2026-07-02 10:16:16.803 - INFO: offset (startIndex) = 0
+2026-07-02 10:16:16.803 - INFO: limit (length) = 10
+2026-07-02 10:16:16.803 - INFO: sortBy = KD_DIST ASC
+2026-07-02 10:16:16.803 - INFO: searchValue = 
+2026-07-02 10:16:16.803 - INFO: vbln_usulan = 
+2026-07-02 10:16:16.803 - INFO: vkd_bank = 
+2026-07-02 10:16:16.803 - INFO: vkd_dist = 
+2026-07-02 10:16:18.185 - INFO: vbln_usulan: 202607
+2026-07-02 10:16:21.880 - INFO: Jumlah data dikembalikan: 3
+2026-07-02 10:16:23.630 - INFO: Jumlah data dikembalikan: 3
+2026-07-02 10:26:43.985 - INFO: vbln_usulan: 202607
+2026-07-02 10:26:43.986 - INFO: draw = 1
+2026-07-02 10:26:43.990 - INFO: offset (startIndex) = 0
+2026-07-02 10:26:43.991 - INFO: limit (length) = 10
+2026-07-02 10:26:43.991 - INFO: sortBy = KD_DIST ASC
+2026-07-02 10:26:43.991 - INFO: searchValue = 
+2026-07-02 10:26:43.991 - INFO: vbln_usulan = 
+2026-07-02 10:26:43.991 - INFO: vkd_bank = 
+2026-07-02 10:26:43.991 - INFO: vkd_dist = 
+2026-07-02 10:26:45.611 - INFO: vbln_usulan: 202607
+2026-07-02 10:26:49.113 - INFO: Jumlah data dikembalikan: 3
+2026-07-02 10:26:51.162 - INFO: Jumlah data dikembalikan: 3
+2026-07-02 10:30:54.919 - INFO: vbln_usulan: 202607
+2026-07-02 10:30:54.920 - INFO: draw = 1
+2026-07-02 10:30:54.922 - INFO: offset (startIndex) = 0
+2026-07-02 10:30:54.922 - INFO: limit (length) = 10
+2026-07-02 10:30:54.922 - INFO: sortBy = KD_DIST ASC
+2026-07-02 10:30:54.922 - INFO: searchValue = 
+2026-07-02 10:30:54.922 - INFO: vbln_usulan = 
+2026-07-02 10:30:54.922 - INFO: vkd_bank = 
+2026-07-02 10:30:54.922 - INFO: vkd_dist = 
+2026-07-02 10:30:56.513 - INFO: vbln_usulan: 202607
+2026-07-02 10:30:59.902 - INFO: Jumlah data dikembalikan: 3
+2026-07-02 10:31:01.327 - INFO: Jumlah data dikembalikan: 3
+2026-07-02 10:36:30.476 - INFO: vbln_usulan: 202607
+2026-07-02 10:36:30.477 - INFO: draw = 1
+2026-07-02 10:36:30.481 - INFO: offset (startIndex) = 0
+2026-07-02 10:36:30.481 - INFO: limit (length) = 10
+2026-07-02 10:36:30.481 - INFO: sortBy = KD_DIST ASC
+2026-07-02 10:36:30.481 - INFO: searchValue = 
+2026-07-02 10:36:30.481 - INFO: vbln_usulan = 
+2026-07-02 10:36:30.481 - INFO: vkd_bank = 
+2026-07-02 10:36:30.481 - INFO: vkd_dist = 
+2026-07-02 10:36:31.218 - INFO: vbln_usulan: 202607
+2026-07-02 10:36:37.224 - INFO: Jumlah data dikembalikan: 3
+2026-07-02 10:36:37.224 - INFO: Jumlah data dikembalikan: 3
+2026-07-02 10:41:17.281 - INFO: vbln_usulan: 202607
+2026-07-02 10:41:17.281 - INFO: draw = 1
+2026-07-02 10:41:17.283 - INFO: offset (startIndex) = 0
+2026-07-02 10:41:17.283 - INFO: limit (length) = 10
+2026-07-02 10:41:17.283 - INFO: sortBy = KD_DIST ASC
+2026-07-02 10:41:17.283 - INFO: searchValue = 
+2026-07-02 10:41:17.284 - INFO: vbln_usulan = 
+2026-07-02 10:41:17.284 - INFO: vkd_bank = 
+2026-07-02 10:41:17.284 - INFO: vkd_dist = 
+2026-07-02 10:41:22.107 - INFO: Jumlah data dikembalikan: 3
+2026-07-02 12:45:35.238 - INFO: vbln_usulan: 202607
+2026-07-02 12:45:45.251 - INFO: Jumlah data dikembalikan: 0
+2026-07-02 13:07:42.904 - INFO: vbln_usulan: 202607
+2026-07-02 13:07:42.907 - INFO: draw = 1
+2026-07-02 13:07:42.910 - INFO: offset (startIndex) = 0
+2026-07-02 13:07:42.912 - INFO: limit (length) = 10
+2026-07-02 13:07:42.912 - INFO: sortBy = KD_DIST ASC
+2026-07-02 13:07:42.912 - INFO: searchValue = 
+2026-07-02 13:07:42.912 - INFO: vbln_usulan = 
+2026-07-02 13:07:42.912 - INFO: vkd_bank = 
+2026-07-02 13:07:42.913 - INFO: vkd_dist = 
+2026-07-02 13:07:44.469 - INFO: vbln_usulan: 202607
+2026-07-02 13:08:00.004 - INFO: Jumlah data dikembalikan: 3
+2026-07-02 13:08:00.006 - INFO: Jumlah data dikembalikan: 3
+2026-07-02 13:08:10.648 - INFO: draw = 2
+2026-07-02 13:08:10.648 - INFO: offset (startIndex) = 0
+2026-07-02 13:08:10.648 - INFO: limit (length) = 10
+2026-07-02 13:08:10.648 - INFO: sortBy = KD_DIST ASC
+2026-07-02 13:08:10.649 - INFO: searchValue = 
+2026-07-02 13:08:10.649 - INFO: vbln_usulan = 202607
+2026-07-02 13:08:10.649 - INFO: vkd_bank = 200
+2026-07-02 13:08:10.649 - INFO: vkd_dist = 41
+2026-07-02 13:08:51.430 - INFO: vbln_usulan: 202607
+2026-07-02 13:08:51.437 - INFO: draw = 1
+2026-07-02 13:08:51.437 - INFO: offset (startIndex) = 0
+2026-07-02 13:08:51.437 - INFO: limit (length) = 10
+2026-07-02 13:08:51.437 - INFO: sortBy = KD_DIST ASC
+2026-07-02 13:08:51.437 - INFO: searchValue = 
+2026-07-02 13:08:51.438 - INFO: vbln_usulan = 
+2026-07-02 13:08:51.438 - INFO: vkd_bank = 
+2026-07-02 13:08:51.438 - INFO: vkd_dist = 
+2026-07-02 13:09:01.439 - INFO: Jumlah data dikembalikan: 0
+2026-07-02 13:14:02.261 - INFO: vbln_usulan: 202607
+2026-07-02 13:14:02.267 - INFO: draw = 1
+2026-07-02 13:14:02.267 - INFO: offset (startIndex) = 0
+2026-07-02 13:14:02.267 - INFO: limit (length) = 10
+2026-07-02 13:14:02.267 - INFO: sortBy = KD_DIST ASC
+2026-07-02 13:14:02.267 - INFO: searchValue = 
+2026-07-02 13:14:02.267 - INFO: vbln_usulan = 
+2026-07-02 13:14:02.267 - INFO: vkd_bank = 
+2026-07-02 13:14:02.267 - INFO: vkd_dist = 
+2026-07-02 13:14:06.560 - INFO: vbln_usulan: 202607
+2026-07-02 13:14:07.464 - INFO: Jumlah data dikembalikan: 3
+2026-07-02 13:14:12.757 - INFO: Jumlah data dikembalikan: 3
+2026-07-02 13:14:26.818 - INFO: draw = 2
+2026-07-02 13:14:26.818 - INFO: offset (startIndex) = 0
+2026-07-02 13:14:26.818 - INFO: limit (length) = 10
+2026-07-02 13:14:26.818 - INFO: sortBy = KD_DIST ASC
+2026-07-02 13:14:26.818 - INFO: searchValue = 
+2026-07-02 13:14:26.818 - INFO: vbln_usulan = 202607
+2026-07-02 13:14:26.818 - INFO: vkd_bank = 200
+2026-07-02 13:14:26.818 - INFO: vkd_dist = 55
+2026-07-02 13:51:22.110 - INFO: vbln_usulan: 202607
+2026-07-02 13:51:22.112 - INFO: draw = 1
+2026-07-02 13:51:22.113 - INFO: offset (startIndex) = 0
+2026-07-02 13:51:22.113 - INFO: limit (length) = 10
+2026-07-02 13:51:22.113 - INFO: sortBy = KD_DIST ASC
+2026-07-02 13:51:22.113 - INFO: searchValue = 
+2026-07-02 13:51:22.113 - INFO: vbln_usulan = 
+2026-07-02 13:51:22.113 - INFO: vkd_bank = 
+2026-07-02 13:51:22.113 - INFO: vkd_dist = 
+2026-07-02 13:51:23.585 - INFO: vbln_usulan: 202607
+2026-07-02 13:51:27.701 - INFO: Jumlah data dikembalikan: 3
+2026-07-02 13:51:28.495 - INFO: Jumlah data dikembalikan: 3
+2026-07-02 13:51:31.137 - INFO: draw = 2
+2026-07-02 13:51:31.137 - INFO: offset (startIndex) = 0
+2026-07-02 13:51:31.137 - INFO: limit (length) = 10
+2026-07-02 13:51:31.137 - INFO: sortBy = KD_DIST ASC
+2026-07-02 13:51:31.137 - INFO: searchValue = 
+2026-07-02 13:51:31.137 - INFO: vbln_usulan = 202607
+2026-07-02 13:51:31.138 - INFO: vkd_bank = 200
+2026-07-02 13:51:31.138 - INFO: vkd_dist = 55
+2026-07-02 13:52:30.858 - INFO: draw = 3
+2026-07-02 13:52:30.858 - INFO: offset (startIndex) = 0
+2026-07-02 13:52:30.858 - INFO: limit (length) = 10
+2026-07-02 13:52:30.858 - INFO: sortBy = KD_DIST ASC
+2026-07-02 13:52:30.858 - INFO: searchValue = 
+2026-07-02 13:52:30.858 - INFO: vbln_usulan = 202607
+2026-07-02 13:52:30.858 - INFO: vkd_bank = 200
+2026-07-02 13:52:30.859 - INFO: vkd_dist = 55
+2026-07-02 13:53:14.827 - INFO: draw = 4
+2026-07-02 13:53:14.827 - INFO: offset (startIndex) = 0
+2026-07-02 13:53:14.827 - INFO: limit (length) = 10
+2026-07-02 13:53:14.828 - INFO: sortBy = KD_DIST ASC
+2026-07-02 13:53:14.828 - INFO: searchValue = 
+2026-07-02 13:53:14.828 - INFO: vbln_usulan = 202607
+2026-07-02 13:53:14.828 - INFO: vkd_bank = 200
+2026-07-02 13:53:14.828 - INFO: vkd_dist = 55
+2026-07-02 13:54:02.821 - INFO: draw = 5
+2026-07-02 13:54:02.821 - INFO: offset (startIndex) = 0
+2026-07-02 13:54:02.822 - INFO: limit (length) = 10
+2026-07-02 13:54:02.822 - INFO: sortBy = KD_DIST ASC
+2026-07-02 13:54:02.822 - INFO: searchValue = 
+2026-07-02 13:54:02.822 - INFO: vbln_usulan = 202607
+2026-07-02 13:54:02.822 - INFO: vkd_bank = 200
+2026-07-02 13:54:02.822 - INFO: vkd_dist = 55
+2026-07-02 14:33:01.532 - INFO: vbln_usulan: 202607
+2026-07-02 14:33:01.534 - INFO: draw = 1
+2026-07-02 14:33:01.537 - INFO: offset (startIndex) = 0
+2026-07-02 14:33:01.537 - INFO: limit (length) = 10
+2026-07-02 14:33:01.537 - INFO: sortBy = KD_DIST ASC
+2026-07-02 14:33:01.538 - INFO: searchValue = 
+2026-07-02 14:33:01.538 - INFO: vbln_usulan = 
+2026-07-02 14:33:01.538 - INFO: vkd_bank = 
+2026-07-02 14:33:01.538 - INFO: vkd_dist = 
+2026-07-02 14:33:06.368 - INFO: vbln_usulan: 202607
+2026-07-02 14:33:07.221 - INFO: Jumlah data dikembalikan: 3
+2026-07-02 14:33:11.775 - INFO: Jumlah data dikembalikan: 3
+2026-07-02 14:33:22.216 - INFO: draw = 2
+2026-07-02 14:33:22.216 - INFO: offset (startIndex) = 0
+2026-07-02 14:33:22.216 - INFO: limit (length) = 10
+2026-07-02 14:33:22.216 - INFO: sortBy = KD_DIST ASC
+2026-07-02 14:33:22.216 - INFO: searchValue = 
+2026-07-02 14:33:22.216 - INFO: vbln_usulan = 202607
+2026-07-02 14:33:22.217 - INFO: vkd_bank = 200
+2026-07-02 14:33:22.217 - INFO: vkd_dist = 55
+2026-07-02 14:33:46.198 - INFO: draw = 3
+2026-07-02 14:33:46.198 - INFO: offset (startIndex) = 0
+2026-07-02 14:33:46.198 - INFO: limit (length) = 10
+2026-07-02 14:33:46.198 - INFO: sortBy = KD_DIST ASC
+2026-07-02 14:33:46.198 - INFO: searchValue = 
+2026-07-02 14:33:46.198 - INFO: vbln_usulan = 202607
+2026-07-02 14:33:46.198 - INFO: vkd_bank = 200
+2026-07-02 14:33:46.198 - INFO: vkd_dist = 55
+2026-07-02 14:34:00.786 - INFO: draw = 4
+2026-07-02 14:34:00.786 - INFO: offset (startIndex) = 0
+2026-07-02 14:34:00.786 - INFO: limit (length) = 10
+2026-07-02 14:34:00.786 - INFO: sortBy = KD_DIST ASC
+2026-07-02 14:34:00.786 - INFO: searchValue = 
+2026-07-02 14:34:00.786 - INFO: vbln_usulan = 202607
+2026-07-02 14:34:00.786 - INFO: vkd_bank = 200
+2026-07-02 14:34:00.786 - INFO: vkd_dist = 55
+2026-07-02 14:43:04.407 - INFO: vbln_usulan: 202607
+2026-07-02 14:43:04.407 - INFO: draw = 1
+2026-07-02 14:43:04.410 - INFO: offset (startIndex) = 0
+2026-07-02 14:43:04.410 - INFO: limit (length) = 10
+2026-07-02 14:43:04.410 - INFO: sortBy = KD_DIST ASC
+2026-07-02 14:43:04.410 - INFO: searchValue = 
+2026-07-02 14:43:04.410 - INFO: vbln_usulan = 
+2026-07-02 14:43:04.410 - INFO: vkd_bank = 
+2026-07-02 14:43:04.410 - INFO: vkd_dist = 
+2026-07-02 14:43:05.482 - INFO: vbln_usulan: 202607
+2026-07-02 14:43:10.317 - INFO: Jumlah data dikembalikan: 3
+2026-07-02 14:43:11.202 - INFO: Jumlah data dikembalikan: 3
+2026-07-02 14:43:22.590 - INFO: draw = 2
+2026-07-02 14:43:22.591 - INFO: offset (startIndex) = 0
+2026-07-02 14:43:22.591 - INFO: limit (length) = 10
+2026-07-02 14:43:22.591 - INFO: sortBy = KD_DIST ASC
+2026-07-02 14:43:22.591 - INFO: searchValue = 
+2026-07-02 14:43:22.591 - INFO: vbln_usulan = 202607
+2026-07-02 14:43:22.591 - INFO: vkd_bank = 200
+2026-07-02 14:43:22.591 - INFO: vkd_dist = 55
+2026-07-02 14:46:57.337 - INFO: vbln_usulan: 202607
+2026-07-02 14:46:57.339 - INFO: draw = 1
+2026-07-02 14:46:57.340 - INFO: offset (startIndex) = 0
+2026-07-02 14:46:57.340 - INFO: limit (length) = 10
+2026-07-02 14:46:57.341 - INFO: sortBy = KD_DIST ASC
+2026-07-02 14:46:57.341 - INFO: searchValue = 
+2026-07-02 14:46:57.341 - INFO: vbln_usulan = 
+2026-07-02 14:46:57.341 - INFO: vkd_bank = 
+2026-07-02 14:46:57.341 - INFO: vkd_dist = 
+2026-07-02 14:46:58.367 - INFO: vbln_usulan: 202607
+2026-07-02 14:47:03.154 - INFO: Jumlah data dikembalikan: 3
+2026-07-02 14:47:03.993 - INFO: Jumlah data dikembalikan: 3
+2026-07-02 14:47:14.063 - INFO: draw = 2
+2026-07-02 14:47:14.063 - INFO: offset (startIndex) = 0
+2026-07-02 14:47:14.063 - INFO: limit (length) = 10
+2026-07-02 14:47:14.064 - INFO: sortBy = KD_DIST ASC
+2026-07-02 14:47:14.064 - INFO: searchValue = 
+2026-07-02 14:47:14.064 - INFO: vbln_usulan = 202607
+2026-07-02 14:47:14.064 - INFO: vkd_bank = 200
+2026-07-02 14:47:14.064 - INFO: vkd_dist = 55
+2026-07-02 14:47:47.156 - INFO: draw = 3
+2026-07-02 14:47:47.156 - INFO: offset (startIndex) = 0
+2026-07-02 14:47:47.157 - INFO: limit (length) = 10
+2026-07-02 14:47:47.157 - INFO: sortBy = KD_DIST ASC
+2026-07-02 14:47:47.157 - INFO: searchValue = 
+2026-07-02 14:47:47.157 - INFO: vbln_usulan = 202607
+2026-07-02 14:47:47.157 - INFO: vkd_bank = 200
+2026-07-02 14:47:47.157 - INFO: vkd_dist = 55
+2026-07-02 14:56:39.313 - INFO: vbln_usulan: 202607
+2026-07-02 14:56:39.315 - INFO: draw = 1
+2026-07-02 14:56:39.316 - INFO: offset (startIndex) = 0
+2026-07-02 14:56:39.316 - INFO: limit (length) = 10
+2026-07-02 14:56:39.316 - INFO: sortBy = KD_DIST ASC
+2026-07-02 14:56:39.316 - INFO: searchValue = 
+2026-07-02 14:56:39.316 - INFO: vbln_usulan = 
+2026-07-02 14:56:39.316 - INFO: vkd_bank = 
+2026-07-02 14:56:39.316 - INFO: vkd_dist = 
+2026-07-02 14:56:40.415 - INFO: vbln_usulan: 202607
+2026-07-02 14:56:47.945 - INFO: Jumlah data dikembalikan: 3
+2026-07-02 14:56:47.945 - INFO: Jumlah data dikembalikan: 3
+2026-07-02 14:57:10.559 - INFO: draw = 2
+2026-07-02 14:57:10.560 - INFO: offset (startIndex) = 0
+2026-07-02 14:57:10.560 - INFO: limit (length) = 10
+2026-07-02 14:57:10.560 - INFO: sortBy = KD_DIST ASC
+2026-07-02 14:57:10.560 - INFO: searchValue = 
+2026-07-02 14:57:10.560 - INFO: vbln_usulan = 202607
+2026-07-02 14:57:10.560 - INFO: vkd_bank = 200
+2026-07-02 14:57:10.561 - INFO: vkd_dist = 55
+2026-07-02 14:57:28.898 - INFO: draw = 3
+2026-07-02 14:57:28.899 - INFO: offset (startIndex) = 0
+2026-07-02 14:57:28.899 - INFO: limit (length) = 10
+2026-07-02 14:57:28.899 - INFO: sortBy = KD_DIST ASC
+2026-07-02 14:57:28.899 - INFO: searchValue = 
+2026-07-02 14:57:28.899 - INFO: vbln_usulan = 202607
+2026-07-02 14:57:28.899 - INFO: vkd_bank = 200
+2026-07-02 14:57:28.899 - INFO: vkd_dist = 55
+2026-07-02 14:59:34.469 - INFO: draw = 4
+2026-07-02 14:59:34.470 - INFO: offset (startIndex) = 0
+2026-07-02 14:59:34.470 - INFO: limit (length) = 10
+2026-07-02 14:59:34.470 - INFO: sortBy = KD_DIST ASC
+2026-07-02 14:59:34.471 - INFO: searchValue = 
+2026-07-02 14:59:34.471 - INFO: vbln_usulan = 202607
+2026-07-02 14:59:34.471 - INFO: vkd_bank = 200
+2026-07-02 14:59:34.471 - INFO: vkd_dist = 55
+2026-07-02 16:11:48.886 - INFO: vbln_usulan: 202607
+2026-07-02 16:11:48.887 - INFO: draw = 1
+2026-07-02 16:11:48.889 - INFO: offset (startIndex) = 0
+2026-07-02 16:11:48.889 - INFO: limit (length) = 10
+2026-07-02 16:11:48.890 - INFO: sortBy = KD_DIST ASC
+2026-07-02 16:11:48.890 - INFO: searchValue = 
+2026-07-02 16:11:48.890 - INFO: vbln_usulan = 
+2026-07-02 16:11:48.890 - INFO: vkd_bank = 
+2026-07-02 16:11:48.890 - INFO: vkd_dist = 
+2026-07-02 16:11:54.294 - INFO: Jumlah data dikembalikan: 4
+2026-07-02 16:12:03.807 - INFO: draw = 2
+2026-07-02 16:12:03.808 - INFO: offset (startIndex) = 0
+2026-07-02 16:12:03.808 - INFO: limit (length) = 10
+2026-07-02 16:12:03.808 - INFO: sortBy = KD_DIST ASC
+2026-07-02 16:12:03.808 - INFO: searchValue = 
+2026-07-02 16:12:03.808 - INFO: vbln_usulan = 202607
+2026-07-02 16:12:03.808 - INFO: vkd_bank = 200
+2026-07-02 16:12:03.808 - INFO: vkd_dist = 55
+2026-07-02 16:12:56.077 - INFO: draw = 3
+2026-07-02 16:12:56.077 - INFO: offset (startIndex) = 0
+2026-07-02 16:12:56.077 - INFO: limit (length) = 10
+2026-07-02 16:12:56.077 - INFO: sortBy = KD_DIST ASC
+2026-07-02 16:12:56.077 - INFO: searchValue = 
+2026-07-02 16:12:56.079 - INFO: vbln_usulan = 202607
+2026-07-02 16:12:56.079 - INFO: vkd_bank = 200
+2026-07-02 16:12:56.079 - INFO: vkd_dist = 55
+2026-07-02 16:13:14.528 - INFO: draw = 4
+2026-07-02 16:13:14.528 - INFO: offset (startIndex) = 0
+2026-07-02 16:13:14.528 - INFO: limit (length) = 10
+2026-07-02 16:13:14.529 - INFO: sortBy = KD_DIST ASC
+2026-07-02 16:13:14.529 - INFO: searchValue = 
+2026-07-02 16:13:14.529 - INFO: vbln_usulan = 202607
+2026-07-02 16:13:14.529 - INFO: vkd_bank = 200
+2026-07-02 16:13:14.529 - INFO: vkd_dist = 55
+2026-07-02 16:13:30.495 - INFO: draw = 5
+2026-07-02 16:13:30.495 - INFO: offset (startIndex) = 0
+2026-07-02 16:13:30.495 - INFO: limit (length) = 10
+2026-07-02 16:13:30.495 - INFO: sortBy = KD_DIST ASC
+2026-07-02 16:13:30.495 - INFO: searchValue = 
+2026-07-02 16:13:30.495 - INFO: vbln_usulan = 202607
+2026-07-02 16:13:30.496 - INFO: vkd_bank = 111
+2026-07-02 16:13:30.496 - INFO: vkd_dist = 54
+2026-07-02 16:13:54.050 - INFO: draw = 6
+2026-07-02 16:13:54.051 - INFO: offset (startIndex) = 0
+2026-07-02 16:13:54.051 - INFO: limit (length) = 10
+2026-07-02 16:13:54.051 - INFO: sortBy = KD_DIST ASC
+2026-07-02 16:13:54.051 - INFO: searchValue = 
+2026-07-02 16:13:54.051 - INFO: vbln_usulan = 202607
+2026-07-02 16:13:54.052 - INFO: vkd_bank = 200
+2026-07-02 16:13:54.052 - INFO: vkd_dist = 55
+2026-07-02 16:14:14.211 - INFO: draw = 7
+2026-07-02 16:14:14.211 - INFO: offset (startIndex) = 0
+2026-07-02 16:14:14.211 - INFO: limit (length) = 10
+2026-07-02 16:14:14.211 - INFO: sortBy = KD_DIST ASC
+2026-07-02 16:14:14.212 - INFO: searchValue = 
+2026-07-02 16:14:14.212 - INFO: vbln_usulan = 202607
+2026-07-02 16:14:14.213 - INFO: vkd_bank = 200
+2026-07-02 16:14:14.213 - INFO: vkd_dist = 55
+2026-07-02 16:14:30.636 - INFO: draw = 8
+2026-07-02 16:14:30.637 - INFO: offset (startIndex) = 0
+2026-07-02 16:14:30.637 - INFO: limit (length) = 10
+2026-07-02 16:14:30.637 - INFO: sortBy = KD_DIST ASC
+2026-07-02 16:14:30.637 - INFO: searchValue = 
+2026-07-02 16:14:30.637 - INFO: vbln_usulan = 202607
+2026-07-02 16:14:30.637 - INFO: vkd_bank = 200
+2026-07-02 16:14:30.638 - INFO: vkd_dist = 55
+2026-07-02 16:29:42.132 - INFO: vbln_usulan: 202607
+2026-07-02 16:29:42.139 - INFO: draw = 1
+2026-07-02 16:29:42.141 - INFO: offset (startIndex) = 0
+2026-07-02 16:29:42.141 - INFO: limit (length) = 10
+2026-07-02 16:29:42.142 - INFO: sortBy = KD_DIST ASC
+2026-07-02 16:29:42.142 - INFO: searchValue = 
+2026-07-02 16:29:42.142 - INFO: vbln_usulan = 
+2026-07-02 16:29:42.142 - INFO: vkd_bank = 
+2026-07-02 16:29:42.142 - INFO: vkd_dist = 
+2026-07-02 16:29:44.472 - INFO: vbln_usulan: 202607
+2026-07-02 16:29:47.570 - INFO: Jumlah data dikembalikan: 4
+2026-07-02 16:29:50.820 - INFO: Jumlah data dikembalikan: 4
+2026-07-02 16:29:54.608 - INFO: draw = 2
+2026-07-02 16:29:54.608 - INFO: offset (startIndex) = 0
+2026-07-02 16:29:54.608 - INFO: limit (length) = 10
+2026-07-02 16:29:54.608 - INFO: sortBy = KD_DIST ASC
+2026-07-02 16:29:54.608 - INFO: searchValue = 
+2026-07-02 16:29:54.609 - INFO: vbln_usulan = 202607
+2026-07-02 16:29:54.609 - INFO: vkd_bank = 200
+2026-07-02 16:29:54.609 - INFO: vkd_dist = 55
+2026-07-02 16:30:06.266 - INFO: draw = 3
+2026-07-02 16:30:06.266 - INFO: offset (startIndex) = 0
+2026-07-02 16:30:06.266 - INFO: limit (length) = 10
+2026-07-02 16:30:06.266 - INFO: sortBy = KD_DIST ASC
+2026-07-02 16:30:06.266 - INFO: searchValue = 
+2026-07-02 16:30:06.266 - INFO: vbln_usulan = 202607
+2026-07-02 16:30:06.266 - INFO: vkd_bank = 200
+2026-07-02 16:30:06.266 - INFO: vkd_dist = 55
+2026-07-02 16:30:50.021 - INFO: draw = 4
+2026-07-02 16:30:50.021 - INFO: offset (startIndex) = 0
+2026-07-02 16:30:50.021 - INFO: limit (length) = 10
+2026-07-02 16:30:50.021 - INFO: sortBy = KD_DIST ASC
+2026-07-02 16:30:50.021 - INFO: searchValue = 
+2026-07-02 16:30:50.021 - INFO: vbln_usulan = 202607
+2026-07-02 16:30:50.021 - INFO: vkd_bank = 200
+2026-07-02 16:30:50.021 - INFO: vkd_dist = 55
+2026-07-02 16:34:05.210 - INFO: vbln_usulan: 202607
+2026-07-02 16:34:05.210 - INFO: draw = 1
+2026-07-02 16:34:05.210 - INFO: offset (startIndex) = 0
+2026-07-02 16:34:05.210 - INFO: limit (length) = 10
+2026-07-02 16:34:05.210 - INFO: sortBy = KD_DIST ASC
+2026-07-02 16:34:05.210 - INFO: searchValue = 
+2026-07-02 16:34:05.210 - INFO: vbln_usulan = 
+2026-07-02 16:34:05.210 - INFO: vkd_bank = 
+2026-07-02 16:34:05.210 - INFO: vkd_dist = 
+2026-07-02 16:34:07.601 - INFO: vbln_usulan: 202607
+2026-07-02 16:34:10.977 - INFO: Jumlah data dikembalikan: 4
+2026-07-02 16:34:12.735 - INFO: Jumlah data dikembalikan: 4
+2026-07-02 16:34:20.116 - INFO: draw = 2
+2026-07-02 16:34:20.116 - INFO: offset (startIndex) = 0
+2026-07-02 16:34:20.116 - INFO: limit (length) = 10
+2026-07-02 16:34:20.116 - INFO: sortBy = KD_DIST ASC
+2026-07-02 16:34:20.116 - INFO: searchValue = 
+2026-07-02 16:34:20.116 - INFO: vbln_usulan = 202607
+2026-07-02 16:34:20.116 - INFO: vkd_bank = 200
+2026-07-02 16:34:20.116 - INFO: vkd_dist = 55

@@ -26,6 +26,7 @@ public class Mon01RekonPerUpiController extends HttpServlet {
     // private static final String ACT_SUMBER_DATA = "handleGetsumberdata";
 
     @Override
+    //1 inisilisasi konkesi DB
     public void init() throws ServletException {
         super.init();
         try {
@@ -38,6 +39,7 @@ public class Mon01RekonPerUpiController extends HttpServlet {
     }
 
     @Override
+    //2 Main Utama Pemangilaan POST Service
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String act = req.getParameter("act");
 
@@ -60,6 +62,7 @@ public class Mon01RekonPerUpiController extends HttpServlet {
         prosesMonPerUpi(req, resp);
     }
 
+    //3 Panggile Service Monitoring Rekap Per-UPI PLN VS BANK 
     private void prosesMonPerUpi(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String vbln_usulan = req.getParameter("vbln_usulan");
         // String vtahun = req.getParameter("vtahun");
@@ -115,6 +118,7 @@ public class Mon01RekonPerUpiController extends HttpServlet {
         }
     }
 
+    //4 Panggile Service Monitoring Detail Per-UPI PLN VS BANK
     private void handleGetDetailData(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         int draw = 1;
         try {
@@ -150,25 +154,48 @@ public class Mon01RekonPerUpiController extends HttpServlet {
         logger.info("vkd_bank = " + vkd_bank);
         logger.info("vkd_dist = " + vkd_dist);
 
-        List<String> pesanOutput = new ArrayList<>();
+        List<String> pesanMsg = new ArrayList<>();
+        List<Boolean> statusMsg = new ArrayList<>();
 
         List<Map<String, Object>> data = service.getDataMDftPerUpi(
-            start, length, sortBy, sortDir, searchValue, vbln_usulan, vkd_bank, vkd_dist, pesanOutput
+            start, length, sortBy, sortDir, searchValue, vbln_usulan, vkd_bank, vkd_dist, pesanMsg, statusMsg
         );
 
         System.out.println("Jumlah data yang dikembalikan untuk ekspor: " + data.size());
 
-        int totalRecords = 0;
-        if (!data.isEmpty() && data.get(0).get("TOTAL_COUNT") != null) {
-            totalRecords = Integer.parseInt(data.get(0).get("TOTAL_COUNT").toString());
+        Map<String, Object> jsonResponse = new HashMap<>();
+        
+        // 🔴 PERBAIKAN UTAMA: Cek status sukses berdasarkan isi boolean dari statusMsg
+        // Jika list statusMsg kosong atau indeks ke-0 bernilai FALSE, berarti terjadi error DB
+        if (statusMsg.isEmpty() || !statusMsg.get(0)) {
+            
+            String errorText = (!pesanMsg.isEmpty()) ? pesanMsg.get(0) : "Database tidak terkoneksi, silakan login ulang";
+            
+            jsonResponse.put("success", false); // Melempar nilai boolean murni ke JavaScript
+            jsonResponse.put("message", errorText);
+            jsonResponse.put("draw", draw);
+            jsonResponse.put("recordsTotal", 0);
+            jsonResponse.put("recordsFiltered", 0);
+            jsonResponse.put("data", new ArrayList<>()); // Kirim array kosong agar aman bagi DataTables
+            
+        } else {
+            // Kondisi Sukses
+            int totalRecords = 0;
+            if (!data.isEmpty() && data.get(0).get("TOTAL_COUNT") != null) {
+                totalRecords = Integer.parseInt(data.get(0).get("TOTAL_COUNT").toString());
+            }
+            
+            String successText = (!pesanMsg.isEmpty()) ? pesanMsg.get(0) : "Sukses memuat data";
+
+            jsonResponse.put("success", true); // Melempar nilai boolean murni ke JavaScript
+            jsonResponse.put("message", successText);
+            jsonResponse.put("draw", draw);
+            jsonResponse.put("recordsTotal", totalRecords);
+            jsonResponse.put("recordsFiltered", totalRecords);
+            jsonResponse.put("data", data);
         }
 
-        Map<String, Object> jsonResponse = new HashMap<>();
-        jsonResponse.put("draw", draw);
-        jsonResponse.put("recordsTotal", totalRecords);
-        jsonResponse.put("recordsFiltered", totalRecords);
-        jsonResponse.put("data", data);
-
+        // 🔴 BERSIHKAN DUPLIKAT: Cukup panggil PrintWriter satu kali saja di akhir proses
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
 
@@ -177,6 +204,7 @@ public class Mon01RekonPerUpiController extends HttpServlet {
         }
     }
 
+    //5 Ambil Refrensi master Bank
     private void handleGetNamaBank(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String kdbank = req.getParameter("kdbank");
         Map<String, Object> result = new HashMap<>();
@@ -199,6 +227,7 @@ public class Mon01RekonPerUpiController extends HttpServlet {
         }
     }
 
+    //6 Ambil Refrensi master UPI WILAYAH/DISTRIBUSI
     private void handleGetNamaUnitUPI(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String kd_dist = req.getParameter("kd_dist");
         Map<String, Object> result = new HashMap<>();
@@ -231,6 +260,7 @@ public class Mon01RekonPerUpiController extends HttpServlet {
             String mode = "detail"; //(args.length > 0) ? args[0] : "rekap";
 
             List<String> pesanOutput = new ArrayList<>();
+            List<Boolean> StatusMsg = new ArrayList<>();
 
             if ("detail".equalsIgnoreCase(mode)) {
                 System.out.println("== TEST MODE: DETAIL ==");
@@ -247,7 +277,8 @@ public class Mon01RekonPerUpiController extends HttpServlet {
 
                 List<Map<String, Object>> detail = service.getDataMDftPerUpi(
                         start, length, sortBy, sortDir, search,
-                        vbln_usulan, vkd_bank, vkd_dist, pesanOutput
+                        vbln_usulan, vkd_bank, vkd_dist, 
+                        pesanOutput, StatusMsg
                 );
 
                 System.out.println("Jumlah data detail: " + detail.size());
