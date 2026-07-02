@@ -4,7 +4,7 @@
     // AUTH CHECK
     // =====================================================================
     if (session.getAttribute("username") == null) {
-        response.sendRedirect(request.getContextPath() + "/login.jsp");
+        response.sendRedirect(request.getContextPath() + "/views/templates/login.jsp");
         return;
     }
 
@@ -15,9 +15,9 @@
         currentPage = "/views/dashboard/dashboard.jsp";
     }
 
-    request.setAttribute("menu", 
-        (currentMenu == null || currentMenu.trim().isEmpty()) 
-        ? "dashboard" 
+    request.setAttribute("menu",
+        (currentMenu == null || currentMenu.trim().isEmpty())
+        ? "dashboard"
         : currentMenu
     );
 %>
@@ -42,12 +42,10 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/style.css">
-     <!-- STYLE -->
 
     <style>
-        /* ================================================================
-           DEFAULT
-        ================================================================ */
+
+        /* GLOBAL */
         html, body {
             font-size: 13px;
             line-height: 1.5;
@@ -58,23 +56,34 @@
 
         :root { --footer-height: 50px; }
 
-        main { transition: margin-left 0.3s ease; }
-
         /* ================================================================
-           SIDEBAR DESKTOP
+           SIDEBAR (NEW COLOR TO MATCH NAVBAR)
         ================================================================ */
         #sidebar {
             width: 16rem;
-            background-color: #1f2937;
+            /* WARNA BARU – MATCH NAVBAR */
+            background: #0e7490; /* cyan-700 */
+            color: white;
+            box-shadow: inset -2px 0 6px rgba(0,0,0,0.25);
+
             font-size: 13px;
-            transition: width 0.3s ease;
+            transition: all 0.3s ease;
             overflow-y: auto;
         }
 
-        #sidebar.collapsed { width: 4rem; }
+        /* COLLAPSE ANIMATION */
+        #sidebar.collapsed {
+            width: 4rem;
+        }
         #sidebar.collapsed .sidebar-text,
         #sidebar.collapsed .submenu {
             display: none;
+        }
+
+        /* Hover item di sidebar */
+        .sidebar-item:hover {
+            background: #0891b2 !important; /* cyan-600 match navbar */
+            transition: 0.2s ease-in-out;
         }
 
         /* ================================================================
@@ -87,7 +96,6 @@
                 left: -16rem;
                 height: calc(100% - 50px);
                 z-index: 60;
-                transition: left 0.3s ease;
             }
             #sidebar.show { left: 0; }
 
@@ -106,9 +114,7 @@
             }
         }
 
-        /* ================================================================
-           FOOTER
-        ================================================================ */
+        /* FOOTER */
         #mainFooter {
             position: fixed;
             bottom: 0;
@@ -119,18 +125,13 @@
             background: #ffffff;
         }
 
-        /* ================================================================
-           MAIN CONTENT (RESPONSIVE)
-        ================================================================ */
+        /* MAIN */
         #mainContent {
-            margin-left: 16rem; /* default desktop */
-            margin-top: 60px;   /* jarak dari navbar */
+            margin-left: 16rem;
+            margin-top: 60px;
             transition: margin-left 0.3s ease;
         }
 
-        /* ================================================================
-           Reset Ke mobile (RESPONSIVE)
-        ================================================================ */
         @media (max-width: 767px) {
             #mainContent {
                 margin-left: 0 !important;
@@ -141,10 +142,11 @@
 
     </style>
 </head>
+
 <body class="min-h-screen flex flex-col">
 
 <!-- ================================================================
-     NAVBAR
+     NAVBAR (TIDAK DIUBAH)
 ================================================================ -->
 <nav class="fixed top-0 left-0 right-0 bg-cyan-600 z-50 flex items-center justify-between px-4 h-[50px] shadow-lg">
     <i class="toggleSidebar fa-solid fa-bars text-white text-xl cursor-pointer hover:text-cyan-200"></i>
@@ -201,31 +203,18 @@
 ================================================================ -->
 <footer id="mainFooter"
         class="flex items-center justify-center text-xs text-gray-600">
-    <strong>MangAdi © 2025 <a class="text-cyan-600 hover:underline">MIV</a>.</strong> All rights reserved.
+    <strong>MangAdi © 2025 <a class="text-cyan-600">MIV</a>.</strong> All rights reserved.
 </footer>
 
-<!-- ================================================================
-     SCRIPT
-================================================================ -->
-<!-- ✅ JAVASCRIPT -->
-    <script src="${pageContext.request.contextPath}/assets/js/jquery-3.7.1.min.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/dataTables/js/jquery.dataTables.min.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/dataTables/js/dataTables.buttons.min.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/dataTables/js/buttons.html5.min.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/dataTables/js/jszip.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://npmcdn.com/flatpickr/dist/l10n/id.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/excel/js/xlsx.full.min.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/js/style_tailwind_adis.js"></script>
-
-<!-- ================================================================
-     TIME
-================================================================ -->
+<!-- JS -->
+<script src="${pageContext.request.contextPath}/assets/js/jquery-3.7.1.min.js"></script>
+<script src="${pageContext.request.contextPath}/assets/dataTables/js/jquery.dataTables.min.js"></script>
+<script src="${pageContext.request.contextPath}/assets/dataTables/js/dataTables.buttons.min.js"></script>
+<script src="${pageContext.request.contextPath}/assets/dataTables/js/buttons.html5.min.js"></script>
+<script src="${pageContext.request.contextPath}/assets/dataTables/js/jszip.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/id.js"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/id.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
-
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
@@ -235,9 +224,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const main      = document.getElementById('mainContent');
     const toggleBtn = document.querySelector(".toggleSidebar");
 
-    /* -----------------------------
-       SIDEBAR TOGGLE (RESPONSIVE)
-    ------------------------------*/
+    /* RESPONSIVE SLIDE */
     toggleBtn.addEventListener("click", () => {
         if (window.innerWidth < 768) {
             const isShow = !sidebar.classList.contains("show");
@@ -246,8 +233,11 @@ document.addEventListener("DOMContentLoaded", () => {
             main.classList.add("ml-0");
         } else {
             sidebar.classList.toggle("collapsed");
+
             main.classList.remove("ml-64", "ml-16");
-            main.classList.add(sidebar.classList.contains("collapsed") ? "ml-16" : "ml-64");
+            main.classList.add(
+                sidebar.classList.contains("collapsed") ? "ml-16" : "ml-64"
+            );
         }
     });
 
@@ -256,9 +246,7 @@ document.addEventListener("DOMContentLoaded", () => {
         overlay.classList.remove("show");
     });
 
-    /* -----------------------------
-       PROFILE MENU
-    ------------------------------*/
+    /* PROFILE DROPDOWN */
     const toggleProfile = document.querySelector(".toggleSubmenuProfile");
     const menuProfile   = document.getElementById("submenu-profile");
 

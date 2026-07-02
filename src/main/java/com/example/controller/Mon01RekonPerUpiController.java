@@ -75,7 +75,7 @@ public class Mon01RekonPerUpiController extends HttpServlet {
         int totalCount = 0;
         String pesan;
 
-       try {
+        try {
             List<String> pesanOutput = new ArrayList<>();
             data = service.getDataMPerPerUpi(vbln_usulan, pesanOutput);
             logger.info("Jumlah data dikembalikan: " + data.size());

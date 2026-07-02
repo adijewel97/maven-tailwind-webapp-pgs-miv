@@ -127,27 +127,31 @@
 <!-- =========================
      DAFTAR FILE PDF
      ========================= -->
-<div class="flex justify-center">
-    <fieldset class="border border-gray-300 rounded p-5 mt-4 w-full text-center bg-white shadow">
-        <h3 class="text-xl font-semibold mb-4">📂 Daftar File PDF</h3>
-
-        <!-- loading text -->
-        <div id="loading" class="text-blue-600 animate-pulse mb-3">Memuat daftar file dari FTP...</div>
-
-        <!-- list -->
+<fieldset class="border border-gray-300 rounded p-5 mt-4 w-full  mx-auto bg-white shadow text-left">
+    <legend class="text-sm font-bold px-3 text-left">List File Struk - MIV</legend>
         <div class="flex justify-center">
-            <select id="thelist" size="10" class="border border-gray-300 rounded w-full md:w-[980px] p-2" multiple></select>
-        </div>
+            <fieldset class="border border-gray-300  p-5 mt-4 w-full text-center bg-white shadow">
+                <h3 class="text-xl font-semibold mb-4">📂 Daftar File PDF</h3>
 
-        <!-- tombol print/download -->
-        <div class="flex justify-center mt-4">
-            <button id="btnPrint" type="button"
-                    class="max-w-[160px] w-full bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded shadow flex items-center justify-center gap-2 transition duration-150 ease-in-out">
-                <i class="fa fa-print"></i> <span>Print PDF</span>
-            </button>
+                <!-- loading text -->
+                <div id="loading" class="text-blue-600 animate-pulse mb-3">Memuat daftar file dari FTP...</div>
+
+                <!-- list -->
+                <div class="flex justify-center">
+                    <select id="thelist" size="10" class="border border-gray-300 rounded w-full md:w-[980px] p-2" multiple></select>
+                </div>
+
+                <!-- tombol print/download -->
+                <div class="flex justify-center mt-4">
+                    <button id="btnPrint" type="button"
+                            class="max-w-[160px] w-full bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded shadow flex items-center justify-center gap-2 transition duration-150 ease-in-out">
+                        <i class="fa fa-print"></i> <span>Print PDF</span>
+                    </button>
+                </div>
+            </fieldset>
         </div>
     </fieldset>
-</div>
+</fieldset>
 
 <!-- =========================
      SCRIPT

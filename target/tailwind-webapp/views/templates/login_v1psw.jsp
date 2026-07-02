@@ -44,17 +44,25 @@
 
             <div>
                 <label class="block text-gray-600 text-sm font-semibold mb-1">Username</label>
-                <div class="flex items-center border border-gray-300 rounded-lg px-3 focus-within:ring-2 focus-within:ring-teal-400">
+                <div class="flex items-center border border-gray-300 rounded-lg px-3 
+                            focus-within:ring-0 focus-within:border-black">
                     <i class="fa fa-user text-gray-400 mr-2"></i>
-                    <input id="username" value="adi_setiadi" type="text" class="w-full p-2 focus:outline-none text-gray-700" placeholder="Masukkan username">
+                    <input id="username" name="username" value="adi_setiadi"
+                        type="text"
+                        class="w-full p-2 focus:outline-none"
+                        placeholder="Masukkan username">
                 </div>
             </div>
 
-            <div>
+            <div class="mt-4">
                 <label class="block text-gray-600 text-sm font-semibold mb-1">Password</label>
-                <div class="flex items-center border border-gray-300 rounded-lg px-3 focus-within:ring-2 focus-within:ring-teal-400">
+                <div class="flex items-center border border-gray-300 rounded-lg px-3 
+                            focus-within:ring-0 focus-within:border-black">
                     <i class="fa fa-lock text-gray-400 mr-2"></i>
-                    <input id="password" value="Sangkuriang@2007" name="password" type="password" class="w-full p-2 focus:outline-none text-gray-700" placeholder="Masukkan password">
+                    <input id="password" name="password" value="Sangkuriang@2007"
+                        type="password"
+                        class="w-full p-2 focus:outline-none"
+                        placeholder="Masukkan password">
                 </div>
             </div>
 

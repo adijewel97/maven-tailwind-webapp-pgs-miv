@@ -403,7 +403,18 @@
                     data: null, // NAMA_DIST
                     render: function (data, type, row) {
                         const text = row.KD_DIST && row.NAMA_DIST ? row.KD_DIST + ' - ' + row.NAMA_DIST : '';
-                        return row.URUT == 5 ? `<strong>TOTAL</strong>` : text;
+                        // return row.URUT == 5 ? ' ' : text;
+                        // return row.URUT == 5 ? `<strong>XXXX</strong>` : text;
+                         if (row.URUT != 5) {
+                            return text;
+                        } else {
+                            return ''; 
+                        }
+
+                        // if (row.URUT == 5) {
+                        //     return '';
+                        // }
+                        // return text;
                     },
                     width: '250px'
                 },
@@ -429,8 +440,10 @@
                 if (data.URUT == 5) {
                     $(row).addClass('font-bold bg-gray-200');
                     $('td', row).css('border-top', '3px solid #000');
+                    console.log(data);
+                    console.log($('td', row).eq(1).html());
                 }
-
+                
                 // Logic untuk klik/link
                 // const clickableColumns = [5, 6, 9, 10]; // Index kolom: PLN_IDPEL, PLN_RPTAG, BANK_IDPEL, BANK_RPTAG
                 // const columnNames = ['PLN_IDPEL', 'PLN_RPTAG', 'BANK_IDPEL', 'BANK_RPTAG'];

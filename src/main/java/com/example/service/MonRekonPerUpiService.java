@@ -17,10 +17,13 @@ public class MonRekonPerUpiService {
     
     public List<Map<String, Object>> getDataMPerPerUpi(String vbln_usulan,  List<String> pesanOutput) {
 
-        logger.info("Memulai panggilan prosedur Oracle monlap_mivfalg_plnvsbank_uiw_rekap dengan parameter vbln_usulan: " + vbln_usulan);
         List<Map<String, Object>> result = new ArrayList<>();
-
-        String sql = "{call OPHARTDE.VER_MON_LAP.monlap_mivfalg_plnvsbank_uiw_rekap( ?, ?, ?)}";
+        
+        // String sql = "{call OPHARTDE.VER_MON_LAP.monlap_mivfalg_plnvsbank_uiw_rekap( ?, ?, ?)}";
+        String sql = "{call OPHARTDE.VER_MON_LAP.monlap_rkp_mivfalg_plnvsbank_uiw( ?, ?, ?)}";
+        logger.info("Memulai panggilan prosedur Oracle "+sql);
+        logger.info("parameter vbln_usulan: " + vbln_usulan);
+        
 
         try (Connection conn = dataSource.getConnection();
             CallableStatement stmt = conn.prepareCall(sql)) {
@@ -74,11 +77,14 @@ public class MonRekonPerUpiService {
     public List<Map<String, Object>> getDataMDftPerUpi(int start, int length, String sortBy, String sortDir, String search,
                                                  String vbln_usulan, String vkd_bank, String vkd_dist,  List<String> pesanOutput) {
 
-        logger.info("Memulai panggilan prosedur monlap_mivfalg_plnvsbank_uiw_pgs Oracle dengan parameter TH BLN: " + vbln_usulan);
         List<Map<String, Object>> result = new ArrayList<>();
        
-        String sql = "{call OPHARTDE.VER_MON_LAP.monlap_mivfalg_plnvsbank_uiw_pgs_v1(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
-
+        // String sql = "{call OPHARTDE.VER_MON_LAP.monlap_mivfalg_plnvsbank_uiw_pgs_v1(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
+        String sql = "{call OPHARTDE.VER_MON_LAP.monlap_dft_mivfalg_plnvsbank_uiw_pgs(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
+        logger.info("Memulai panggilan prosedur  Oracle "+ sql);
+        logger.info("parameter TH BLN: " + vbln_usulan);
+        
+                                                    
         try (Connection conn = dataSource.getConnection();
              CallableStatement stmt = conn.prepareCall(sql)) {
              

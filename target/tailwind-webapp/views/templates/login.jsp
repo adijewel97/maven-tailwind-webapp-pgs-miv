@@ -17,6 +17,15 @@
 <!-- 🔥 Modal Global -->
 <jsp:include page="/components/modalMessage.jsp" />
 
+<!-- ✅ Spinner universal (bisa dipakai rekap & detail) -->
+<!-- <div id="spinnerOverlay"
+     class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
+            z-[9999] flex-col items-center justify-center bg-white bg-opacity-80 
+            p-4 rounded-lg shadow-lg pointer-events-none">
+    <div class="border-4 border-blue-500 border-t-transparent rounded-full w-8 h-8 animate-spin"></div>
+    <span class="text-xs text-gray-600 mt-2 font-medium">Loading...</span>
+</div> -->
+
 <!-- Container utama -->
 <div class="flex flex-col md:flex-row bg-white shadow-2xl rounded-2xl overflow-hidden w-full max-w-4xl mx-4">
 
@@ -25,7 +34,7 @@
         <i class="fa fa-shield-alt text-6xl mb-4"></i>
         <h2 class="text-2xl font-bold mb-2 whitespace-pre-line">Webapp Tools MIV - P2APST</h2>
         <p class="text-center text-sm leading-relaxed text-teal-100">
-            Sistem ini digunakan untuk Tools monitoring Untuk Pelanggan PLN MIV - Management Instansi Vertikal.  
+            Sistem ini Digunakan Sebagai Tools Monitoring Untuk Pelanggan PLN MIV - Management Instansi Vertikal.  
         </p>
         <div class="mt-6 border-t border-teal-300 w-1/2"></div>
         <p class="text-xs mt-4 text-teal-200">Keamanan data Anda adalah prioritas kami 🔒</p>
@@ -47,7 +56,7 @@
                 <div class="flex items-center border border-gray-300 rounded-lg px-3 
                             focus-within:ring-0 focus-within:border-black">
                     <i class="fa fa-user text-gray-400 mr-2"></i>
-                    <input id="username" name="username" value="adi_setiadi"
+                    <input id="username" name="username" 
                         type="text"
                         class="w-full p-2 focus:outline-none"
                         placeholder="Masukkan username">
@@ -59,7 +68,7 @@
                 <div class="flex items-center border border-gray-300 rounded-lg px-3 
                             focus-within:ring-0 focus-within:border-black">
                     <i class="fa fa-lock text-gray-400 mr-2"></i>
-                    <input id="password" name="password" value="Sangkuriang@2007"
+                    <input id="password" name="password" 
                         type="password"
                         class="w-full p-2 focus:outline-none"
                         placeholder="Masukkan password">
@@ -80,25 +89,108 @@
         SCRIPT LOGIN
 =========================== -->
 <script>
-    // Validasi input kosong
-    document.getElementById("loginForm").addEventListener("submit", function(e) {
-        const user = document.getElementById("username").value.trim();
-        const pass = document.getElementById("password").value.trim();
+    // document.addEventListener("DOMContentLoaded", function () {
 
-        if (user === "" || pass === "") {
-            e.preventDefault();
-            showMessage("User ID/Password tidak boleh kosong");
+    //     // Fokus ke username
+    //     document.getElementById("username").focus();
+
+    //     // Validasi form
+    //     document.getElementById("loginForm").addEventListener("submit", function (e) {
+    //         const user = document.getElementById("username").value.trim();
+    //         const pass = document.getElementById("password").value.trim();
+
+    //         if (user === "" || pass === "") {
+    //             e.preventDefault();
+    //             showMessage("User ID/Password tidak boleh kosong.");
+    //             return;
+    //         }
+    //     });
+
+    //     // Cek parameter error
+    //     const error = new URLSearchParams(window.location.search).get("error");
+
+    //     console.log("Error =", error); // Debug
+
+    //     switch (error) {
+    //         case "server":
+    //             showMessage("Terjadi kendala koneksi ke database. Silakan hubungi administrator.");
+    //             break;
+
+    //         case "invalid":
+    //             showMessage("Username atau password salah.");
+    //             break;
+
+    //         case "notfound":
+    //             showMessage("Username tidak ditemukan.");
+    //             break;
+
+    //         default:
+    //             // Tidak ada error
+    //             break;
+    //     }
+
+    // });
+        document.addEventListener("DOMContentLoaded", function () {
+
+        const form = document.getElementById("loginForm");
+        const username = document.getElementById("username");
+        const password = document.getElementById("password");
+        // const spinner = document.getElementById("spinnerOverlay");
+        const loginButton = form.querySelector("button[type='submit']");
+
+        username.focus();
+
+        form.addEventListener("submit", function (e) {
+
+            const user = username.value.trim();
+            const pass = password.value.trim();
+
+            if (user === "" || pass === "") {
+                e.preventDefault();
+                showMessage("User ID/Password tidak boleh kosong.");
+                return;
+            }
+
+            // Tampilkan spinner
+            // spinner.classList.remove("hidden");
+            // spinner.classList.add("flex");
+
+            // Disable tombol agar tidak diklik berulang
+            loginButton.disabled = true;
+            loginButton.classList.add("opacity-50", "cursor-not-allowed");
+            loginButton.innerHTML =
+                '<i class="fa fa-spinner fa-spin mr-1"></i> Utentikasi...';
+        });
+
+        // Menampilkan pesan error jika ada
+        const error = new URLSearchParams(window.location.search).get("error");
+
+        if (error) {
+            // Sembunyikan spinner jika kembali ke halaman login
+            // spinner.classList.add("hidden");
+            // spinner.classList.remove("flex");
+
+            loginButton.disabled = false;
+            loginButton.classList.remove("opacity-50", "cursor-not-allowed");
+            loginButton.innerHTML =
+                '<i class="fa fa-sign-in mr-1"></i> Login';
+
+            switch (error) {
+                case "server":
+                    showMessage("Terjadi kendala koneksi ke database. Silakan hubungi administrator.");
+                    break;
+
+                case "invalid":
+                    showMessage("Username atau password salah.");
+                    break;
+
+                case "notfound":
+                    showMessage("Username tidak ditemukan.");
+                    break;
+            }
         }
+
     });
-
-    // Tampilkan modal jika login gagal (error=1)
-    const urlParams = new URLSearchParams(window.location.search);
-
-    if (urlParams.has("error")) {
-        showMessage("Username atau password salah!");
-    }
-
-    document.getElementById('username').focus();
 </script>
 
 </body>

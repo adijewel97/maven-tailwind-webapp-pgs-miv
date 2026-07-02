@@ -1,45 +1,41 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <style>
-    /* CSS TABLE REKAP - SAMAKAN DENGAN TABEL Detail */
+   /* CSS TABLE REKAP - SAMAKAN DENGAN TABEL Detail */
     #tablemon_upi {
-        table-layout: fixed;
-        width: 100%; /* Lebar default 100% */
+        table-layout: auto; /* Sama seperti #dataModal table */
+        font-size: 0.75rem; /* Sama dengan modal-body */
+        width: 100%;
     }
 
     #tablemon_upi th,
     #tablemon_upi td {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
         font-size: 0.7rem;      /* Sama seperti table detail */
         padding: 4px 6px;       /* Sama seperti table detail */
-        font-size: 0.7rem;
+        white-space: nowrap;    /* Hindari wrap */
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
-    /* Target wrapper DataTables untuk memastikan lebar 100% tidak terlampaui */
-    #tablemon_upi_wrapper {
-        width: 100%;
-        max-width: 100%;
-    }
-
-    .dataTables_scrollHeadInner, 
-    .dataTables_scrollHead table,
-    .dataTables_scrollBody table {
-        width: 100% !important;
-        /* Tambahkan min-width agar ketika DataTables kosong tidak terlalu menyusut */
-        min-width: 100%;
-    }
-
-    /* 💡 Tambahkan class untuk tabel itu sendiri untuk memastikan tidak melebihi 100% */
-    #tablemon_upi {
-        max-width: 100%; 
+    #tablemon_upi th.sorting::after,
+    #tablemon_upi th.sorting_asc::after,
+    #tablemon_upi th.sorting_desc::after {
+        display: none !important;
     }
 
      /* Tambahan jika mau batas tinggi + scroll seperti modal */
     #tablemon_upi_wrapper .dataTables_scrollBody {
         max-height: 65vh;       /* Sesuaikan tinggi maksimal seperti modal */
         overflow-y: auto;
+    }
+
+    /* Header DataTables Detail */
+    #table_mondaf_upi thead th,
+    #table_mondaf_upi.dataTable thead th,
+    #table_mondaf_upi.dataTable thead td {
+        font-weight: 700 !important;
+        text-align: center !important;
+        vertical-align: middle !important;
     }
 
     /* CSS MODAL SHOW TABLE MONITORING Detail */
@@ -399,7 +395,6 @@
                     // Tambahkan notifikasi error jika perlu
                 }
             },
-            deferLoading: 0,
             columns: [
                 {
                     data: null, // NO
@@ -417,7 +412,18 @@
                     data: null, // NAMA_DIST
                     render: function (data, type, row) {
                         const text = row.KD_DIST && row.NAMA_DIST ? row.KD_DIST + ' - ' + row.NAMA_DIST : '';
-                        return row.URUT == 5 ? `<strong>TOTAL</strong>` : text;
+                        // return row.URUT == 5 ? ' ' : text;
+                        // return row.URUT == 5 ? `<strong>XXXX</strong>` : text;
+                         if (row.URUT != 5) {
+                            return text;
+                        } else {
+                            return ''; 
+                        }
+
+                        // if (row.URUT == 5) {
+                        //     return '';
+                        // }
+                        // return text;
                     },
                     width: '250px'
                 },
@@ -434,17 +440,19 @@
                 { data: 'SELISIH_RPTAG', render: function (data) { return formatNumber(data, 0); }, width: '120px' }
             ],
             columnDefs: [
-                { targets: '_all', defaultContent: '', className: 'align-middle' },   // tengah vertikal
-                { targets: [1, 3, 4], className: 'text-left' },       // kolom kiri dulu
-                { targets: [0, 5, 6, 7, 8, 9, 10, 11], className: 'text-right' }, // sisanya kanan
+                { targets: '_all', className: 'text-center' },
+                { targets: [1, 3], className: 'text-left' },
+                { targets: [5, 6, 7, 8, 9, 10, 11], className: 'text-right' }
             ],
             createdRow: function (row, data, dataIndex) {
                 // Styling untuk baris TOTAL
                 if (data.URUT == 5) {
                     $(row).addClass('font-bold bg-gray-200');
                     $('td', row).css('border-top', '3px solid #000');
+                    console.log(data);
+                    console.log($('td', row).eq(1).html());
                 }
-
+                
                 // Logic untuk klik/link
                 // const clickableColumns = [5, 6, 9, 10]; // Index kolom: PLN_IDPEL, PLN_RPTAG, BANK_IDPEL, BANK_RPTAG
                 // const columnNames = ['PLN_IDPEL', 'PLN_RPTAG', 'BANK_IDPEL', 'BANK_RPTAG'];
@@ -485,6 +493,13 @@
                     }
                 });
             },
+            headerCallback: function(thead) {
+                $(thead).find('th').css({
+                    'font-weight': 'bold',
+                    'text-align': 'center',
+                    'vertical-align': 'middle'
+                });
+            },
             // Konfigurasi Export
             dom: 'lfrtip', 
             buttons: [
@@ -522,8 +537,7 @@
             autoWidth: false,
             info: true,
             stripeClasses: [],
-            lengthMenu: [ [10, 25, 50, 1000], [10, 25, 50, 1000] ],
-            pageLength: 10,
+            lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
             ajax: {
                 url: getContextPath() + '//mon-rekon-bankvsperupi', // Perlu dicek apakah URL ini benar untuk detail
                 type: 'POST',
@@ -574,9 +588,15 @@
                 { targets: [10, 11, 19, 20, 25, 26], className: 'text-right' }, // Kolom angka
                 { targets: '_all', className: 'text-center' }
             ],
+            headerCallback: function(thead) {
+                $(thead).find('th').css({
+                    'font-weight': 'bold',
+                    'text-align': 'center',
+                    'vertical-align': 'middle'
+                });
+            },
             // Konfigurasi Export Detail
-            // dom: 'Bfrtip',
-            dom: 'lfrtip', 
+            dom: 'Bfrtip',
             buttons: [
                 {
                     extend: 'excelHtml5',
@@ -623,20 +643,14 @@
         // ---------------------------------------------------------------------------------------------
         // 1A-1) Tampilkan monitoring Rekap
         // ---------------------------------------------------------------------------------------------
-        $(document).ready(function () {
-            $('#btnTampil').on('click', function () {
-                if (!$('#bln_usulan_value').val()) {
-                    alert("Silakan pilih Bulan Laporan terlebih dahulu!");
-                    return;
-                }
-                // Tampilkan spinner Rekap secara manual sebelum reload
-                spinnerRekap.removeClass('hidden').addClass('flex');  
-                 
-                // setelah inisialisasi
-                table.columns.adjust().draw();
-
-                table.ajax.reload();
-            });
+        $('#btnTampil').on('click', function () {
+            if (!$('#bln_usulan_value').val()) {
+                alert("Silakan pilih Bulan Laporan terlebih dahulu!");
+                return;
+            }
+            // Tampilkan spinner Rekap secara manual sebelum reload
+            spinnerRekap.removeClass('hidden').addClass('flex');   
+            table.ajax.reload();
         });
         
         // Trigger Download Excel Rekap
@@ -858,7 +872,7 @@
                 XLSX.utils.book_append_sheet(Workbook, ws_info, "Detail Rekon");
 
                 // Nama File
-                const fileName = 'MIV_REKON_DETAIL_'+namaUPI+'_'+vbln_usulan+'.xlsx';
+                const fileName = `MIV_REKON_DETAIL_${vkd_dist}_${vbln_usulan}.xlsx`;
                 
                 // Tulis dan download file
                 XLSX.writeFile(Workbook, fileName);

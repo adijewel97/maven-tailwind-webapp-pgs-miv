@@ -165,7 +165,7 @@
 
     <!-- KANAN - GAGAL -->
     <fieldset class="border border-gray-300 rounded p-5 text-center bg-white shadow w-full">
-        <h3 class="text-xl font-semibold mb-4">📂 Daftar/Gagal File TXT dari AP2T</h3>
+        <h3 id="label_gagal" class="text-xl font-semibold mb-4">📂 Daftar/Gagal File TXT dari AP2T</h3>
 
         <div id="loading_gagal" class="text-blue-600 animate-pulse mb-3" style="display:none;">
             Memuat daftar file dari FTP...
@@ -384,9 +384,11 @@ document.addEventListener("DOMContentLoaded", function() {
         var jenis = this.value;
         var labelSukses = document.getElementById("label_sukses");
         if(jenis === "TXT"){
-            labelSukses.textContent = "📂 Daftar File TXT dari AP2T";
+            label_sukses.textContent = "📂 Daftar File TXT dari AP2T";
+            label_gagal.textContent  = "📂 Daftar/Gagal File RCN dari AP2T";
         } else if(jenis === "RCN"){
-            labelSukses.textContent = "📂 Daftar/Lunas File RCN dari BANK";
+            label_sukses.textContent = "📂 Lunas File RCN dari BANK";
+            label_gagal.textContent  = "📂 Lunas/Gagal File RCN dari AP2T";
         }
     });
 });
