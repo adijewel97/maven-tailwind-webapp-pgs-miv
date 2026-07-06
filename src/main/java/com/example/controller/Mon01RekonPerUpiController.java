@@ -2,6 +2,7 @@ package com.example.controller;
 
 import com.example.service.DbService;
 import com.example.service.MonRekonPerUpiService;
+import com.example.utils.HttpStatusHelper;
 import com.example.utils.LoggerUtil;
 import com.google.gson.Gson;
 
@@ -14,7 +15,6 @@ import java.io.PrintWriter;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 
 @WebServlet(name = "MonRekonPerUpiController", urlPatterns = {"/mon-rekon-bankvsperupi"})
 public class Mon01RekonPerUpiController extends HttpServlet {
@@ -59,57 +59,82 @@ public class Mon01RekonPerUpiController extends HttpServlet {
         }
 
         // Default
-        prosesMonPerUpi(req, resp);
+        prosesMonRekapPerUpi(req, resp);
     }
 
-    //3 Panggile Service Monitoring Rekap Per-UPI PLN VS BANK 
-    private void prosesMonPerUpi(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    // 3 Panggil Service Monitoring Rekap Per-UPI PLN VS BANK 
+    private void prosesMonRekapPerUpi(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String vbln_usulan = req.getParameter("vbln_usulan");
-        // String vtahun = req.getParameter("vtahun");
-        int vkode;
-
-        // WAJIB untuk DataTables server-side
-        int draw = Integer.parseInt(req.getParameter("draw") != null ? req.getParameter("draw") : "1");
-
-        logger.info("vbln_usulan: " + vbln_usulan);
-        // logger.info("vtahun: " + vtahun);
+        int vkode = 200; // Default sukses
+        
+        // 1. Antisipasi error jika parameter 'draw' kosong atau bukan angka
+        int draw = 1;
+        String drawParam = req.getParameter("draw");
+        if (drawParam != null && !drawParam.trim().isEmpty()) {
+            try {
+                draw = Integer.parseInt(drawParam);
+            } catch (NumberFormatException e) {
+                logger.warning("Format parameter 'draw' tidak valid, di-set ke default 1");
+            }
+        }
 
         List<Map<String, Object>> data = Collections.emptyList();
         int totalCount = 0;
-        String pesan;
+
+        List<String> pesanMsg = new ArrayList<>();
+        List<Boolean> statusMsg = new ArrayList<>();
 
         try {
-            List<String> pesanOutput = new ArrayList<>();
-            data = service.getDataMPerPerUpi(vbln_usulan, pesanOutput);
-            logger.info("Jumlah data dikembalikan: " + data.size());
+            // Panggil service rekap
+            data = service.getDataMonRkpPerPerUpi(vbln_usulan, pesanMsg, statusMsg);
 
-            String pesanRaw = pesanOutput.isEmpty() ? "" : pesanOutput.get(0).toLowerCase().trim();
-            if (pesanRaw.contains("kesalahan")) {
-                vkode = 402;
-                pesan = "Error:"+pesanOutput.get(0);
-                data = new ArrayList<>();
+            // Ambil status keberhasilan dari service
+            boolean isSuccess = !statusMsg.isEmpty() && statusMsg.get(0);
+            String pesanRaw = pesanMsg.isEmpty() ? "" : pesanMsg.get(0).toLowerCase();
+
+            if (!isSuccess) {
+                data = new ArrayList<>(); // Pastikan data kosong jika gagal
+                
+                 // 🟢 STANDARISASI BARU: Split berdasarkan tanda "|"
+                if (pesanRaw.contains("|")) {
+                    String[] parts = pesanRaw.split("\\|", 2);
+                    try {
+                        vkode     = Integer.parseInt(parts[0]); // Mengambil angka 503 atau 400 langsung dari Service
+                        pesanMsg.set(0, parts[1]);  // Bersihkan string pesanMsg agar bersih tanpa angka kode lagi
+                    } catch ( NumberFormatException e){
+                        vkode = 400; // Database/server tidak aktif
+                    }
+                } else {
+                    vkode = 400; // Parameter request salah / Bad Request
+                }
             } else {
-                totalCount = data.size();
+                totalCount = (data != null) ? data.size() : 0;
                 vkode = 200;
-                pesan = "Sukses: Tampikan data";
-            }
+            }            
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error: Gagal mendapatkan data: " + e.getMessage(), e);
-            vkode = 402;
-            pesan = "Error: Terjadi kesalahan: " + e.getMessage();
+            logger.log(Level.SEVERE, "Error: Gagal mendapatkan data Rekap UPI: " + e.getMessage(), e);
+            vkode = 500; 
+            data = new ArrayList<>();
         }
 
-        // Format JSON sesuai DataTables server-side
+         // Ambil detail status berdasarkan code dari HttpStatusHelper
+        HttpStatusHelper.StatusInfo statusInfo = HttpStatusHelper.getInfo(vkode);
+
+        // Format JSON dengan label yang diminta
         Map<String, Object> jsonResponse = new HashMap<>();
-        jsonResponse.put("draw", draw); // WAJIB
-        jsonResponse.put("recordsTotal", totalCount); // WAJIB
-        jsonResponse.put("recordsFiltered", totalCount); // WAJIB
-        jsonResponse.put("data", data); // WAJIB
-        jsonResponse.put("status", "success");
-        jsonResponse.put("kode", vkode);
-        jsonResponse.put("pesan", pesan);
+        jsonResponse.put("draw", draw);
+        jsonResponse.put("recordsTotal", totalCount);
+        jsonResponse.put("recordsFiltered", totalCount);
+        jsonResponse.put("data", data); // Sekarang aman diakses di sini
+        
+        // Inject label baru ke object JSON sesuai standarisasi util
+        jsonResponse.put("code", vkode);
+        jsonResponse.put("code_Status", statusInfo.getCodeStatus());        
+        // Sekarang pesanMsg sudah bisa diakses dengan aman di sini
+        String finalMessage = (vkode != 200 && !pesanMsg.isEmpty()) ? pesanMsg.get(0) : statusInfo.getCodeMessage();
+        jsonResponse.put("code_message", finalMessage); 
 
-
+        // 🔴 BERSIHKAN DUPLIKAT: Cukup panggil PrintWriter satu kali saja di akhir proses
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
 
@@ -120,31 +145,34 @@ public class Mon01RekonPerUpiController extends HttpServlet {
 
     //4 Panggile Service Monitoring Detail Per-UPI PLN VS BANK
     private void handleGetDetailData(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        // Inisilisasi Paramater Input
         int draw = 1;
         try {
             draw = Integer.parseInt(req.getParameter("draw"));
         } catch (NumberFormatException e) {
             logger.info("Parameter 'draw' tidak ditemukan atau tidak valid. Default: 1");
         }
-
         int startIndex = Integer.parseInt(req.getParameter("start")); // 0, 10, ...
         int length = Integer.parseInt(req.getParameter("length"));
         int start = (startIndex / length) + 1;
-
         String sortColumnIndex = req.getParameter("order[0][column]");
         String sortDir = req.getParameter("order[0][dir]");
         String searchValue = req.getParameter("search[value]");
-
         String sortBy = req.getParameter("columns[" + sortColumnIndex + "][data]");
         if (sortBy == null || sortBy.trim().isEmpty()) {
             sortBy = "KD_DIST";
             sortDir = "ASC";
         }
-
         String vbln_usulan = req.getParameter("vbln_usulan");
         String vkd_bank = req.getParameter("vkd_bank");
         String vkd_dist = req.getParameter("vkd_dist");
+        
+        int vkode = 200; // Default sukses
+        int totalCount = 0;
+        List<String> pesanMsg = new ArrayList<>();
+        List<Boolean> statusMsg = new ArrayList<>();
 
+        // chek parameter input
         logger.info("draw = " + draw);
         logger.info("offset (startIndex) = " + startIndex);
         logger.info("limit (length) = " + length);
@@ -154,46 +182,62 @@ public class Mon01RekonPerUpiController extends HttpServlet {
         logger.info("vkd_bank = " + vkd_bank);
         logger.info("vkd_dist = " + vkd_dist);
 
-        List<String> pesanMsg = new ArrayList<>();
-        List<Boolean> statusMsg = new ArrayList<>();
+        // 🟢 DEKLARASI DI LUAR TRY AGAR BISA DIAKSES DI CATCH & KODE DI BAWAHNYA
+        List<Map<String, Object>> data = new ArrayList<>(); 
 
-        List<Map<String, Object>> data = service.getDataMDftPerUpi(
-            start, length, sortBy, sortDir, searchValue, vbln_usulan, vkd_bank, vkd_dist, pesanMsg, statusMsg
-        );
-
-        System.out.println("Jumlah data yang dikembalikan untuk ekspor: " + data.size());
-
-        Map<String, Object> jsonResponse = new HashMap<>();
+        try {
+            // Isi variabel data tanpa menuliskan tipe datanya lagi
+            data = service.getDataMonDftPerUpi(
+                start, length, sortBy, sortDir, searchValue, vbln_usulan, vkd_bank, vkd_dist, pesanMsg, statusMsg
+            );
         
-        // 🔴 PERBAIKAN UTAMA: Cek status sukses berdasarkan isi boolean dari statusMsg
-        // Jika list statusMsg kosong atau indeks ke-0 bernilai FALSE, berarti terjadi error DB
-        if (statusMsg.isEmpty() || !statusMsg.get(0)) {
-            
-            String errorText = (!pesanMsg.isEmpty()) ? pesanMsg.get(0) : "Database tidak terkoneksi, silakan login ulang";
-            
-            jsonResponse.put("success", false); // Melempar nilai boolean murni ke JavaScript
-            jsonResponse.put("message", errorText);
-            jsonResponse.put("draw", draw);
-            jsonResponse.put("recordsTotal", 0);
-            jsonResponse.put("recordsFiltered", 0);
-            jsonResponse.put("data", new ArrayList<>()); // Kirim array kosong agar aman bagi DataTables
-            
-        } else {
-            // Kondisi Sukses
-            int totalRecords = 0;
-            if (!data.isEmpty() && data.get(0).get("TOTAL_COUNT") != null) {
-                totalRecords = Integer.parseInt(data.get(0).get("TOTAL_COUNT").toString());
-            }
-            
-            String successText = (!pesanMsg.isEmpty()) ? pesanMsg.get(0) : "Sukses memuat data";
+            // Ambil status keberhasilan dari service
+            boolean isSuccess = !statusMsg.isEmpty() && statusMsg.get(0);
+            String pesanRaw   = pesanMsg.isEmpty() ? "" : pesanMsg.get(0);
 
-            jsonResponse.put("success", true); // Melempar nilai boolean murni ke JavaScript
-            jsonResponse.put("message", successText);
-            jsonResponse.put("draw", draw);
-            jsonResponse.put("recordsTotal", totalRecords);
-            jsonResponse.put("recordsFiltered", totalRecords);
-            jsonResponse.put("data", data);
+            if (!isSuccess) {
+                // JIKA SERVICE GAGAL, DETEKSI JENIS ERROR DARI ISI PESANNYA
+                data = new ArrayList<>(); // Kosongkan data
+                
+                // 🟢 STANDARISASI BARU: Split berdasarkan tanda "|"
+                if (pesanRaw.contains("|")) {
+                    String[] parts = pesanRaw.split("\\|", 2);
+                    try {
+                        vkode     = Integer.parseInt(parts[0]); // Mengambil angka 503 atau 400 langsung dari Service
+                        pesanMsg.set(0, parts[1]);  // Bersihkan string pesanMsg agar bersih tanpa angka kode lagi
+                    } catch ( NumberFormatException e){
+                        vkode = 400; // Database/server tidak aktif
+                    }
+                } else {
+                    vkode = 400; // Parameter request salah / Bad Request
+                }
+            } else {
+                // JIKA BERHASIL
+                totalCount = data.size();
+                vkode = 200;
+            }            
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Error: Gagal mendapatkan data: " + e.getMessage(), e);
+            vkode = 500; // Internal Server Error untuk error java/program lainnya
+            data = new ArrayList<>(); // Sekarang baris ini tidak akan error lagi
         }
+
+         // Ambil detail status berdasarkan code dari HttpStatusHelper
+        HttpStatusHelper.StatusInfo statusInfo = HttpStatusHelper.getInfo(vkode);
+
+        // Format JSON dengan label yang diminta
+        Map<String, Object> jsonResponse = new HashMap<>();
+        jsonResponse.put("draw", draw);
+        jsonResponse.put("recordsTotal", totalCount);
+        jsonResponse.put("recordsFiltered", totalCount);
+        jsonResponse.put("data", data); // Sekarang aman diakses di sini
+        
+        // Inject label baru ke object JSON sesuai standarisasi util
+        jsonResponse.put("code", vkode);
+        jsonResponse.put("code_Status", statusInfo.getCodeStatus());        
+        // Sekarang pesanMsg sudah bisa diakses dengan aman di sini
+        String finalMessage = (vkode != 200 && !pesanMsg.isEmpty()) ? pesanMsg.get(0) : statusInfo.getCodeMessage();
+        jsonResponse.put("code_message", finalMessage); 
 
         // 🔴 BERSIHKAN DUPLIKAT: Cukup panggil PrintWriter satu kali saja di akhir proses
         resp.setContentType("application/json");
@@ -259,8 +303,8 @@ public class Mon01RekonPerUpiController extends HttpServlet {
             // Cek mode run: "rekap" atau "detail"
             String mode = "detail"; //(args.length > 0) ? args[0] : "rekap";
 
-            List<String> pesanOutput = new ArrayList<>();
-            List<Boolean> StatusMsg = new ArrayList<>();
+            List<String>  pesanMsg   = new ArrayList<>();
+            List<Boolean> statusMsg  = new ArrayList<>();
 
             if ("detail".equalsIgnoreCase(mode)) {
                 System.out.println("== TEST MODE: DETAIL ==");
@@ -275,10 +319,10 @@ public class Mon01RekonPerUpiController extends HttpServlet {
                 String vkd_bank = "200";
                 String vkd_dist = "11";
 
-                List<Map<String, Object>> detail = service.getDataMDftPerUpi(
+                List<Map<String, Object>> detail = service.getDataMonDftPerUpi(
                         start, length, sortBy, sortDir, search,
                         vbln_usulan, vkd_bank, vkd_dist, 
-                        pesanOutput, StatusMsg
+                        pesanMsg, statusMsg
                 );
 
                 System.out.println("Jumlah data detail: " + detail.size());
@@ -291,14 +335,14 @@ public class Mon01RekonPerUpiController extends HttpServlet {
                 System.out.println("== TEST MODE: REKAP ==");
 
                 String vbln_usulan = "202505";
-                List<Map<String, Object>> rekap = service.getDataMPerPerUpi(vbln_usulan, pesanOutput);
+                List<Map<String, Object>> rekap = service.getDataMonRkpPerPerUpi(vbln_usulan, pesanMsg, statusMsg);
 
                 for (Map<String, Object> row : rekap) {
                     System.out.println(row);
                 }
             }
 
-            System.out.println("Pesan Output: " + (pesanOutput.isEmpty() ? "Tidak ada pesan" : pesanOutput.get(0)));
+            System.out.println("Pesan Output: " + (pesanMsg.isEmpty() ? "Tidak ada pesan" : pesanMsg.get(0)));
 
         } catch (Exception e) {
             System.err.println("Error saat testing: " + e.getMessage());

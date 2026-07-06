@@ -2,14 +2,14 @@
 
 <style>
    /* CSS TABLE REKAP - SAMAKAN DENGAN TABEL Detail */
-    #tablemon_upi {
+    #table_monrkp_upi {
         table-layout: auto; /* Sama seperti #dataModal table */
         font-size: 0.75rem; /* Sama dengan modal-body */
         width: 100%;
     }
 
-    #tablemon_upi th,
-    #tablemon_upi td {
+    #table_monrkp_upi th,
+    #table_monrkp_upi td {
         font-size: 0.7rem;      /* Sama seperti table detail */
         padding: 4px 6px;       /* Sama seperti table detail */
         white-space: nowrap;    /* Hindari wrap */
@@ -17,14 +17,14 @@
         text-overflow: ellipsis;
     }
 
-    #tablemon_upi th.sorting::after,
-    #tablemon_upi th.sorting_asc::after,
-    #tablemon_upi th.sorting_desc::after {
+    #table_monrkp_upi th.sorting::after,
+    #table_monrkp_upi th.sorting_asc::after,
+    #table_monrkp_upi th.sorting_desc::after {
         display: none !important;
     }
 
      /* Tambahan jika mau batas tinggi + scroll seperti modal */
-    #tablemon_upi_wrapper .dataTables_scrollBody {
+    #table_monrkp_upi_wrapper .dataTables_scrollBody {
         max-height: 65vh;       /* Sesuaikan tinggi maksimal seperti modal */
         overflow-y: auto;
     }
@@ -189,7 +189,7 @@
 
         <div class="mt-4 relative">
             <div class="overflow-x-auto w-full">
-                <table id="tablemon_upi" class="table-auto border border-gray-300 w-full text-xs display">
+                <table id="table_monrkp_upi" class="table-auto border border-gray-300 w-full text-xs display">
                     <thead class="bg-gray-100">
                         <tr>
                             <th class="px-2 py-1 text-center border">NO</th>
@@ -371,8 +371,8 @@
 
         calendarIcon.addEventListener('click', () => fp.open());
         
-        // 3) --- DataTables Rekap (tablemon_upi) ---
-        var table = $('#tablemon_upi').DataTable({
+        // 3) --- DataTables Rekap (table_monrkp_upi) ---
+        var table_rekap_upi = $('#table_monrkp_upi').DataTable({
             processing: false,
             serverSide: true,
             scrollX: true, 
@@ -382,17 +382,59 @@
             autoWidth: false,
             info: false,
             stripeClasses: [],
+            // ajax: {
+            //     url: getContextPath() + '/mon-rekon-bankvsperupi', // Ganti dengan URL Servlet yang benar
+            //     type: 'POST',
+            //     data: function (d) {
+            //         // Ambil dari hidden input (YYYYMM)
+            //         const yyyymm = $('#bln_usulan_value').val();
+            //         d.vbln_usulan = yyyymm;
+            //     },
+            //     error: function (xhr, error, thrown) {
+            //         spinnerRekap.removeClass('flex').addClass('hidden'); 
+            //         // Tambahkan notifikasi error jika perlu
+            //     }
+            // },
             ajax: {
-                url: getContextPath() + '/mon-rekon-bankvsperupi', // Ganti dengan URL Servlet yang benar
+                url: getContextPath() + '/mon-rekon-bankvsperupi',
                 type: 'POST',
                 data: function (d) {
-                    // Ambil dari hidden input (YYYYMM)
                     const yyyymm = $('#bln_usulan_value').val();
                     d.vbln_usulan = yyyymm;
                 },
+                // 1. Tangkap error jika server sukses merespons tapi membawa data error (JSON status)
+                dataSrc: function (json) {
+                    // Cek apakah ada code_message atau status bukan sukses
+                    if (json.code && json.code !== 200) {
+                        spinnerRekap.removeClass('flex').addClass('hidden');
+                        
+                        // Panggil fungsi showmessage Anda di sini
+                        // Contoh format: showMessage(Judul, Pesan, Tipe)
+                        if (typeof showMessage === "function") {
+                            showMessageDlg("Error", "Error " + json.code + " - " + json.code_message);
+                        } else {
+                            // alert(json.code_message); // Fallback jika fungsi belum terdefinisi
+                             showMessageDlg("Warning", json.code_message);
+                        }
+                        
+                        return []; // Kembalikan array kosong agar DataTables tidak crash
+                    }
+                    return json.data; // Jika normal, kembalikan datanya
+                },
+                // 2. Tangkap error jika koneksi HTTP benar-benar putus / server mati (HTTP 500, 404, dll)
                 error: function (xhr, error, thrown) {
                     spinnerRekap.removeClass('flex').addClass('hidden'); 
-                    // Tambahkan notifikasi error jika perlu
+                    
+                    let errorMsg = "Terjadi kesalahan pada server.";
+                    if (xhr.responseJSON && xhr.responseJSON.code_message) {
+                        errorMsg = xhr.responseJSON.code_message;
+                    }
+                    
+                    if (typeof showMessage === "function") {
+                        showMessage("Error", errorMsg, "error");
+                    } else {
+                        alert(errorMsg);
+                    }
                 }
             },
             columns: [
@@ -614,10 +656,10 @@
                     d.vkd_dist    = detailFilterParams.vkd_dist || '';
                     d.vproduk     = detailFilterParams.vproduk || '';
                 },
-                // 🔴 Blok ini yang bertugas membedah JSON baru Anda
+                // 1. Tangkap error jika server sukses merespons tapi membawa data error (JSON status)
                 dataSrc: function (json) {
-                    if (json.success === false || json.success === "false") {
-                        
+                    // Cek apakah ada code_message atau status bukan sukses
+                    if (json.code && json.code !== 200) {
                         // 1. Matikan spinner loading
                         if (typeof hideSpinner === "function") {
                             hideSpinner();
@@ -631,23 +673,34 @@
                             modalDetail.classList.add('hidden');
                             modalDetail.classList.remove('flex');
                         }
-
-                        // 3. ✅ AMBIL PESAN ERROR DINAMIS DARI ORACLE
-                        // Ini akan otomatis mengambil teks: "Terjadi kesalahan koneksi ke database: IO Error:..."
-                        let errorServiceMessage = json.message || "Database tidak terkoneksi, silakan login ulang";
-                        showMessage(errorServiceMessage);
-
-                        // Kembalikan array kosong sebagai tanda potong kompas proses DataTable
-                        return [];
+                        
+                        // Panggil fungsi showmessage Anda di sini
+                        // Contoh format: showMessage(Judul, Pesan, Tipe)
+                        if (typeof showMessage === "function") {
+                            showMessageDlg("Error", "Error " + json.code + " - " + json.code_message);
+                        } else {
+                            // alert(json.code_message); // Fallback jika fungsi belum terdefinisi
+                            showMessageDlg("Warning", json.code_message);
+                        }
+                        
+                        return []; // Kembalikan array kosong agar DataTables tidak crash
                     }
-
-                    // Jika json.success === true, loloskan data ke dalam tabel
-                    return json.data;
+                    return json.data; // Jika normal, kembalikan datanya
                 },
+                // 2. Tangkap error jika koneksi HTTP benar-benar putus / server mati (HTTP 500, 404, dll)
                 error: function (xhr, error, thrown) {
-                    if (typeof hideSpinner === "function") hideSpinner();
+                    spinnerRekap.removeClass('flex').addClass('hidden'); 
+                    
+                    let errorMsg = "Terjadi kesalahan pada server.";
+                    if (xhr.responseJSON && xhr.responseJSON.code_message) {
+                        errorMsg = xhr.responseJSON.code_message;
+                    }
+                    
                     if (typeof showMessage === "function") {
-                        showMessage("Gagal menghubungi server aplikasi (Network Error).");
+                        showMessage("Error", errorMsg, "error");
+                    } else {
+                        // alert(errorMsg);
+                        showMessageDlg("Warning", errorMsg);
                     }
                 }
             },
@@ -713,13 +766,13 @@
         // table.on('preXhr.dt', function () {
         //     spinnerRekap.removeClass('hidden').addClass('flex');  
         // });
-        table.on('preXhr.dt', function() {
+        table_rekap_upi.on('preXhr.dt', function() {
             showSpinner();
         }).on('xhr.dt', function() {
             hideSpinner();
         });
 
-        table.on('xhr.dt', function () {
+        table_rekap_upi.on('xhr.dt', function () {
             spinnerRekap.removeClass('flex').addClass('hidden');   
         });
 
@@ -738,17 +791,18 @@
         // ---------------------------------------------------------------------------------------------
         $('#btnTampil').on('click', function () {
             if (!$('#bln_usulan_value').val()) {
-                alert("Silakan pilih Bulan Laporan terlebih dahulu!");
+                //alert("Silakan pilih Bulan Laporan terlebih dahulu!");
+                showMessageDlg("Warning", "Silakan pilih Bulan Laporan terlebih dahulu!");
                 return;
             }
             // Tampilkan spinner Rekap secara manual sebelum reload
             spinnerRekap.removeClass('hidden').addClass('flex');   
-            table.ajax.reload();
+            table_rekap_upi.ajax.reload();
         });
         
         // Trigger Download Excel Rekap
         $('#btnExportMonRkpAllExcel2').on('click', function () {
-            table.button(0).trigger();
+            table_rekap_upi.button(0).trigger();
         });
 
         // ----------------------------------------------------------------------------
@@ -812,7 +866,8 @@
             const vproduk = detailFilterParams.vproduk;
 
             if (!vbln_usulan || !vkd_bank || !vkd_dist) {
-                alert('Silakan lengkapi filter terlebih dahulu!');
+                // alert('Silakan lengkapi filter terlebih dahulu!');
+                showMessageDlg("Warning", "Silakan lengkapi filter terlebih dahulu!");
                 btn.prop('disabled', false).html('<i class="fa fa-file-excel"></i> <span>Export Detail Per-UPI</span>');
                 spinnerDetail.removeClass('flex').addClass('hidden');
                 return;
@@ -901,7 +956,8 @@
                 }
 
                 if (allData.length === 0) {
-                    alert('Tidak ada data untuk diekspor!');
+                    // alert('Tidak ada data untuk diekspor!');
+                    showMessageDlg("Warning", "Tidak ada data untuk diekspor!");
                     return;
                 }
 
@@ -965,14 +1021,15 @@
                 XLSX.utils.book_append_sheet(Workbook, ws_info, "Detail Rekon");
 
                 // Nama File
-                const fileName = `MIV_REKON_DETAIL_${vkd_dist}_${vbln_usulan}.xlsx`;
+                const fileName = "MIV_REKON_DETAIL_"+ vkd_dist +"_"+ vbln_usulan +".xlsx";
                 
                 // Tulis dan download file
                 XLSX.writeFile(Workbook, fileName);
 
             } catch (error) {
                 console.error("Error during full export:", error);
-                alert('Gagal mengekspor data: ' + error.message);
+                // alert('Gagal mengekspor data: ' + error.message);
+                showMessageDlg("Warning", "Gagal mengekspor data: " + error.message);
             } finally {
                 btn.prop('disabled', false).html('<i class="fa fa-file-excel"></i> <span>Export Detail Per-UPI</span>');
                 spinnerDetail.removeClass('flex').addClass('hidden');
@@ -980,3 +1037,4 @@
         });
     });
 </script>
+

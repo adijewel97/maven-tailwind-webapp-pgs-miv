@@ -341,19 +341,22 @@ document.addEventListener("DOMContentLoaded", function() {
 
         const bank_miv = document.getElementById("bank_miv").value;
         if (!bank_miv || bank_miv.trim() === "") {
-            alert("⚠ Silakan pilih BANK MIV terlebih dahulu!");
+            // alert("⚠ Silakan pilih BANK MIV terlebih dahulu!");
+            showMessageDlg("Info", "⚠ Silakan pilih BANK MIV terlebih dahulu!");
             return; // stop
         }
 
         const diswil    = document.getElementById("diswil").value;
         if (!diswil || diswil.trim() === "") {
-            alert("⚠ Silakan pilih DISTRIBUSI/WILAYAH terlebih dahulu!");
+            // alert("⚠ Silakan pilih DISTRIBUSI/WILAYAH terlebih dahulu!");
+            showMessageDlg("Info", "⚠ Silakan pilih DISTRIBUSI/WILAYAH terlebih dahulu!");
             return; // stop
         }
         
         const up3       = document.getElementById("up3").value;
         if (!up3 || up3.trim() === "") {
-            alert("⚠ Silakan pilih PILIH UP3 dahulu!");
+            // alert("⚠ Silakan pilih PILIH UP3 dahulu!");
+            showMessageDlg("Info", "⚠ Silakan pilih PILIH UP3 dahulu!");
             return; // stop
         }
 
@@ -368,7 +371,8 @@ document.addEventListener("DOMContentLoaded", function() {
         const selected = Array.from(list.selectedOptions).map(opt => opt.value);
 
         if (selected.length === 0) {
-            alert("⚠ Silakan pilih minimal 1 file PDF!");
+            // alert("⚠ Silakan pilih minimal 1 file PDF!");
+            showMessageDlg("Info", "⚠ Silakan pilih minimal 1 file PDF!");
             return;
         }
 

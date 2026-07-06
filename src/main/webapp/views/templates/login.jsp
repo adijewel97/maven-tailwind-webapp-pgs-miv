@@ -160,7 +160,7 @@
             loginButton.disabled = true;
             loginButton.classList.add("opacity-50", "cursor-not-allowed");
             loginButton.innerHTML =
-                '<i class="fa fa-spinner fa-spin mr-1"></i> Utentikasi...';
+                '<i class="fa fa-spinner fa-spin mr-1"></i> Autentikasi...';
         });
 
         // Menampilkan pesan error jika ada
@@ -178,15 +178,15 @@
 
             switch (error) {
                 case "server":
-                    showMessage("Terjadi kendala koneksi ke database. Silakan hubungi administrator.");
+                    showMessageDlg("Error", "Terjadi kendala koneksi ke database. Silakan hubungi administrator.");
                     break;
 
                 case "invalid":
-                    showMessage("Username atau password salah.");
+                     showMessageDlg("Info","Username atau password salah.");
                     break;
 
                 case "notfound":
-                    showMessage("Username tidak ditemukan.");
+                     showMessageDlg("Info", "Username tidak ditemukan.");
                     break;
             }
         }

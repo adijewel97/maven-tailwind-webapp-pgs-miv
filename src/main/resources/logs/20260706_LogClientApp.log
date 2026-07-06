@@ -1,0 +1,265 @@
+2026-07-06 06:43:31.915 - INFO: draw = 1
+2026-07-06 06:43:31.916 - INFO: offset (startIndex) = 0
+2026-07-06 06:43:31.916 - INFO: limit (length) = 10
+2026-07-06 06:43:31.916 - INFO: sortBy = KD_DIST ASC
+2026-07-06 06:43:31.916 - INFO: searchValue = 
+2026-07-06 06:43:31.916 - INFO: vbln_usulan = 
+2026-07-06 06:43:31.916 - INFO: vkd_bank = 
+2026-07-06 06:43:31.916 - INFO: vkd_dist = 
+2026-07-06 06:43:48.772 - INFO: draw = 2
+2026-07-06 06:43:48.773 - INFO: offset (startIndex) = 0
+2026-07-06 06:43:48.773 - INFO: limit (length) = 10
+2026-07-06 06:43:48.773 - INFO: sortBy = KD_DIST ASC
+2026-07-06 06:43:48.773 - INFO: searchValue = 
+2026-07-06 06:43:48.773 - INFO: vbln_usulan = 202607
+2026-07-06 06:43:48.773 - INFO: vkd_bank = 200
+2026-07-06 06:43:48.773 - INFO: vkd_dist = 41
+2026-07-06 06:44:11.211 - INFO: draw = 1
+2026-07-06 06:44:11.212 - INFO: offset (startIndex) = 0
+2026-07-06 06:44:11.212 - INFO: limit (length) = 1000
+2026-07-06 06:44:11.212 - INFO: sortBy = KD_DIST asc
+2026-07-06 06:44:11.212 - INFO: searchValue = 
+2026-07-06 06:44:11.212 - INFO: vbln_usulan = 202607
+2026-07-06 06:44:11.212 - INFO: vkd_bank = 200
+2026-07-06 06:44:11.212 - INFO: vkd_dist = 41
+2026-07-06 06:46:09.478 - INFO: draw = 3
+2026-07-06 06:46:09.478 - INFO: offset (startIndex) = 0
+2026-07-06 06:46:09.483 - INFO: limit (length) = 10
+2026-07-06 06:46:09.483 - INFO: sortBy = KD_DIST ASC
+2026-07-06 06:46:09.483 - INFO: searchValue = 
+2026-07-06 06:46:09.483 - INFO: vbln_usulan = 202607
+2026-07-06 06:46:09.483 - INFO: vkd_bank = 111
+2026-07-06 06:46:09.483 - INFO: vkd_dist = 54
+2026-07-06 06:52:08.812 - INFO: draw = 1
+2026-07-06 06:52:08.814 - INFO: offset (startIndex) = 0
+2026-07-06 06:52:08.814 - INFO: limit (length) = 10
+2026-07-06 06:52:08.814 - INFO: sortBy = KD_DIST ASC
+2026-07-06 06:52:08.814 - INFO: searchValue = 
+2026-07-06 06:52:08.814 - INFO: vbln_usulan = 
+2026-07-06 06:52:08.815 - INFO: vkd_bank = 
+2026-07-06 06:52:08.815 - INFO: vkd_dist = 
+2026-07-06 06:52:56.123 - INFO: draw = 2
+2026-07-06 06:52:56.124 - INFO: offset (startIndex) = 0
+2026-07-06 06:52:56.124 - INFO: limit (length) = 10
+2026-07-06 06:52:56.124 - INFO: sortBy = KD_DIST ASC
+2026-07-06 06:52:56.124 - INFO: searchValue = 
+2026-07-06 06:52:56.124 - INFO: vbln_usulan = 202607
+2026-07-06 06:52:56.124 - INFO: vkd_bank = 111
+2026-07-06 06:52:56.124 - INFO: vkd_dist = 54
+2026-07-06 06:53:02.441 - INFO: draw = 1
+2026-07-06 06:53:02.443 - INFO: offset (startIndex) = 0
+2026-07-06 06:53:02.443 - INFO: limit (length) = 1000
+2026-07-06 06:53:02.443 - INFO: sortBy = KD_DIST asc
+2026-07-06 06:53:02.443 - INFO: searchValue = 
+2026-07-06 06:53:02.443 - INFO: vbln_usulan = 202607
+2026-07-06 06:53:02.444 - INFO: vkd_bank = 111
+2026-07-06 06:53:02.444 - INFO: vkd_dist = 54
+2026-07-06 07:06:30.552 - INFO: draw = 1
+2026-07-06 07:06:30.553 - INFO: offset (startIndex) = 0
+2026-07-06 07:06:30.553 - INFO: limit (length) = 10
+2026-07-06 07:06:30.553 - INFO: sortBy = KD_DIST ASC
+2026-07-06 07:06:30.553 - INFO: searchValue = 
+2026-07-06 07:06:30.553 - INFO: vbln_usulan = 
+2026-07-06 07:06:30.553 - INFO: vkd_bank = 
+2026-07-06 07:06:30.553 - INFO: vkd_dist = 
+2026-07-06 07:17:19.436 - INFO: draw = 1
+2026-07-06 07:17:19.437 - INFO: offset (startIndex) = 0
+2026-07-06 07:17:19.437 - INFO: limit (length) = 10
+2026-07-06 07:17:19.437 - INFO: sortBy = KD_DIST ASC
+2026-07-06 07:17:19.437 - INFO: searchValue = 
+2026-07-06 07:17:19.437 - INFO: vbln_usulan = 
+2026-07-06 07:17:19.437 - INFO: vkd_bank = 
+2026-07-06 07:17:19.437 - INFO: vkd_dist = 
+2026-07-06 07:21:36.888 - INFO: draw = 2
+2026-07-06 07:21:36.889 - INFO: offset (startIndex) = 0
+2026-07-06 07:21:36.889 - INFO: limit (length) = 10
+2026-07-06 07:21:36.889 - INFO: sortBy = KD_DIST ASC
+2026-07-06 07:21:36.889 - INFO: searchValue = 
+2026-07-06 07:21:36.889 - INFO: vbln_usulan = 202607
+2026-07-06 07:21:36.889 - INFO: vkd_bank = 200
+2026-07-06 07:21:36.890 - INFO: vkd_dist = 41
+2026-07-06 07:25:39.779 - INFO: draw = 1
+2026-07-06 07:25:39.779 - INFO: offset (startIndex) = 0
+2026-07-06 07:25:39.779 - INFO: limit (length) = 10
+2026-07-06 07:25:39.779 - INFO: sortBy = KD_DIST ASC
+2026-07-06 07:25:39.779 - INFO: searchValue = 
+2026-07-06 07:25:39.779 - INFO: vbln_usulan = 
+2026-07-06 07:25:39.779 - INFO: vkd_bank = 
+2026-07-06 07:25:39.783 - INFO: vkd_dist = 
+2026-07-06 07:31:03.819 - INFO: draw = 1
+2026-07-06 07:31:03.820 - INFO: offset (startIndex) = 0
+2026-07-06 07:31:03.820 - INFO: limit (length) = 10
+2026-07-06 07:31:03.820 - INFO: sortBy = KD_DIST ASC
+2026-07-06 07:31:03.820 - INFO: searchValue = 
+2026-07-06 07:31:03.820 - INFO: vbln_usulan = 
+2026-07-06 07:31:03.820 - INFO: vkd_bank = 
+2026-07-06 07:31:03.820 - INFO: vkd_dist = 
+2026-07-06 07:31:38.524 - INFO: draw = 2
+2026-07-06 07:31:38.526 - INFO: offset (startIndex) = 0
+2026-07-06 07:31:38.526 - INFO: limit (length) = 10
+2026-07-06 07:31:38.526 - INFO: sortBy = KD_DIST ASC
+2026-07-06 07:31:38.526 - INFO: searchValue = 
+2026-07-06 07:31:38.527 - INFO: vbln_usulan = 202607
+2026-07-06 07:31:38.527 - INFO: vkd_bank = 111
+2026-07-06 07:31:38.527 - INFO: vkd_dist = 54
+2026-07-06 07:41:35.304 - INFO: draw = 1
+2026-07-06 07:41:35.306 - INFO: offset (startIndex) = 0
+2026-07-06 07:41:35.307 - INFO: limit (length) = 10
+2026-07-06 07:41:35.307 - INFO: sortBy = KD_DIST ASC
+2026-07-06 07:41:35.307 - INFO: searchValue = 
+2026-07-06 07:41:35.307 - INFO: vbln_usulan = 
+2026-07-06 07:41:35.308 - INFO: vkd_bank = 
+2026-07-06 07:41:35.309 - INFO: vkd_dist = 
+2026-07-06 07:50:25.975 - INFO: ? Memanggil service.getMasterBank()...
+2026-07-06 07:50:26.161 - INFO: ? Berhasil ambil data bank. Jumlah data: 6
+2026-07-06 07:50:26.173 - INFO: ? Berhasil ambil data UNITUPI, jumlah data: 22
+2026-07-06 07:53:28.763 - INFO: draw = 1
+2026-07-06 07:53:28.765 - INFO: offset (startIndex) = 0
+2026-07-06 07:53:28.765 - INFO: limit (length) = 10
+2026-07-06 07:53:28.765 - INFO: sortBy = KD_DIST ASC
+2026-07-06 07:53:28.765 - INFO: searchValue = 
+2026-07-06 07:53:28.765 - INFO: vbln_usulan = 
+2026-07-06 07:53:28.765 - INFO: vkd_bank = 
+2026-07-06 07:53:28.765 - INFO: vkd_dist = 
+2026-07-06 07:53:35.452 - INFO: draw = 2
+2026-07-06 07:53:35.453 - INFO: offset (startIndex) = 0
+2026-07-06 07:53:35.453 - INFO: limit (length) = 10
+2026-07-06 07:53:35.453 - INFO: sortBy = KD_DIST ASC
+2026-07-06 07:53:35.453 - INFO: searchValue = 
+2026-07-06 07:53:35.453 - INFO: vbln_usulan = 202607
+2026-07-06 07:53:35.453 - INFO: vkd_bank = 111
+2026-07-06 07:53:35.453 - INFO: vkd_dist = 54
+2026-07-06 07:53:46.125 - INFO: draw = 3
+2026-07-06 07:53:46.125 - INFO: offset (startIndex) = 0
+2026-07-06 07:53:46.125 - INFO: limit (length) = 10
+2026-07-06 07:53:46.125 - INFO: sortBy = KD_DIST ASC
+2026-07-06 07:53:46.125 - INFO: searchValue = 
+2026-07-06 07:53:46.125 - INFO: vbln_usulan = 202607
+2026-07-06 07:53:46.125 - INFO: vkd_bank = 200
+2026-07-06 07:53:46.125 - INFO: vkd_dist = 55
+2026-07-06 07:57:20.665 - INFO: draw = 1
+2026-07-06 07:57:20.665 - INFO: offset (startIndex) = 0
+2026-07-06 07:57:20.665 - INFO: limit (length) = 10
+2026-07-06 07:57:20.666 - INFO: sortBy = KD_DIST ASC
+2026-07-06 07:57:20.666 - INFO: searchValue = 
+2026-07-06 07:57:20.666 - INFO: vbln_usulan = 
+2026-07-06 07:57:20.666 - INFO: vkd_bank = 
+2026-07-06 07:57:20.666 - INFO: vkd_dist = 
+2026-07-06 07:57:27.347 - INFO: draw = 2
+2026-07-06 07:57:27.349 - INFO: offset (startIndex) = 0
+2026-07-06 07:57:27.349 - INFO: limit (length) = 10
+2026-07-06 07:57:27.349 - INFO: sortBy = KD_DIST ASC
+2026-07-06 07:57:27.349 - INFO: searchValue = 
+2026-07-06 07:57:27.349 - INFO: vbln_usulan = 202607
+2026-07-06 07:57:27.349 - INFO: vkd_bank = 111
+2026-07-06 07:57:27.350 - INFO: vkd_dist = 54
+2026-07-06 08:40:58.539 - INFO: draw = 1
+2026-07-06 08:40:58.539 - INFO: offset (startIndex) = 0
+2026-07-06 08:40:58.539 - INFO: limit (length) = 10
+2026-07-06 08:40:58.539 - INFO: sortBy = KD_DIST ASC
+2026-07-06 08:40:58.540 - INFO: searchValue = 
+2026-07-06 08:40:58.540 - INFO: vbln_usulan = 
+2026-07-06 08:40:58.540 - INFO: vkd_bank = 
+2026-07-06 08:40:58.540 - INFO: vkd_dist = 
+2026-07-06 08:50:43.522 - INFO: ? Memanggil service.getMasterBank()...
+2026-07-06 08:50:43.677 - INFO: ? Berhasil ambil data bank. Jumlah data: 6
+2026-07-06 08:50:43.692 - INFO: ? Berhasil ambil data UNITUPI, jumlah data: 22
+2026-07-06 08:56:14.359 - INFO: ? Memanggil service.getMasterBank()...
+2026-07-06 08:56:14.529 - INFO: ? Berhasil ambil data bank. Jumlah data: 6
+2026-07-06 08:56:14.544 - INFO: ? Berhasil ambil data UNITUPI, jumlah data: 22
+2026-07-06 09:08:04.629 - INFO: ? Memanggil service.getMasterBank()...
+2026-07-06 09:08:04.761 - INFO: ? Berhasil ambil data bank. Jumlah data: 6
+2026-07-06 09:08:04.773 - INFO: ? Berhasil ambil data UNITUPI, jumlah data: 22
+2026-07-06 09:20:13.137 - INFO: draw = 1
+2026-07-06 09:20:13.138 - INFO: offset (startIndex) = 0
+2026-07-06 09:20:13.138 - INFO: limit (length) = 10
+2026-07-06 09:20:13.138 - INFO: sortBy = KD_DIST ASC
+2026-07-06 09:20:13.138 - INFO: searchValue = 
+2026-07-06 09:20:13.139 - INFO: vbln_usulan = 
+2026-07-06 09:20:13.139 - INFO: vkd_bank = 
+2026-07-06 09:20:13.139 - INFO: vkd_dist = 
+2026-07-06 09:20:23.412 - INFO: draw = 2
+2026-07-06 09:20:23.413 - INFO: offset (startIndex) = 0
+2026-07-06 09:20:23.413 - INFO: limit (length) = 10
+2026-07-06 09:20:23.414 - INFO: sortBy = KD_DIST ASC
+2026-07-06 09:20:23.414 - INFO: searchValue = 
+2026-07-06 09:20:23.414 - INFO: vbln_usulan = 202607
+2026-07-06 09:20:23.414 - INFO: vkd_bank = 200
+2026-07-06 09:20:23.414 - INFO: vkd_dist = 31
+2026-07-06 09:20:50.937 - INFO: draw = 1
+2026-07-06 09:20:50.937 - INFO: offset (startIndex) = 0
+2026-07-06 09:20:50.937 - INFO: limit (length) = 1000
+2026-07-06 09:20:50.937 - INFO: sortBy = KD_DIST asc
+2026-07-06 09:20:50.937 - INFO: searchValue = 
+2026-07-06 09:20:50.937 - INFO: vbln_usulan = 202607
+2026-07-06 09:20:50.939 - INFO: vkd_bank = 200
+2026-07-06 09:20:50.939 - INFO: vkd_dist = 31
+2026-07-06 09:21:34.121 - INFO: draw = 3
+2026-07-06 09:21:34.121 - INFO: offset (startIndex) = 0
+2026-07-06 09:21:34.121 - INFO: limit (length) = 10
+2026-07-06 09:21:34.121 - INFO: sortBy = KD_DIST ASC
+2026-07-06 09:21:34.121 - INFO: searchValue = 
+2026-07-06 09:21:34.121 - INFO: vbln_usulan = 202607
+2026-07-06 09:21:34.121 - INFO: vkd_bank = 200
+2026-07-06 09:21:34.121 - INFO: vkd_dist = 55
+2026-07-06 09:26:11.327 - INFO: draw = 1
+2026-07-06 09:26:11.328 - INFO: offset (startIndex) = 0
+2026-07-06 09:26:11.328 - INFO: limit (length) = 10
+2026-07-06 09:26:11.328 - INFO: sortBy = KD_DIST ASC
+2026-07-06 09:26:11.328 - INFO: searchValue = 
+2026-07-06 09:26:11.328 - INFO: vbln_usulan = 
+2026-07-06 09:26:11.328 - INFO: vkd_bank = 
+2026-07-06 09:26:11.328 - INFO: vkd_dist = 
+2026-07-06 09:30:24.976 - INFO: ? Memanggil service.getMasterBank()...
+2026-07-06 09:30:25.109 - INFO: ? Berhasil ambil data bank. Jumlah data: 6
+2026-07-06 09:30:33.042 - INFO: ? Memanggil service.getMasterBank()...
+2026-07-06 09:30:33.184 - INFO: ? Berhasil ambil data bank. Jumlah data: 6
+2026-07-06 09:30:33.207 - INFO: ? Berhasil ambil data UNITUPI, jumlah data: 22
+2026-07-06 09:30:37.400 - INFO: ? Memanggil service.getMasterBank()...
+2026-07-06 09:30:37.585 - INFO: ? Berhasil ambil data bank. Jumlah data: 6
+2026-07-06 09:30:37.609 - INFO: ? Berhasil ambil data UNITUPI, jumlah data: 22
+2026-07-06 09:31:24.184 - INFO: ? Memanggil service.getMasterBank()...
+2026-07-06 09:31:24.326 - INFO: ? Berhasil ambil data bank. Jumlah data: 6
+2026-07-06 09:31:46.467 - INFO: ? Memanggil service.getMasterBank()...
+2026-07-06 09:31:46.632 - INFO: ? Berhasil ambil data bank. Jumlah data: 6
+2026-07-06 09:31:46.643 - INFO: ? Berhasil ambil data UNITUPI, jumlah data: 22
+2026-07-06 09:31:51.472 - INFO: ? Memanggil service.getMasterBank()...
+2026-07-06 09:31:51.593 - INFO: ? Berhasil ambil data bank. Jumlah data: 6
+2026-07-06 09:38:29.760 - INFO: ? Memanggil service.getMasterBank()...
+2026-07-06 09:38:29.936 - INFO: ? Berhasil ambil data bank. Jumlah data: 6
+2026-07-06 09:39:02.966 - INFO: ? Memanggil service.getMasterBank()...
+2026-07-06 09:39:03.128 - INFO: ? Berhasil ambil data bank. Jumlah data: 6
+2026-07-06 09:39:03.140 - INFO: ? Berhasil ambil data UNITUPI, jumlah data: 22
+2026-07-06 09:41:29.035 - INFO: ? Memanggil service.getMasterBank()...
+2026-07-06 09:41:29.199 - INFO: ? Berhasil ambil data bank. Jumlah data: 6
+2026-07-06 09:41:29.215 - INFO: ? Berhasil ambil data UNITUPI, jumlah data: 22
+2026-07-06 09:42:51.720 - INFO: ? Memanggil service.getMasterBank()...
+2026-07-06 09:42:51.956 - INFO: ? Berhasil ambil data bank. Jumlah data: 6
+2026-07-06 09:42:51.984 - INFO: ? Berhasil ambil data UNITUPI, jumlah data: 22
+2026-07-06 09:44:39.801 - INFO: ? Memanggil service.getMasterBank()...
+2026-07-06 09:44:39.967 - INFO: ? Berhasil ambil data bank. Jumlah data: 6
+2026-07-06 09:44:39.983 - INFO: ? Berhasil ambil data UNITUPI, jumlah data: 22
+2026-07-06 09:49:41.292 - INFO: ? Memanggil service.getMasterBank()...
+2026-07-06 09:49:41.677 - INFO: ? Berhasil ambil data bank. Jumlah data: 6
+2026-07-06 09:49:41.727 - INFO: ? Berhasil ambil data UNITUPI, jumlah data: 22
+2026-07-06 09:51:18.345 - INFO: ? Memanggil service.getMasterBank()...
+2026-07-06 09:51:18.568 - INFO: ? Berhasil ambil data bank. Jumlah data: 6
+2026-07-06 09:51:21.172 - INFO: ? Memanggil service.getMasterBank()...
+2026-07-06 09:51:21.617 - INFO: ? Berhasil ambil data bank. Jumlah data: 6
+2026-07-06 09:51:21.637 - INFO: ? Berhasil ambil data UNITUPI, jumlah data: 22
+2026-07-06 10:09:20.122 - INFO: ? Memanggil service.getMasterBank()...
+2026-07-06 10:09:20.260 - INFO: ? Berhasil ambil data bank. Jumlah data: 6
+2026-07-06 10:09:20.280 - INFO: ? Berhasil ambil data UNITUPI, jumlah data: 22
+2026-07-06 10:09:54.804 - INFO: ? Memanggil service.getMasterBank()...
+2026-07-06 10:09:55.100 - INFO: ? Berhasil ambil data bank. Jumlah data: 6
+2026-07-06 10:10:14.849 - INFO: ? Memanggil service.getMasterBank()...
+2026-07-06 10:10:15.024 - INFO: ? Berhasil ambil data bank. Jumlah data: 6
+2026-07-06 10:10:15.058 - INFO: ? Berhasil ambil data UNITUPI, jumlah data: 22
+2026-07-06 10:14:20.352 - INFO: draw = 1
+2026-07-06 10:14:20.354 - INFO: offset (startIndex) = 0
+2026-07-06 10:14:20.354 - INFO: limit (length) = 10
+2026-07-06 10:14:20.355 - INFO: sortBy = KD_DIST ASC
+2026-07-06 10:14:20.355 - INFO: searchValue = 
+2026-07-06 10:14:20.355 - INFO: vbln_usulan = 
+2026-07-06 10:14:20.355 - INFO: vkd_bank = 
+2026-07-06 10:14:20.355 - INFO: vkd_dist = 
