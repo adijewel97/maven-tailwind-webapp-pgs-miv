@@ -240,8 +240,8 @@ document.addEventListener("DOMContentLoaded", function() {
         var bank = document.getElementById("bank_miv").value;
         if (!bank) 
         { 
-            // alert("⚠ Silakan pilih BANK MIV!"); 
-            showMessageDlg("Info", "⚠ Silakan pilih BANK MIV!");
+            // alert("Silakan pilih BANK MIV!"); 
+            showMessageDlg("Info", "Silakan pilih BANK MIV!");
             return; 
         }
 
@@ -325,8 +325,8 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById('btnTampil').addEventListener('click', function () {
         var jenis = document.getElementById("idtxt_rcn").value.trim().toUpperCase();
         if(jenis === "") { 
-            // alert("⚠ Silakan pilih jenis file (TXT/RCN)!"); 
-            showMessageDlg("Error", "⚠ Silakan pilih jenis file (TXT/RCN)!");
+            // alert("Silakan pilih jenis file (TXT/RCN)!"); 
+            showMessageDlg("Error", "Silakan pilih jenis file (TXT/RCN)!");
             return; 
         }
 
@@ -336,8 +336,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function downloadFile(path){
         if(!path || path.substring(0, 9) === "Tidak ada"){ 
-            // alert("⚠ Pilih file valid dulu!"); 
-            showMessageDlg("Info", "⚠ Pilih file valid dulu!");
+            // alert("Pilih file valid dulu!"); 
+            showMessageDlg("Info", "Pilih file valid dulu!");
             return; 
         }
         var url = contextPath + "/mon3ChekFileTxt?act=download&file=" + encodeURIComponent(path);

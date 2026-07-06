@@ -213,9 +213,28 @@ public class Mon01RekonPerUpiController extends HttpServlet {
                 }
             } else {
                 // JIKA BERHASIL
-                totalCount = data.size();
                 vkode = 200;
-            }            
+                
+                if (data != null && !data.isEmpty()) {
+                    Object rawTotal = data.get(0).get("TOTAL_COUNT");
+                    
+                    if (rawTotal != null && !rawTotal.toString().trim().isEmpty()) {
+                        try {
+                            // Menggunakan Math.round & Double.parseDouble untuk mengantisipasi jika ada format "150.0" dari DB
+                            totalCount = (int) Math.round(Double.parseDouble(rawTotal.toString().trim()));
+                        } catch (NumberFormatException e) {
+                            logger.warning("Gagal parsing TOTAL_COUNT ('" + rawTotal + "'), menggunakan total data halaman ini.");
+                            totalCount = data.size();
+                        }
+                    } else {
+                        // Jika TOTAL_COUNT kosong/null tapi ada data, artinya procedure tidak mengembalikan total_count
+                        logger.warning("TOTAL_COUNT dari DB kosong atau null. Fallback ke data.size()");
+                        totalCount = data.size();
+                    }
+                } else {
+                    totalCount = 0;
+                }
+            }                
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error: Gagal mendapatkan data: " + e.getMessage(), e);
             vkode = 500; // Internal Server Error untuk error java/program lainnya

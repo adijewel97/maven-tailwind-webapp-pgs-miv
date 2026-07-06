@@ -644,7 +644,7 @@
             autoWidth: false,
             info: true,
             stripeClasses: [],
-            lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+            lengthMenu: [ [10, 25, 50, 1000], [10, 25, 50, "1000"] ],
             ajax: {
                 url: getContextPath() + '/mon-rekon-bankvsperupi', // ✅ Double slash (//) sudah diperbaiki menjadi single slash (/)
                 type: 'POST',
