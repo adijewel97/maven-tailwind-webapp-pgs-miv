@@ -382,19 +382,6 @@
             autoWidth: false,
             info: false,
             stripeClasses: [],
-            // ajax: {
-            //     url: getContextPath() + '/mon-rekon-bankvsperupi', // Ganti dengan URL Servlet yang benar
-            //     type: 'POST',
-            //     data: function (d) {
-            //         // Ambil dari hidden input (YYYYMM)
-            //         const yyyymm = $('#bln_usulan_value').val();
-            //         d.vbln_usulan = yyyymm;
-            //     },
-            //     error: function (xhr, error, thrown) {
-            //         spinnerRekap.removeClass('flex').addClass('hidden'); 
-            //         // Tambahkan notifikasi error jika perlu
-            //     }
-            // },
             ajax: {
                 url: getContextPath() + '/mon-rekon-bankvsperupi',
                 type: 'POST',
@@ -538,6 +525,7 @@
                 });
             },
             // Konfigurasi Export
+            // Konfigurasi Export
             dom: 'lfrtip', 
             buttons: [{
                 extend: 'excelHtml5',
@@ -563,7 +551,11 @@
                     }
                 },
                 customize: function (xlsx) {
+                    // 🔴 PERBAIKAN 1: Wajib menggunakan 'sheet1.xml' (Bukan nama Tab Excel-nya)
                     var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                    
+                    // (Opsional) Jika Anda ingin nama Tab Sheet di Excel berubah menjadi "Rekap Rekon"
+                    $('sheet', xlsx.xl['workbook.xml']).attr('name', 'Rekap Rekon');
                     
                     // 1. Ambil nilai dinamis judul
                     var bulan = $('#bln_usulan_value').val() || 'ALL';
@@ -578,7 +570,7 @@
                     // 2. Geser indeks baris asli bawaan DataTables ke bawah sebanyak 5 baris
                     $('row', sheet).each(function () {
                         var currentAttrRow = parseInt($(this).attr('r'));
-                        var newAttrRow = currentAttrRow + 5; // Tetap ditambah 5 karena total baris kustom kita ada 5
+                        var newAttrRow = currentAttrRow + 5; // Geser ke baris 6, dst
                         $(this).attr('r', newAttrRow);
                         
                         $('c', this).each(function () {
@@ -606,7 +598,7 @@
                             '<c t="inlineStr" r="B3" s="2">' + // <-- Bold
                                 '<is><t>BULAN</t></is>' +
                             '</c>' +
-                            '<c t="inlineStr" r="C3" s="2">' + // <-- Bold (Isi titik dua dan nilai bulan)
+                            '<c t="inlineStr" r="C3" s="2">' + // <-- Bold
                                 '<is><t>: ' + bulan + '</t></is>' +
                             '</c>' +
                         '</row>' +
@@ -616,7 +608,7 @@
                             '<c t="inlineStr" r="B4" s="2">' + // <-- Bold
                                 '<is><t>TANGGAL CETAK</t></is>' +
                             '</c>' +
-                            '<c t="inlineStr" r="C4" s="2">' + // <-- Bold (Isi titik dua dan nilai tanggal)
+                            '<c t="inlineStr" r="C4" s="2">' + // <-- Bold
                                 '<is><t>: ' + tanggalCetak + '</t></is>' +
                             '</c>' +
                         '</row>' +
@@ -850,191 +842,213 @@
 
             return json.data.NAMA_DIST || '';
         }
-
+       
+        // export Detail data Rekon PLN VS Bank
         $('#btnExportMonDftAllExcelOneSheet').on('click', async function () {
-            const btn = $(this);
-            let totalLoaded = 0;
+        const btn = $(this);
+        let totalLoaded = 0;
 
-            spinnerDetail.removeClass('hidden').addClass('flex');
-            await new Promise(resolve => setTimeout(resolve, 30));
+        spinnerDetail.removeClass('hidden').addClass('flex');
+        await new Promise(resolve => setTimeout(resolve, 30));
 
-            btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> <span>Memuat... (' + formatRibuan(totalLoaded) + " data)</span>");
+        btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> <span>Memuat... (' + formatRibuan(totalLoaded) + " data)</span>");
 
-            const vbln_usulan = detailFilterParams.vbln_usulan;
-            const vkd_bank = detailFilterParams.vkd_bank;
-            const vkd_dist = detailFilterParams.vkd_dist;
-            const vproduk = detailFilterParams.vproduk;
+        const vbln_usulan = detailFilterParams.vbln_usulan;
+        const vkd_bank = detailFilterParams.vkd_bank;
+        const vkd_dist = detailFilterParams.vkd_dist;
+        const vproduk = detailFilterParams.vproduk;
 
-            if (!vbln_usulan || !vkd_bank || !vkd_dist) {
-                // alert('Silakan lengkapi filter terlebih dahulu!');
-                showMessageDlg("Warning", "Silakan lengkapi filter terlebih dahulu!");
-                btn.prop('disabled', false).html('<i class="fa fa-file-excel"></i> <span>Export Detail Per-UPI</span>');
-                spinnerDetail.removeClass('flex').addClass('hidden');
+        if (!vbln_usulan || !vkd_bank || !vkd_dist) {
+            showMessageDlg("Warning", "Silakan lengkapi filter terlebih dahulu!");
+            btn.prop('disabled', false).html('<i class="fa fa-file-excel"></i> <span>Export Detail Per-UPI</span>');
+            spinnerDetail.removeClass('flex').addClass('hidden');
+            return;
+        }
+
+        let namaBank = '';
+        let namaUPI  = '';
+        try {
+            namaBank = await fetchNamaBank(vkd_bank);
+            if (vkd_dist === '00') {
+                namaUPI  = '00 - SAKTI'
+            } else {
+                namaUPI  = (await fetchNamaUnitUPI(vkd_dist));
+            }
+            const pageSize = 1000;
+            let start = 0;
+            let allData = [];
+            let drawCounter = 1;
+
+            const headers = {
+                PRODUK: 'PRODUK', TGLAPPROVE: 'TGL APPROVE', KD_DIST: 'KD DIST', VA: 'VA', SATKER: 'SATKER',
+                PLN_NOUSULAN: 'PLN NO USULAN', PLN_IDPEL: 'PLN IDPEL', PLN_BLTH: 'PLN BLTH', PLN_LUNAS_H0: 'PLN LUNAS H0',
+                PLN_RPTAG: 'PLN RPTAG', PLN_RPBK: 'PLN RPBK', PLN_TGLBAYAR: 'PLN TGL BAYAR', PLN_JAMBAYAR: 'PLN JAM BAYAR',
+                PLN_USERID: 'PLN USER ID', PLN_KDBANK: 'PLN KD BANK', BANK_NOUSULAN: 'BANK NO USULAN',
+                BANK_IDPEL: 'BANK IDPEL', BANK_BLTH: 'BANK BLTH', BANK_RPTAG: 'BANK RPTAG', BANK_RPBK: 'BANK RPBK',
+                BANK_TGLBAYAR: 'BANK TGL BAYAR', BANK_JAMBAYAR: 'BANK JAM BAYAR', BANK_USERID: 'BANK USER ID', BANK_KDBANK: 'BANK KD BANK',
+                SELISIH_RPTAG: 'SELISIH RPTAG', SELISIH_BK: 'SELISIH BK', KETERANGAN: 'KETERANGAN'
+            };
+            
+            let totalRecords = 0;
+
+            while (true) {
+                const params = new URLSearchParams();
+                params.append('act', 'detailData');
+                params.append('vbln_usulan', vbln_usulan);
+                params.append('vkd_bank', vkd_bank);
+                params.append('vkd_dist', vkd_dist);
+                params.append('vproduk', vproduk);
+                params.append('start', start);
+                params.append('length', pageSize);
+                params.append('draw', drawCounter++);
+                params.append('order[0][column]', '0');
+                params.append('order[0][dir]', 'asc');
+                params.append('columns[0][data]', 'KD_DIST');
+                params.append('search[value]', '');
+
+                const response = await fetch(getContextPath() + '/mon-rekon-bankvsperupi', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: params.toString()
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error('Status: ' + response.status + '\n' + errorText);
+                }
+
+                const json = await response.json();
+                const data = json.data;
+                totalRecords = json.recordsTotal;
+                
+                if (!data || data.length === 0) break;
+
+                const formatted = data.map((item) => {
+                    const row = {};
+                    Object.keys(headers).forEach(key => {
+                        if (['PLN_RPTAG', 'PLN_RPBK', 'BANK_RPTAG', 'BANK_RPBK', 'SELISIH_RPTAG', 'SELISIH_BK'].includes(key)) {
+                            row[key] = parseFloat(String(item[key] || '0').replace(/\./g, '').replace(/,/g, '.')) || 0;
+                        } else {
+                            row[key] = String(item[key] || '');
+                        }
+                    });
+                    return row;
+                });
+
+                allData = allData.concat(formatted);
+                totalLoaded += data.length;
+                
+                btn.html('<i class="fa fa-spinner fa-spin"></i> <span>Memuat... (' + formatRibuan(totalLoaded) + "/" + formatRibuan(totalRecords) + " data)</span>");
+                await new Promise(resolve => setTimeout(resolve, 10));
+
+                if (data.length < pageSize || totalLoaded >= totalRecords) break;
+
+                start += pageSize;
+            }
+
+            if (allData.length === 0) {
+                showMessageDlg("Warning", "Tidak ada data untuk diekspor!");
                 return;
             }
 
-            let namaBank = '';
-            let namaUPI  = '';
-            try {
-                namaBank = await fetchNamaBank(vkd_bank);
-                if (vkd_dist === '00') {
-                    namaUPI  = '00 - SAKTI'
-                } else {
-                    namaUPI  = (await fetchNamaUnitUPI(vkd_dist));
-                }
-                const pageSize = 1000;
-                let start = 0;
-                let allData = [];
-                let drawCounter = 1;
+            // 🟢 PEMBUATAN TIMESTAMP KEMBALI DISEDIAKAN DI SINI
+            const now = new Date();
+            const dd = String(now.getDate()).padStart(2, '0');
+            const mm = String(now.getMonth() + 1).padStart(2, '0');
+            const yyyy = now.getFullYear();
+            const hh = String(now.getHours()).padStart(2, '0');
+            const mi = String(now.getMinutes()).padStart(2, '0');
+            const ss = String(now.getSeconds()).padStart(2, '0');
+            const timestamp = dd + "/" + mm + "/" + yyyy + " " + hh + ":" + mi + ":" + ss;
 
-                const headers = {
-                    PRODUK: 'PRODUK', TGLAPPROVE: 'TGL APPROVE', KD_DIST: 'KD DIST', VA: 'VA', SATKER: 'SATKER',
-                    PLN_NOUSULAN: 'PLN NO USULAN', PLN_IDPEL: 'PLN IDPEL', PLN_BLTH: 'PLN BLTH', PLN_LUNAS_H0: 'PLN LUNAS H0',
-                    PLN_RPTAG: 'PLN RPTAG', PLN_RPBK: 'PLN RPBK', PLN_TGLBAYAR: 'PLN TGL BAYAR', PLN_JAMBAYAR: 'PLN JAM BAYAR',
-                    PLN_USERID: 'PLN USER ID', PLN_KDBANK: 'PLN KD BANK', BANK_NOUSULAN: 'BANK NO USULAN',
-                    BANK_IDPEL: 'BANK IDPEL', BANK_BLTH: 'BANK BLTH', BANK_RPTAG: 'BANK RPTAG', BANK_RPBK: 'BANK RPBK',
-                    BANK_TGLBAYAR: 'BANK TGL BAYAR', BANK_JAMBAYAR: 'BANK JAM BAYAR', BANK_USERID: 'BANK USER ID', BANK_KDBANK: 'BANK KD BANK',
-                    SELISIH_RPTAG: 'SELISIH RPTAG', SELISIH_BK: 'SELISIH BK', KETERANGAN: 'KETERANGAN'
+            // --- PROSES EXPORT MENGGUNAKAN EXCELJS ---
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet('Detail Rekon');
+
+            // 1. Susun Judul & Info di Kolom B (Baris 1 - 8)
+            worksheet.getCell('B1').value = "MANAGEMENT INSTANSI VERTIKAL";
+            worksheet.getCell('B2').value = "DETAIL REKONSILIASI PLN VS BANK";
+             
+            worksheet.getCell('B3').value = "UID/UIW";
+            worksheet.getCell('C3').value = ": " + namaUPI;
+            
+            worksheet.getCell('B4').value = "BANK MIV";
+            worksheet.getCell('C4').value = ": " + vkd_bank + (namaBank ? " - " + namaBank : '');
+            
+            worksheet.getCell('B5').value = "PRODUK";
+            worksheet.getCell('C5').value = ": " + vproduk;
+
+            worksheet.getCell('B6').value = "BULAN";
+            worksheet.getCell('C6').value = ": " + vbln_usulan.substring(4, 6) + '/' + vbln_usulan.substring(0, 4);
+           
+            
+            worksheet.getCell('B7').value = "TOTAL DATA";
+            worksheet.getCell('C7').value = ": " + formatRibuan(totalLoaded);
+            
+            worksheet.getCell('B8').value = "TANGGAL DOWNLOAD";
+            worksheet.getCell('C8').value = ": " + timestamp;
+
+            // Styling untuk Judul Utama (B1 & B2) -> BOLD & UKURAN BESAR
+            ['B1', 'B2'].forEach(cellRef => {
+                worksheet.getCell(cellRef).font = { bold: true, size: 12, name: 'Arial' };
+            });
+
+            // Styling untuk Label Info (B3 sampai B8) -> BOLD
+            for (let i = 3; i <= 8; i++) {
+                worksheet.getCell('B' + i).font = { bold: true, name: 'Arial' };
+            }
+
+            // 2. Tambahkan Header Tabel di Baris 10 (Mulai Kolom A / Kolom 1)
+            const tableHeaders = ['NO', ...Object.values(headers)];
+            const headerRow = worksheet.getRow(10);
+            headerRow.values = tableHeaders;
+            
+            // Styling untuk Header Tabel -> BOLD, Background Biru Lembut, Text Center
+            headerRow.eachCell((cell) => {
+                cell.font = { bold: true, color: { argb: 'FFFFFF' }, name: 'Arial' };
+                cell.fill = {
+                    type: 'pattern',
+                    pattern: 'solid',
+                    fgColor: { argb: '4F81BD' }
                 };
-                
-                let totalRecords = 0;
+                cell.alignment = { vertical: 'middle', horizontal: 'center' };
+            });
+            headerRow.height = 25;
 
-                while (true) {
-                    const params = new URLSearchParams();
-                    params.append('act', 'detailData');
-                    params.append('vbln_usulan', vbln_usulan);
-                    params.append('vkd_bank', vkd_bank);
-                    params.append('vkd_dist', vkd_dist);
-                    params.append('vproduk', vproduk);
-                    params.append('start', start);
-                    params.append('length', pageSize);
-                    params.append('draw', drawCounter++);
-                    params.append('order[0][column]', '0');
-                    params.append('order[0][dir]', 'asc');
-                    params.append('columns[0][data]', 'KD_DIST');
-                    params.append('search[value]', '');
-
-                    const response = await fetch(getContextPath() + '/mon-rekon-bankvsperupi', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        body: params.toString()
-                    });
-
-                    if (!response.ok) {
-                        const errorText = await response.text();
-                        throw new Error('Status: ' + response.status + '\n' + errorText);
-                    }
-
-                    const json = await response.json();
-                    const data = json.data;
-                    totalRecords = json.recordsTotal;
-                    
-                    if (!data || data.length === 0) break;
-
-                    const formatted = data.map((item) => {
-                        const row = {};
-                        Object.keys(headers).forEach(key => {
-                            // Cek jika field adalah angka, biarkan sebagai angka (Excel akan memformatnya)
-                            if (['PLN_RPTAG', 'PLN_RPBK', 'BANK_RPTAG', 'BANK_RPBK', 'SELISIH_RPTAG', 'SELISIH_BK'].includes(key)) {
-                                row[key] = parseFloat(String(item[key] || '0').replace(/\./g, '').replace(/,/g, '.')) || 0;
-                            } else {
-                                row[key] = String(item[key] || '');
-                            }
-                        });
-                        return row;
-                    });
-
-                    allData = allData.concat(formatted);
-                    totalLoaded += data.length;
-                    
-                    btn.html('<i class="fa fa-spinner fa-spin"></i> <span>Memuat... (' + formatRibuan(totalLoaded) + "/" + formatRibuan(totalRecords) + " data)</span>");
-                    await new Promise(resolve => setTimeout(resolve, 10));
-
-                    if (data.length < pageSize || totalLoaded >= totalRecords) break;
-
-                    start += pageSize;
-                }
-
-                if (allData.length === 0) {
-                    // alert('Tidak ada data untuk diekspor!');
-                    showMessageDlg("Warning", "Tidak ada data untuk diekspor!");
-                    return;
-                }
-
-                // --- Proses Excel Export (Menggunakan SheetJS/js-xlsx) ---
-                // Asumsi Anda sudah memiliki library SheetJS (xlsx.full.min.js) di halaman Anda
-                
-                const Workbook = XLSX.utils.book_new();
-                
-                // Buat timestamp dan judul
-                const now = new Date();
-                const dd = String(now.getDate()).padStart(2, '0');
-                const mm = String(now.getMonth() + 1).padStart(2, '0');
-                const yyyy = now.getFullYear();
-                const hh = String(now.getHours()).padStart(2, '0');
-                const mi = String(now.getMinutes()).padStart(2, '0');
-                const ss = String(now.getSeconds()).padStart(2, '0');
-                const timestamp = dd + "/" + mm + "/" + yyyy + " " + hh + ":" + mi + ":" + ss;
-                
-                // Susun data untuk Header Informasi
-                const headerInfo = [
-                    ["MIV REKON DETAIL"],
-                    ["BULAN", ": "+ vbln_usulan.substring(4, 6) + '/' + vbln_usulan.substring(0, 4) ],
-                    ["UID/UIW", ": "+ namaUPI ],
-                    ["BANK MIV", ": " + vkd_bank + (namaBank ? " - " + namaBank : '') ],
-                    ["PRODUK", ": " + vproduk ],
-                    ["TOTAL DATA", ": " + formatRibuan(totalLoaded) ],
-                    ["TANGGAL DOWNLOAD", ": "+ timestamp],
-                    [] // Baris kosong sebelum header tabel
-                ];
-                
-                // Konversi data array ke format sheet
-                const ws_info = XLSX.utils.aoa_to_sheet(headerInfo);
-
-                // Tambahkan header tabel (kolom NO manual)
-                const ws_data = [
-                    ['NO', ...Object.values(headers)] 
-                ];
-
-                // Tambahkan data detail
-                allData.forEach((row, index) => {
-                    const dataRow = [index + 1];
-                    Object.keys(headers).forEach(key => {
-                        dataRow.push(row[key]);
-                    });
-                    ws_data.push(dataRow);
+            // 3. Tambahkan Data Detail (Mulai Baris 11)
+            allData.forEach((row, index) => {
+                const dataRowValues = [index + 1];
+                Object.keys(headers).forEach(key => {
+                    dataRowValues.push(row[key]);
                 });
                 
-                // Konversi data tabel ke format sheet
-                const ws_table = XLSX.utils.aoa_to_sheet(ws_data);
-                
-                // Gabungkan kedua sheet (info dan data)
-                XLSX.utils.sheet_add_aoa(ws_info, ws_data, { origin: "A10" }); // Mulai data tabel dari baris A10
-                
-                // Styling (opsional, hanya untuk sel tertentu)
-                // ws_info['A1'].s = { font: { bold: true, sz: 14 } }; // Judul
-                // for (let i = 0; i < 7; i++) {
-                //     ws_info['A' + (i + 2)].s = { font: { bold: true } }; // Label info
-                // }
-                
-                // Tambahkan sheet ke Workbook
-                XLSX.utils.book_append_sheet(Workbook, ws_info, "Detail Rekon");
+                worksheet.addRow(dataRowValues);
+            });
 
-                // Nama File
-                const fileName = "MIV_REKON_DETAIL_"+ vkd_dist +"_"+ vbln_usulan +".xlsx";
-                
-                // Tulis dan download file
-                XLSX.writeFile(Workbook, fileName);
+            // 4. Auto-fit lebar kolom agar rapi tidak terpotong (###)
+            worksheet.columns.forEach(column => {
+                let maxLen = 0;
+                column.eachCell({ includeEmpty: false }, (cell) => {
+                    const cellLen = cell.value ? cell.value.toString().length : 0;
+                    if (cellLen > maxLen) maxLen = cellLen;
+                });
+                column.width = maxLen < 10 ? 10 : maxLen + 3;
+            });
 
-            } catch (error) {
-                console.error("Error during full export:", error);
-                // alert('Gagal mengekspor data: ' + error.message);
-                showMessageDlg("Warning", "Gagal mengekspor data: " + error.message);
-            } finally {
-                btn.prop('disabled', false).html('<i class="fa fa-file-excel"></i> <span>Export Detail Per-UPI</span>');
-                spinnerDetail.removeClass('flex').addClass('hidden');
-            }
-        });
+            // 5. Generate File dan Trigger Download via FileSaver.js
+            const fileName = "MIV_REKON_DETAIL_" + vkd_dist + "_" + vbln_usulan + ".xlsx";
+            const buffer = await workbook.xlsx.writeBuffer();
+            saveAs(new Blob([buffer]), fileName);
+
+        } catch (error) {
+            console.error("Error during full export:", error);
+            showMessageDlg("Warning", "Gagal mengekspor data: " + error.message);
+        } finally {
+            btn.prop('disabled', false).html('<i class="fa fa-file-excel"></i> <span>Export Detail Per-UPI</span>');
+            spinnerDetail.removeClass('flex').addClass('hidden');
+        }
+    });
+
     });
 </script>
 
