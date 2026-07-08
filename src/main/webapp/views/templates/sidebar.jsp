@@ -4,6 +4,7 @@
     if (menuAttr == null) menuAttr = "";
 
     boolean monitoringActive =
+        "monitoring-pending-ap2t-p2apst".equals(menuAttr) ||
         "monitoring-rekon-bank-upi".equals(menuAttr) ||
         "Struk-bank-miv".equals(menuAttr) ||
         "chek-filertxt-bank".equals(menuAttr) ||
@@ -50,7 +51,18 @@
         <ul id="submenuMonitoring"
             class="submenu-popover md:pl-6 mt-1 space-y-1 transition-all duration-300 ease-in-out <%= monitoringActive ? "" : "hidden" %>">
 
-          <li>
+            <li>
+              <a href="index.jsp?page=/views/monitoring/mon00_pendingmiv_ap2tkep2apst.jsp&menu=monitoring-pending-ap2t-p2apst"
+                title="Mon Mohon Pending MIV AP2T Ke P2APST"
+                class="block px-4 py-2 rounded-md transition text-sm
+                        <%= "monitoring-pending-ap2t-p2apst".equals(menuAttr)
+                            ? "bg-cyan-800 text-white font-semibold"
+                            : "text-gray-300 hover:bg-cyan-600 hover:text-white" %>">
+                <span class="sidebar-text">Mon Mohon Pending MIV AP2T Ke P2APST</span>
+              </a>
+            </li>
+
+            <li>
             <a href="index.jsp?page=/views/monitoring/mon01_rekonflag_pln_vs_bank.jsp&menu=monitoring-rekon-bank-upi"
                title="Mon Rekon BANK vs PLN"
                class="block px-4 py-2 rounded-md transition text-sm

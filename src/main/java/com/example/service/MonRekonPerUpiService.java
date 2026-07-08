@@ -37,7 +37,7 @@ public class MonRekonPerUpiService {
 
             // 2. Eksekusi Prosedur
             stmt.execute();
-            logger.info("Prosedur Utama berhasil dieksekusi");
+            logger.info("Prosedur Rekap Rekon PPLN VS BANK berhasil dieksekusi");
 
             // 3. Mapping ResultSet ke List Map (ResultSet otomatis close setelah blok ini)
             try (ResultSet rs = (ResultSet) stmt.getObject(2)) {
@@ -106,6 +106,7 @@ public class MonRekonPerUpiService {
         try (Connection conn = dataSource.getConnection()) {
             
             try (CallableStatement stmt = conn.prepareCall(sql)) {
+                // 1. Set Parameter Input dan Register Parameter Output
                 stmt.setInt(1, start);
                 stmt.setInt(2, length);
                 stmt.setString(3, sortDir);
@@ -117,8 +118,11 @@ public class MonRekonPerUpiService {
                 stmt.registerOutParameter(9, OracleTypes.CURSOR);
                 stmt.registerOutParameter(10, Types.VARCHAR);
 
+                // 2. Eksekusi Prosedur
                 stmt.execute();
+                logger.info("Prosedur Detail Rekon PPLN VS BANK berhasil dieksekusi");
 
+                // 3. Mapping ResultSet ke List Map (ResultSet otomatis close setelah blok ini)
                 try (ResultSet rs = (ResultSet) stmt.getObject(9)) {
                     while (rs.next()) {
                         Map<String, Object> row = new HashMap<>();

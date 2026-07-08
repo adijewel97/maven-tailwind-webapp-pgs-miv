@@ -2,14 +2,14 @@
 
 <style>
    /* CSS TABLE REKAP - SAMAKAN DENGAN TABEL Detail */
-    #table_monrkp_upi {
+    #table_monrkp_pendingupi {
         table-layout: auto; /* Sama seperti #dataModal table */
         font-size: 0.75rem; /* Sama dengan modal-body */
         width: 100%;
     }
 
-    #table_monrkp_upi th,
-    #table_monrkp_upi td {
+    #table_monrkp_pendingupi th,
+    #table_monrkp_pendingupi td {
         font-size: 0.7rem;      /* Sama seperti table detail */
         padding: 4px 6px;       /* Sama seperti table detail */
         white-space: nowrap;    /* Hindari wrap */
@@ -17,22 +17,22 @@
         text-overflow: ellipsis;
     }
 
-    #table_monrkp_upi th.sorting::after,
-    #table_monrkp_upi th.sorting_asc::after,
-    #table_monrkp_upi th.sorting_desc::after {
+    #table_monrkp_pendingupi th.sorting::after,
+    #table_monrkp_pendingupi th.sorting_asc::after,
+    #table_monrkp_pendingupi th.sorting_desc::after {
         display: none !important;
     }
 
      /* Tambahan jika mau batas tinggi + scroll seperti modal */
-    #table_monrkp_upi_wrapper .dataTables_scrollBody {
+    #table_monrkp_pendingupi_wrapper .dataTables_scrollBody {
         max-height: 65vh;       /* Sesuaikan tinggi maksimal seperti modal */
         overflow-y: auto;
     }
 
     /* Header DataTables Detail */
-    #table_mondaf_upi thead th,
-    #table_mondaf_upi.dataTable thead th,
-    #table_mondaf_upi.dataTable thead td {
+    #table_mondaf_pendingupi thead th,
+    #table_mondaf_pendingupi.dataTable thead th,
+    #table_mondaf_pendingupi.dataTable thead td {
         font-weight: 700 !important;
         text-align: center !important;
         vertical-align: middle !important;
@@ -189,7 +189,7 @@
 
         <div class="mt-4 relative">
             <div class="overflow-x-auto w-full">
-                <table id="table_monrkp_upi" class="table-auto border border-gray-300 w-full text-xs display">
+                <table id="table_monrkp_pendingupi" class="table-auto border border-gray-300 w-full text-xs display">
                     <thead class="bg-gray-100">
                         <tr>
                             <th class="px-2 py-1 text-center border">NO</th>
@@ -232,7 +232,7 @@
             </div>
 
             <div class="overflow-x-auto w-full">
-                <table id="table_mondaf_upi" class="table-auto border border-gray-300 w-full text-xs display">
+                <table id="table_mondaf_pendingupi" class="table-auto border border-gray-300 w-full text-xs display">
                     <thead class="bg-gray-100">
                         <tr>
                             <th class="px-2 py-1">NO</th>
@@ -371,8 +371,8 @@
 
         calendarIcon.addEventListener('click', () => fp.open());
         
-        // 3) --- DataTables Rekap (table_monrkp_upi) ---
-        var table_rekap_upi = $('#table_monrkp_upi').DataTable({
+        // 3) --- DataTables Rekap (table_monrkp_pendingupi) ---
+        var table_rekap_upi = $('#table_monrkp_pendingupi').DataTable({
             processing: false,
             serverSide: true,
             scrollX: true, 
@@ -525,7 +525,6 @@
                 });
             },
             // Konfigurasi Export
-            // Konfigurasi Export
             dom: 'lfrtip', 
             buttons: [{
                 extend: 'excelHtml5',
@@ -533,7 +532,7 @@
                 title: null,
                 filename: function () {
                     var bln = $('#bln_usulan_value').val() || 'ALL';
-                    return 'MIV_REKON_REKAP_PLN_Vs_BANK' + bln;
+                    return 'MIV_REKON_REKAP_PLN_Vs_BANK_' + bln;
                 },
                 exportOptions: {
                     format: {
@@ -551,10 +550,9 @@
                     }
                 },
                 customize: function (xlsx) {
-                    // 🔴 PERBAIKAN 1: Wajib menggunakan 'sheet1.xml' (Bukan nama Tab Excel-nya)
                     var sheet = xlsx.xl.worksheets['sheet1.xml'];
                     
-                    // (Opsional) Jika Anda ingin nama Tab Sheet di Excel berubah menjadi "Rekap Rekon"
+                    // Mengubah nama Tab Sheet di Excel
                     $('sheet', xlsx.xl['workbook.xml']).attr('name', 'Rekap Rekon');
                     
                     // 1. Ambil nilai dinamis judul
@@ -568,9 +566,10 @@
                         ("0" + now.getMinutes()).slice(-2);
 
                     // 2. Geser indeks baris asli bawaan DataTables ke bawah sebanyak 5 baris
+                    var vawalData = 5;
                     $('row', sheet).each(function () {
                         var currentAttrRow = parseInt($(this).attr('r'));
-                        var newAttrRow = currentAttrRow + 5; // Geser ke baris 6, dst
+                        var newAttrRow = currentAttrRow + vawalData; // Geser ke baris 6, dst
                         $(this).attr('r', newAttrRow);
                         
                         $('c', this).each(function () {
@@ -580,39 +579,54 @@
                         });
                     });
 
+                    // 🌟 PERBAIKAN AKURAT: Cari langsung string "TOTAL" di XML sheet Excel
+                    $('row', sheet).each(function () {
+                        var isTotalRow = false;
+                        
+                        // Cek apakah ada cell di baris ini yang berisi teks "TOTAL"
+                        $(this).find('is t').each(function () {
+                            if ($(this).text().trim() === 'TOTAL') {
+                                isTotalRow = true;
+                                return false; // break dari loop text
+                            }
+                        });
+                        
+                        // Jika ditemukan, ubah seluruh cell di baris ini menjadi BOLD (s="2")
+                        if (isTotalRow) {
+                            $(this).find('c').each(function () {
+                                $(this).attr('s', '2'); // s="2" adalah style default bold DataTables
+                            });
+                        }
+                    });
+
                     // 3. Susun XML baris judul baru dengan tambahan s="2" untuk BOLD
                     var header =
                         '<row r="1">' +
-                            '<c t="inlineStr" r="B1" s="2">' + // <-- s="2" membuat text BOLD
+                            '<c t="inlineStr" r="B1" s="2">' +
                                 '<is><t>MANAGEMENT INSTANSI VERTIKAL</t></is>' +
                             '</c>' +
                         '</row>' +
                         '<row r="2">' +
-                            '<c t="inlineStr" r="B2" s="2">' + // <-- s="2" membuat text BOLD
+                            '<c t="inlineStr" r="B2" s="2">' +
                                 '<is><t>REKAP REKONSILIASI PLN VS BANK</t></is>' +
                             '</c>' +
                         '</row>' +
-                        
-                        // --- BARIS 3: Label BULAN dibuat Bold ---
                         '<row r="3">' +
-                            '<c t="inlineStr" r="B3" s="2">' + // <-- Bold
+                            '<c t="inlineStr" r="B3" s="2">' +
                                 '<is><t>BULAN</t></is>' +
                             '</c>' +
-                            '<c t="inlineStr" r="C3" s="2">' + // <-- Bold
+                            '<c t="inlineStr" r="C3" s="2">' +
                                 '<is><t>: ' + bulan + '</t></is>' +
                             '</c>' +
                         '</row>' +
-                        
-                        // --- BARIS 4: Label TANGGAL CETAK dibuat Bold ---
                         '<row r="4">' +
-                            '<c t="inlineStr" r="B4" s="2">' + // <-- Bold
+                            '<c t="inlineStr" r="B4" s="2">' +
                                 '<is><t>TANGGAL CETAK</t></is>' +
                             '</c>' +
-                            '<c t="inlineStr" r="C4" s="2">' + // <-- Bold
+                            '<c t="inlineStr" r="C4" s="2">' +
                                 '<is><t>: ' + tanggalCetak + '</t></is>' +
                             '</c>' +
                         '</row>' +
-                        
                         '<row r="5">' +
                             '<c t="inlineStr" r="A5">' +
                                 '<is><t></t></is>' + 
@@ -623,10 +637,11 @@
                     $('sheetData', sheet).prepend(header);
                 }
             }]
+
         });
 
-        // 4) --- DataTables Detail (table_mondaf_upi) ---
-        table_detail_upi = $('#table_mondaf_upi').DataTable({
+        // 4) --- DataTables Detail (table_mondaf_pendingupi) ---
+        table_detail_upi = $('#table_mondaf_pendingupi').DataTable({
             processing: false, // Diganti dengan spinner manual
             serverSide: true,
             scrollX: true, 
@@ -770,7 +785,7 @@
 
 
         // Spinner Detail (hanya untuk area modal detail)
-        $('#table_mondaf_upi').on('preXhr.dt', function() {
+        $('#table_mondaf_pendingupi').on('preXhr.dt', function() {
              showSpinner();
         }).on('xhr.dt', function() {
             hideSpinner();

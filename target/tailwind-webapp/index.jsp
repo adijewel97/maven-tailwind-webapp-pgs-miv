@@ -245,21 +245,18 @@
 </footer>
 
 <script src="${pageContext.request.contextPath}/assets/js/jquery-3.7.1.min.js"></script>
+<!-- datatable -->
 <script src="${pageContext.request.contextPath}/assets/dataTables/js/jquery.dataTables.min.js"></script>
 <script src="${pageContext.request.contextPath}/assets/dataTables/js/dataTables.buttons.min.js"></script>
 <script src="${pageContext.request.contextPath}/assets/dataTables/js/buttons.html5.min.js"></script>
 <script src="${pageContext.request.contextPath}/assets/dataTables/js/jszip.min.js"></script>
+<!-- export exel -->
 <script src="${pageContext.request.contextPath}/assets/excel/js/cdnjs_cloudflare_com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
 <script src="${pageContext.request.contextPath}/assets/excel/js/cdnjs_cloudflare_com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="https://npmcdn.com/flatpickr/dist/l10n/id.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
-<!-- <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script> -->
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.2/FileSaver.min.js"></script> -->
-
-<!-- export exel -->
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script> -->
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script> -->
+<!-- datetpicker -->
+<script src="${pageContext.request.contextPath}/assets/flatpickr/npm/flatpickr.js"></script>
+<script src="${pageContext.request.contextPath}/assets/flatpickr/dist/l10n/id.js"></script>
+<script src="${pageContext.request.contextPath}/assets/flatpickr/dist/plugins/plugins/index.js"></script>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
