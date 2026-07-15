@@ -1,32 +1,23 @@
-2026-07-15 06:54:49.144 - INFO: draw = 1
-2026-07-15 06:54:49.145 - INFO: offset (startIndex) = 0
-2026-07-15 06:54:49.145 - INFO: limit (length) = 10
-2026-07-15 06:54:49.145 - INFO: sortBy = KD_DIST ASC
-2026-07-15 06:54:49.146 - INFO: searchValue = 
-2026-07-15 06:54:49.146 - INFO: vbln_usulan = 
-2026-07-15 06:54:49.146 - INFO: vkd_bank = 
-2026-07-15 06:54:49.146 - INFO: vkd_dist = 
-2026-07-15 06:55:06.557 - INFO: draw = 1
-2026-07-15 06:55:06.559 - INFO: offset (startIndex) = 0
-2026-07-15 06:55:06.559 - INFO: limit (length) = 10
-2026-07-15 06:55:06.559 - INFO: sortBy = KD_DIST ASC
-2026-07-15 06:55:06.559 - INFO: searchValue = 
-2026-07-15 06:55:06.559 - INFO: vbln_usulan = 
-2026-07-15 06:55:06.559 - INFO: vkd_bank = 
-2026-07-15 06:55:06.559 - INFO: vkd_dist = 
-2026-07-15 06:55:09.544 - INFO: draw = 1
-2026-07-15 06:55:09.545 - INFO: offset (startIndex) = 0
-2026-07-15 06:55:09.545 - INFO: limit (length) = 10
-2026-07-15 06:55:09.545 - INFO: sortBy = KD_DIST ASC
-2026-07-15 06:55:09.545 - INFO: searchValue = 
-2026-07-15 06:55:09.545 - INFO: vbln_usulan = 
-2026-07-15 06:55:09.545 - INFO: vkd_bank = 
-2026-07-15 06:55:09.546 - INFO: vkd_dist = 
-2026-07-15 06:55:23.287 - INFO: draw = 1
-2026-07-15 06:55:23.287 - INFO: offset (startIndex) = 0
-2026-07-15 06:55:23.287 - INFO: limit (length) = 10
-2026-07-15 06:55:23.287 - INFO: sortBy = KD_DIST ASC
-2026-07-15 06:55:23.287 - INFO: searchValue = 
-2026-07-15 06:55:23.287 - INFO: vbln_usulan = 
-2026-07-15 06:55:23.287 - INFO: vkd_bank = 
-2026-07-15 06:55:23.287 - INFO: vkd_dist = 
+2026-07-15 14:45:56.794 - INFO: ? Memanggil service.getMasterBank()...
+2026-07-15 14:45:57.036 - INFO: ? Berhasil ambil data bank. Jumlah data: 3
+2026-07-15 14:45:57.065 - INFO: ? Berhasil ambil data UNITUPI, jumlah data: 28
+2026-07-15 14:46:45.707 - INFO: ? Memanggil service.getMasterBank()...
+2026-07-15 14:46:47.160 - INFO: ? Berhasil ambil data bank. Jumlah data: 3
+2026-07-15 14:46:47.270 - INFO: ? Berhasil ambil data UNITUPI, jumlah data: 28
+2026-07-15 14:54:51.665 - INFO: ? Memanggil service.getMasterBank()...
+2026-07-15 14:54:52.644 - INFO: ? Berhasil ambil data bank. Jumlah data: 3
+2026-07-15 15:00:21.588 - INFO: ? Memanggil service.getMasterBank()...
+2026-07-15 15:00:22.815 - INFO: ? Berhasil ambil data bank. Jumlah data: 3
+2026-07-15 15:00:23.070 - INFO: ? Berhasil ambil data UNITUPI, jumlah data: 28
+2026-07-15 15:02:01.180 - INFO: ? Memanggil service.getMasterBank()...
+2026-07-15 15:02:01.452 - INFO: ? Berhasil ambil data bank. Jumlah data: 3
+2026-07-15 15:02:01.598 - INFO: ? Berhasil ambil data UNITUPI, jumlah data: 28
+2026-07-15 15:02:50.816 - INFO: ? Memanggil service.getMasterBank()...
+2026-07-15 15:02:50.936 - INFO: ? Berhasil ambil data bank. Jumlah data: 3
+2026-07-15 15:02:50.953 - INFO: ? Berhasil ambil data UNITUPI, jumlah data: 28
+2026-07-15 15:57:03.707 - INFO: ? Memanggil service.getMasterBank()...
+2026-07-15 15:57:04.215 - INFO: ? Berhasil ambil data bank. Jumlah data: 3
+2026-07-15 15:57:04.283 - INFO: ? Berhasil ambil data UNITUPI, jumlah data: 28
+2026-07-15 16:09:31.311 - INFO: ? Memanggil service.getMasterBank()...
+2026-07-15 16:09:32.116 - INFO: ? Berhasil ambil data bank. Jumlah data: 3
+2026-07-15 16:09:32.214 - INFO: ? Berhasil ambil data UNITUPI, jumlah data: 28

@@ -16,6 +16,23 @@
 @keyframes spin {
     100% { transform: rotate(360deg); }
 }
+
+/* atur tinggi imput sama sengan combo*/
+/* 1. Samakan tinggi wrapper Bulan Laporan agar pas 38px */
+#bln_usulan {
+    height: 36px !important; /* Kurangi 2px untuk mengompensasi border atas & bawah div pembungkus */
+}
+
+/* Pastikan pembungkus Bulan Laporan (div flex) memiliki tinggi total tepat 38px */
+#bln_usulanAndCalendarWrapper {
+    height: 38px !important;
+}
+
+/* 2. Samakan tinggi input ID Transaksi agar pas 38px */
+#idtrans {
+    height: 38px !important;
+}
+
 </style>
 
 <div id="spinnerOverlay"
@@ -159,6 +176,22 @@ document.addEventListener("DOMContentLoaded", function() {
         spinner.classList.remove('flex'); 
         spinner.classList.add('hidden');
     }
+
+    // -----------------------------------------------------
+    // 0) Inisialisasi Instance Select2 untuk Bank MIV (Menggantikan Tom Select)
+    // -----------------------------------------------------
+    // Menggunakan jQuery ($) karena Select2 membutuhkan jQuery
+    $('#bank_miv').select2({
+        placeholder: "-- Pilih Bank MIV --",
+        allowClear: true,
+        width: '100%' // Memastikan lebar penuh mengikuti grid Tailwind
+    }); 
+
+     $('#idtxt_rcn').select2({
+        placeholder: "-- Pilih File TXT Untuk BANK--",
+        allowClear: true,
+        width: '100%' // Memastikan lebar penuh mengikuti grid Tailwind
+    }); 
 
     function convertBulanTahunToYYYYMM(input) {
         var bulanMap = {

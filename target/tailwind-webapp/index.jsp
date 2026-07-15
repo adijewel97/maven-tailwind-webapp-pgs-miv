@@ -44,6 +44,13 @@
     <!-- exel css export-->
     <script src="${pageContext.request.contextPath}/assets/excel/js/xlsx.full.min.js"></script>
 
+    <!-- ==========================================
+         JQUERY & SELECT2 (Ditaruh konsisten di atas)
+         ========================================== -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <style>
         /* GLOBAL */
         html, body {
@@ -55,6 +62,46 @@
         }
 
         :root { --footer-height: 50px; }
+
+        /* ================================================================
+           CUSTOM CSS SELECT2 AGAR AKURAT DENGAN TAILWIND
+        ================================================================ */
+        .select2-container--default .select2-selection--single {
+            border: 1px solid #d1d5db !important; /* border-gray-300 */
+            border-radius: 0.375rem !important;   /* rounded-md */
+            height: 38px !important;              /* Menyesuaikan tinggi input biasa */
+            padding: 0.25rem 0.5rem !important;
+            display: flex !important;
+            align-items: center !important;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 28px !important;
+            font-size: 0.875rem !important;       /* text-sm */
+            color: #374151 !important;            /* text-gray-700 */
+            padding-left: 0px !important;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 36px !important;
+            right: 8px !important;
+            display: flex !important;
+            align-items: center !important;
+        }
+        
+        /* Dropdown Box (Pencarian dan List Data di bawah) */
+        .select2-dropdown {
+            border: 1px solid #d1d5db !important;
+            border-radius: 0.375rem !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+            z-index: 9999 !important; /* Menghindari tertutup elemen modal/grid */
+        }
+        
+        .select2-container--default .select2-search--dropdown .select2-search__field {
+            border: 1px solid #d1d5db !important;
+            border-radius: 0.25rem !important;
+            padding: 6px 8px !important;
+        }
 
         /* ================================================================
            SIDEBAR
@@ -71,27 +118,22 @@
         /* COLLAPSE SIDEBAR */
         #sidebar.collapsed {
             width: 4rem !important;
-            overflow-y: visible !important; /* Penting agar menu melayang tidak terpotong scroll */
+            overflow-y: visible !important;
         }
         #sidebar.collapsed .sidebar-text {
             display: none;
         }
 
-        /* Hover item utama di sidebar */
         .sidebar-item:hover {
             background: #0891b2 !important; /* cyan-600 */
             transition: 0.2s ease-in-out;
         }
 
-        /* ================================================================
-           FLYOUT SUBMENU (Saat Sidebar Mengecil)
-        ================================================================ */
-        /* Bungkus posisi sub-menu secara relatif terhadap baris menu induk */
+        /* FLYOUT SUBMENU */
         #sidebar.collapsed .submenu-wrapper {
             position: relative;
         }
 
-        /* Base style untuk sub-menu melayang di kanan */
         #sidebar.collapsed .submenu-popover {
             position: absolute;
             left: 4rem;
@@ -101,27 +143,22 @@
             box-shadow: 4px 4px 10px rgba(0,0,0,0.3);
             border-radius: 0 6px 6px 0;
             z-index: 99;
-            display: none; /* Default sembunyi */
+            display: none;
         }
 
-        /* 1. AKSI DISOROT (HOVER): Munculkan jika wrapper disorot mouse */
         #sidebar.collapsed .submenu-wrapper:hover .submenu-popover {
             display: block !important;
         }
 
-        /* 2. AKSI DIKLIK: Munculkan jika ditambahkan class aktif via JS klik */
         #sidebar.collapsed .submenu-popover.show-popover {
             display: block !important;
         }
 
-        /* Kembalikan teks dalam sub-menu agar terlihat di dalam kotak popover */
         #sidebar.collapsed .submenu-popover .sidebar-text {
             display: inline !important;
         }
 
-        /* ================================================================
-           MOBILE SIDEBAR
-        ================================================================ */
+        /* MOBILE SIDEBAR */
         @media (max-width: 767px) {
             #sidebar {
                 position: fixed;
@@ -158,17 +195,6 @@
             height: var(--footer-height);
             background: #ffffff;
             z-index: 45;
-        }
-
-        /* MAIN MAIN CONTENT */
-       /* #mainContent{
-            margin-left: 16rem;
-            margin-top: 60px;
-            transition: all .3s ease;
-        }
-        */
-        :root{
-            --footer-height:50px;
         }
 
         #mainContent{
@@ -244,7 +270,7 @@
     <strong>MangAdi © 2025 <a class="text-cyan-600">MIV</a>.</strong> All rights reserved.
 </footer>
 
-<script src="${pageContext.request.contextPath}/assets/js/jquery-3.7.1.min.js"></script>
+<!-- CATATAN: jquery-3.7.1.min.js di bawah ini TELAH DIHAPUS agar tidak menimpa library jQuery + Select2 di atas -->
 <!-- datatable -->
 <script src="${pageContext.request.contextPath}/assets/dataTables/js/jquery.dataTables.min.js"></script>
 <script src="${pageContext.request.contextPath}/assets/dataTables/js/dataTables.buttons.min.js"></script>
@@ -275,7 +301,6 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             sidebar.classList.toggle("collapsed");
             
-            // Bersihkan sisa popover klik yang aktif saat dikembalikan ke ukuran normal
             document.querySelectorAll('.submenu-popover').forEach(el => {
                 el.classList.remove('show-popover');
             });
@@ -312,7 +337,6 @@ document.addEventListener("DOMContentLoaded", () => {
             menuProfile.classList.remove("opacity-100","pointer-events-auto","scale-100");
         }
         
-        // Klik di luar area sidebar akan menutup popover menu yang sengaja dibuka lewat klik
         if (sidebar.classList.contains('collapsed') && !sidebar.contains(e.target)) {
             document.querySelectorAll('.submenu-popover').forEach(el => {
                 el.classList.remove('show-popover');

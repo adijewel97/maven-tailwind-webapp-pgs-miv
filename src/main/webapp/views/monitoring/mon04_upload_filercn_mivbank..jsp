@@ -49,7 +49,7 @@
         </div>
         
         <!-- Fitur Pencarian & Bersihkan -->
-        <div class="flex items-center gap-2 w-full md:w-auto">
+        <!-- <div class="flex items-center gap-2 w-full md:w-auto">
             <div class="relative w-full md:w-64">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
                     <i class="fa fa-search text-xs"></i>
@@ -60,7 +60,7 @@
             <button id="btnClearLog" type="button" class="text-xs bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1.5 rounded transition whitespace-nowrap">
                 Bersihkan Log
             </button>
-        </div>
+        </div> -->
     </div>
     
     <div class="overflow-x-auto">
@@ -102,19 +102,19 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // Aksi tombol bersihkan tabel log
-    document.getElementById("btnClearLog").addEventListener("click", function() {
-        if (table_logrcn) {
-            table_logrcn.clear().draw(); 
-        }
-        searchLog.value = "";
-    });
+    // document.getElementById("btnClearLog").addEventListener("click", function() {
+    //     if (table_logrcn) {
+    //         table_logrcn.clear().draw(); 
+    //     }
+    //     searchLog.value = "";
+    // });
 
     // Hubungkan input search custom ke DataTables
-    searchLog.addEventListener('keyup', function() {
-        if (table_logrcn) {
-            table_logrcn.search(this.value).draw();
-        }
-    });
+    // searchLog.addEventListener('keyup', function() {
+    //     if (table_logrcn) {
+    //         table_logrcn.search(this.value).draw();
+    //     }
+    // });
 
     async function loadFilesRcn() {
         showSpinner();

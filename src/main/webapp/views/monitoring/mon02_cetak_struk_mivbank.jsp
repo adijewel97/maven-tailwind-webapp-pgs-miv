@@ -1,10 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
+<!-- 1. Tambahkan Select2 CSS & jQuery jika belum ada di parent template Anda -->
+<!-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> -->
+
 <style>
-/* ----------
-   Spinner CSS (versi kecil & mirip style sebelumnya)
-   ----------
-*/
+/* ---------- Spinner CSS ---------- */
 #loadingSpinner {
     display: none;
     position: fixed;
@@ -23,7 +23,6 @@
     text-align: center;
 }
 
-/* Spinner bulat kecil */
 .spinner-mini {
     border: 3px solid #3b82f6;
     border-top-color: transparent;
@@ -34,7 +33,6 @@
     animation: spin 0.8s linear infinite;
 }
 
-/* Posisi overlay tambahan jika diperlukan */
 .overlay-spinner {
     position: absolute;
     top: 40%;
@@ -45,9 +43,75 @@
 @keyframes spin {
     100% { transform: rotate(360deg); }
 }
+
+/* 
+   KUSTOMISASI SELECT2 AGAR MATCING DENGAN TAILWIND 
+   Menggantikan style .ts-wrapper lama Anda
+*/
+.select2-container--default .select2-selection--single {
+    border-color: #d1d5db !important; /* border-gray-300 */
+    border-radius: 0.25rem !important; /* rounded */
+    height: 38px !important; /* Menyesuaikan tinggi input default Tailwind */
+    display: flex !important;
+    align-items: center;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #374151 !important; /* text-gray-700 */
+    font-size: 0.875rem !important; /* text-sm */
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 36px !important;
+}
+
+.select2-container--default.select2-container--focus .select2-selection--single {
+    box-shadow: 0 0 0 1px #3b82f6 !important; /* focus:ring-1 focus:ring-blue-500 */
+    border-color: #3b82f6 !important;
+}
+
+/* atur tinggi imput sama sengan combo*/
+/* 1. Samakan tinggi wrapper Bulan Laporan agar pas 38px */
+#bln_usulan {
+    height: 36px !important; /* Kurangi 2px untuk mengompensasi border atas & bawah div pembungkus */
+}
+
+/* Pastikan pembungkus Bulan Laporan (div flex) memiliki tinggi total tepat 38px */
+#bln_usulanAndCalendarWrapper {
+    height: 38px !important;
+}
+
+/* 2. Samakan tinggi input ID Transaksi agar pas 38px */
+#id_transaksi {
+    height: 38px !important;
+}
+
+/* 3. Penyelaras visual Select2 (Memastikan tepat 38px dengan padding yang pas) */
+.select2-container--default .select2-selection--single {
+    border-color: #d1d5db !important; /* border-gray-300 */
+    border-radius: 0.25rem !important; /* rounded */
+    height: 38px !important; 
+    display: flex !important;
+    align-items: center !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #374151 !important;
+    font-size: 0.875rem !important;
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+    line-height: 36px !important; /* Menjaga teks di tengah secara vertikal */
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 36px !important;
+}
+
 </style>
 
-<!-- ✅ Spinner universal (bisa dipakai rekap & detail) -->
+<!-- ✅ Spinner universal -->
 <div id="spinnerOverlay"
      class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
             z-[9999] flex-col items-center justify-center bg-white bg-opacity-80 
@@ -56,11 +120,9 @@
     <span class="text-xs text-gray-600 mt-2 font-medium">Loading...</span>
 </div>
 
-<!-- =========================
-     FORM FILTER
-     ========================= -->
+<!-- ========================= FORM FILTER ========================= -->
 <div class="flex justify-center">
-    <fieldset class="border border-gray-300 rounded p-5 mt-4 w-full  mx-auto bg-white shadow text-left">
+    <fieldset class="border border-gray-300 rounded p-5 mt-4 w-full mx-auto bg-white shadow text-left">
         <legend class="text-sm font-bold px-3 text-left">Download/Print Struk - Bank MIV</legend>
 
         <form id="form-monitoring" class="w-full">
@@ -68,21 +130,21 @@
                 <!-- Bulan Laporan -->
                 <div class="col-span-12 md:col-span-3">
                     <label for="bln_usulan" class="block text-gray-700 mb-1 font-medium">Bulan Laporan :</label>
-                    <div class="flex border border-gray-300 rounded items-center">
+                    <!-- TAMBAHKAN ID DISINI (bln_usulanAndCalendarWrapper) dan class h-[38px] -->
+                    <div id="bln_usulanAndCalendarWrapper" class="flex border border-gray-300 rounded items-center h-[38px] bg-white">
                         <input type="text" id="bln_usulan"
                             class="flex-1 px-3 py-2 text-sm uppercase focus:outline-none focus:ring-1 focus:ring-blue-500"
                             placeholder="Pilih Bulan Laporan" readonly>
-                        <i id="calendarIcon"
-                        class="fa fa-calendar text-gray-500 px-3 cursor-pointer hover:text-blue-600"></i>
+                        <i id="calendarIcon" class="fa fa-calendar text-gray-500 px-3 cursor-pointer hover:text-blue-600"></i>
                     </div>
                     <input type="hidden" id="bln_usulan_value" name="bln_usulan_value">
                 </div>
 
-                <!-- Bank MIV -->
+                <!-- Bank MIV (Sekarang Menggunakan Select2) -->
                 <div class="col-span-12 md:col-span-3">
                     <label for="bank_miv" class="block text-gray-700 mb-1 font-medium">Bank MIV :</label>
-                    <select id="bank_miv" name="bank_miv"
-                            class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-1 focus:ring-blue-500">
+                    <!-- Hapus placeholder & autocomplete bawaan karena akan di-handle Select2 via JS -->
+                    <select id="bank_miv" name="bank_miv" class="w-full text-sm">
                         <option value="">-- Pilih Bank MIV --</option>
                     </select>
                 </div>
@@ -124,24 +186,16 @@
     </fieldset>
 </div>
 
-<!-- =========================
-     DAFTAR FILE PDF
-     ========================= -->
-<fieldset class="border border-gray-300 rounded p-5 mt-4 w-full  mx-auto bg-white shadow text-left">
+<!-- ========================= DAFTAR FILE PDF ========================= -->
+<fieldset class="border border-gray-300 rounded p-5 mt-4 w-full mx-auto bg-white shadow text-left">
     <legend class="text-sm font-bold px-3 text-left">List File Struk - MIV</legend>
         <div class="flex justify-center">
-            <fieldset class="border border-gray-300  p-5 mt-4 w-full text-center bg-white shadow">
+            <fieldset class="border border-gray-300 p-5 mt-4 w-full text-center bg-white shadow">
                 <h3 class="text-xl font-semibold mb-4">📂 Daftar File PDF</h3>
-
-                <!-- loading text -->
                 <div id="loading" class="text-blue-600 animate-pulse mb-3">Memuat daftar file dari FTP...</div>
-
-                <!-- list -->
                 <div class="flex justify-center">
                     <select id="thelist" size="10" class="border border-gray-300 rounded w-full md:w-[980px] p-2" multiple></select>
                 </div>
-
-                <!-- tombol print/download -->
                 <div class="flex justify-center mt-4">
                     <button id="btnPrint" type="button"
                             class="max-w-[160px] w-full bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded shadow flex items-center justify-center gap-2 transition duration-150 ease-in-out">
@@ -150,24 +204,44 @@
                 </div>
             </fieldset>
         </div>
-    </fieldset>
 </fieldset>
 
-<!-- =========================
-     SCRIPT
-     ========================= -->
+<!-- 2. Tambahkan Select2 JS Link jika belum ada -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> -->
+
+<!-- ========================= SCRIPT ========================= -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
-    // helper - context path (tidak mengubah alur)
     function getContextPath() {
         return '<%= request.getContextPath() %>';
     }
 
     const spinner = document.getElementById('spinnerOverlay');
-
     function showSpinner(){ spinner.style.display='flex'; }
     function hideSpinner(){ spinner.style.display='none'; }
+
+    // -----------------------------------------------------
+    // 0) Inisialisasi Instance Select2 untuk Bank MIV (Menggantikan Tom Select)
+    // -----------------------------------------------------
+    // Menggunakan jQuery ($) karena Select2 membutuhkan jQuery
+    $('#bank_miv').select2({
+        placeholder: "-- Pilih Bank MIV --",
+        allowClear: true,
+        width: '100%' // Memastikan lebar penuh mengikuti grid Tailwind
+    }); 
+
+    $('#diswil').select2({
+        placeholder: "-- Pilih Distribusi/Wilayah --",
+        allowClear: true,
+        width: '100%' // Memastikan lebar penuh mengikuti grid Tailwind
+    });
+    
+     $('#up3').select2({
+        placeholder: "-- Pilih UP3 --",
+        allowClear: true,
+        width: '100%' // Agar mengikuti grid Tailwind Anda
+    });
 
     // -------------------------
     // 1) Load FTP files (AJAX)
@@ -200,10 +274,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const json = await res.json();
             const files = json.files || [];
-
-            // =======================
-            // FILTER BERDASARKAN ID TRANSAKSI
-            // =======================
             let filteredFiles = files;
 
             if (idTransaksiFilter && idTransaksiFilter !== '*') {
@@ -282,16 +352,14 @@ document.addEventListener("DOMContentLoaded", function () {
             "Juli": "07", "Agustus": "08", "September": "09",
             "Oktober": "10", "November": "11", "Desember": "12"
         };
-
-        const parts = input.split(" ");   // "November 2025" → ["November", "2025"]
+        const parts = input.split(" ");
         const bulan = bulanMap[parts[0]] || '';
         const tahun = parts[1] || '';
-
-        return tahun + bulan; // "2025" + "11" → "202511"
+        return tahun + bulan;
     }
 
     // -------------------------
-    // 4) Load Bank MIV
+    // 4) Load Bank MIV (Diubah penuh ke Gaya Manipulasi DOM Select2)
     // -------------------------
     async function loadBankMIV() {
         console.log("🔄 Memuat daftar bank MIV...");
@@ -308,21 +376,28 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!res.ok) throw new Error("HTTP Error " + res.status);
             const json = await res.json();
 
-            const select = document.getElementById('bank_miv');
-            select.innerHTML = '<option value="">-- Pilih Bank MIV --</option>';
+            // Ambil element native select
+            const $bankSelect = $('#bank_miv');
+            
+            // Bersihkan data lama dengan cara standard Select2
+            $bankSelect.empty().trigger("change");
+            
+            // Tambahkan kembali default placeholder option
+            $bankSelect.append(new Option('-- Pilih Bank MIV --', ''));
 
             if (json.status === 'success' && Array.isArray(json.data)) {
+                // Loop data dan masukkan ke element via Select2 Option constructor
                 json.data.forEach(bank => {
-                    const opt = document.createElement('option');
-                    opt.value = bank.KODE_ERP;
-                    opt.textContent = bank.NAMA_BANK;
-                    select.appendChild(opt);
+                    const newOption = new Option(bank.NAMA_BANK, bank.KODE_ERP, false, false);
+                    $bankSelect.append(newOption);
                 });
-                console.log("✅ Bank MIV berhasil dimuat:", json.data.length, "data");
+                
+                // Beri tahu Select2 untuk me-render ulang UI-nya setelah DOM berubah
+                $bankSelect.trigger('change');
+                console.log("✅ Bank MIV berhasil dimuat ke Select2:", json.data.length, "data");
             } else {
-                const opt = document.createElement('option');
-                opt.textContent = "Tidak ada data bank";
-                select.appendChild(opt);
+                $bankSelect.append(new Option('Tidak ada data bank', ''));
+                $bankSelect.trigger('change');
             }
         } catch (err) {
             console.error("❌ Error JS:", err.message);
@@ -330,11 +405,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // -------------------------
-    // 5) Load DIS/WIL
+    // 5) Load DIS/WIL (Disinkronkan dengan Select2)
     // -------------------------
     async function loadDisWilMIV() {
         console.log("🔄 Memuat daftar DIS/WIL...");
-
         const params = new URLSearchParams();
         params.append('act', 'getNamaUnitUPI');
         params.append('kd_dist', 'ALL');
@@ -348,21 +422,20 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!res.ok) throw new Error("HTTP Error " + res.status);
             const json = await res.json();
 
-            const select = document.getElementById('diswil');
-            select.innerHTML = '<option value="">-- Pilih DIS/WIL MIV --</option>';
+            const $diswilSelect = $('#diswil');
+            $diswilSelect.empty().trigger("change");
+            $diswilSelect.append(new Option('-- Pilih Distribusi --', ''));
 
             if (json.status === 'success' && Array.isArray(json.data)) {
                 json.data.forEach(diswil => {
-                    const opt = document.createElement('option');
-                    opt.value = diswil.KD_DIST;
-                    opt.textContent = diswil.NAMA_DIST;
-                    select.appendChild(opt);
+                    const newOption = new Option(diswil.NAMA_DIST, diswil.KD_DIST, false, false);
+                    $diswilSelect.append(newOption);
                 });
-                console.log("✅ DISWIL MIV berhasil dimuat:", json.data.length, "data");
+                $diswilSelect.trigger('change');
+                console.log("✅ DISWIL MIV berhasil dimuat ke Select2:", json.data.length, "data");
             } else {
-                const opt = document.createElement('option');
-                opt.textContent = "Tidak ada data DISWIL";
-                select.appendChild(opt);
+                $diswilSelect.append(new Option('Tidak ada data DISWIL', ''));
+                $diswilSelect.trigger('change');
             }
         } catch (err) {
             console.error("❌ Error JS:", err.message);
@@ -370,11 +443,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // -------------------------
-    // 6) Load UP3 berdasarkan DIS/WIL
+    // 6) Load UP3 berdasarkan DIS/WIL (Disinkronkan dengan Select2)
     // -------------------------
     async function loadUP3MIV(kd_dist) {
         console.log("🔄 Memuat daftar UP3 untuk kd_dist:", kd_dist);
-
         const params = new URLSearchParams();
         params.append('act', 'getNamaArea');
         params.append('kd_dist', kd_dist);
@@ -391,21 +463,20 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!text) return;
             const json = JSON.parse(text);
 
-            const select = document.getElementById('up3');
-            select.innerHTML = '<option value="">-- Pilih UP3 MIV --</option>';
+            const $up3Select = $('#up3');
+            $up3Select.empty().trigger("change");
+            $up3Select.append(new Option('-- Pilih UP3 --', ''));
 
             if (json.status === 'success' && Array.isArray(json.data)) {
                 json.data.forEach(up3 => {
-                    const opt = document.createElement('option');
-                    opt.value = up3.UNITAP;
-                    opt.textContent = up3.NAMA_AREA;
-                    select.appendChild(opt);
+                    const newOption = new Option(up3.NAMA_AREA, up3.UNITAP, false, false);
+                    $up3Select.append(newOption);
                 });
-                console.log("✅ UP3 MIV berhasil dimuat:", json.data.length, "data");
+                $up3Select.trigger('change');
+                console.log("✅ UP3 MIV berhasil dimuat ke Select2:", json.data.length, "data");
             } else {
-                const opt = document.createElement('option');
-                opt.textContent = "Tidak ada data UP3";
-                select.appendChild(opt);
+                $up3Select.append(new Option('Tidak ada data UP3', ''));
+                $up3Select.trigger('change');
             }
         } catch (err) {
             console.error("❌ Error JS:", err.message);
@@ -419,59 +490,48 @@ document.addEventListener("DOMContentLoaded", function () {
     loadDisWilMIV();
 
     // -------------------------
-    // 8) Event listeners
+    // 8) Event listeners (Menggunakan Event Listener Select2 jQuery)
     // -------------------------
-    document.getElementById('diswil').addEventListener('change', function () {
-        const kd_dist = this.value;
-        console.log("Distribusi terpilih:", kd_dist);
+    $('#diswil').on('select2:select select2:unselect change', function (e) {
+        const kd_dist = $(this).val();
         if (kd_dist) {
             loadUP3MIV(kd_dist);
         } else {
-            document.getElementById('up3').innerHTML = '<option value="">-- Pilih UP3 MIV --</option>';
+            const $up3Select = $('#up3');
+            $up3Select.empty().append(new Option('-- Pilih UP3 --', '')).trigger('change');
         }
     });
 
     // Tombol Tampilkan
     document.getElementById('btnTampil').addEventListener('click', function () {
-
         const bank_miv = document.getElementById("bank_miv").value;
         if (!bank_miv || bank_miv.trim() === "") {
-            // alert("Silakan pilih BANK MIV terlebih dahulu!");
-            showMessageDlg("Warning", "Silakan pilih BANK MIV terlebih dahulu!");
+            alert("Silakan pilih BANK MIV terlebih dahulu!");
             return;
         }
 
         const diswil = document.getElementById("diswil").value;
         if (!diswil || diswil.trim() === "") {
-            // alert("Silakan pilih DISTRIBUSI/WILAYAH terlebih dahulu!");
-            showMessageDlg("Warning", "Silakan pilih DISTRIBUSI/WILAYAH terlebih dahulu!");
+            alert("Silakan pilih DISTRIBUSI/WILAYAH terlebih dahulu!");
             return;
         }
 
         const up3 = document.getElementById("up3").value;
         if (!up3 || up3.trim() === "") {
-            // alert("Silakan pilih PILIH UP3 dahulu!");
-            showMessageDlg("Warning", "Silakan pilih PILIH UP3 dahulu!");
+            alert("Silakan pilih PILIH UP3 dahulu!");
             return;
         }
 
-        // lanjut proses
         loadStrukFiles();
     });
 
-    // Tombol Print (download multiple)
+    // Tombol Print
     document.getElementById("btnPrint").addEventListener("click", function () {
-        console.log("📌 [PRINT] Tombol Print diklik");
-
         const list = document.getElementById("thelist");
-        console.log("📄 List element:", list);
-
         const selected = Array.from(list.selectedOptions).map(opt => opt.value);
-        console.log("📂 File terpilih:", selected);
 
         if (selected.length === 0) {
-            // alert("Silakan pilih minimal 1 file PDF!");
-            showMessageDlg("Warning", "Silakan pilih minimal 1 file PDF!");
+            alert("Silakan pilih minimal 1 file PDF!");
             return;
         }
 
@@ -480,14 +540,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 + "/mon2strukbank?act=download&file=" 
                 + encodeURIComponent(filePath);
 
-            console.log(`🔗 Download[${index}] =`, safeURL);
-
             setTimeout(() => {
                 window.open(safeURL, "_blank");
-                console.log(`▶️ Membuka file[${index}]:`, filePath);
             }, index * 500);
         });
     });
 
-}); // end DOMContentLoaded
+});
 </script>

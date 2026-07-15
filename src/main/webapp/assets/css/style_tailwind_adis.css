@@ -880,6 +880,10 @@ video {
   height: 100vh;
 }
 
+.h-\[38px\] {
+  height: 38px;
+}
+
 .max-h-\[90vh\] {
   max-height: 90vh;
 }
@@ -2139,12 +2143,12 @@ video {
     width: 16rem;
   }
 
-  .md\:w-\[980px\] {
-    width: 980px;
-  }
-
   .md\:w-auto {
     width: auto;
+  }
+
+  .md\:w-\[980px\] {
+    width: 980px;
   }
 
   .md\:grid-cols-12 {

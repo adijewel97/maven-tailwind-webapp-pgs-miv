@@ -135,6 +135,17 @@
         left: 45%;
         z-index: 1060;
     }
+
+    /* atur tinggi imput sama sengan combo*/
+    /* 1. Samakan tinggi wrapper Bulan Laporan agar pas 38px */
+    #bln_usulan {
+        height: 36px !important; /* Kurangi 2px untuk mengompensasi border atas & bawah div pembungkus */
+    }
+
+    /* Pastikan pembungkus Bulan Laporan (div flex) memiliki tinggi total tepat 38px */
+    #bln_usulanAndCalendarWrapper {
+        height: 38px !important;
+    }
     
 </style>
 
@@ -153,16 +164,14 @@
     <div class="mt-1 relative">
         <form id="form-monitoring">
             <div class="grid grid-cols-12 gap-3 mb-2 items-end">
-                <div class="col-span-12 md:col-span-4 lg:col-span-3">
+                <!-- Bulan Laporan -->
+                <div class="col-span-12 md:col-span-3">
                     <label for="bln_usulan" class="block text-gray-700 mb-1 font-medium">Bulan Laporan :</label>
-                    <div class="flex border border-gray-300 rounded items-center">
-                        <input 
-                            type="text" 
-                            id="bln_usulan" 
-                            class="flex-1 px-3 py-2 text-sm uppercase focus:outline-none focus:ring-1 focus:ring-blue-500" 
-                            placeholder="Pilih Bulan Laporan" 
-                            readonly
-                        >
+                    <!-- TAMBAHKAN ID DISINI (bln_usulanAndCalendarWrapper) dan class h-[38px] -->
+                    <div id="bln_usulanAndCalendarWrapper" class="flex border border-gray-300 rounded items-center h-[38px] bg-white">
+                        <input type="text" id="bln_usulan"
+                            class="flex-1 px-3 py-2 text-sm uppercase focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            placeholder="Pilih Bulan Laporan" readonly>
                         <i id="calendarIcon" class="fa fa-calendar text-gray-500 px-3 cursor-pointer hover:text-blue-600"></i>
                     </div>
                     <input type="hidden" id="bln_usulan_value" name="bln_usulan_value">
