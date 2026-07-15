@@ -247,6 +247,7 @@
                             <th class="px-2 py-1">STATUS_PENDING</th>
                             <th class="px-2 py-1">RPTAG</th>
                             <th class="px-2 py-1">RPBK</th>
+                            <th class="px-2 py-1">TGLBAYAR</th>
                             <th class="px-2 py-1">USERID</th>
                             <th class="px-2 py-1">KDPROSES</th>
                             <th class="px-2 py-1">USERID_LOCK</th>
@@ -723,6 +724,7 @@
                 { data: 'STATUS_PENDING', defaultContent: '' },
                 { data: 'RPTAG', render: function (data) { return formatNumber(data, 0); } },
                 { data: 'RPBK', render: function (data) { return formatNumber(data, 0); }},
+                { data: 'TGLBAYAR', defaultContent: '' },
                 { data: 'USERID', defaultContent: '' },
                 { data: 'KDPROSES', defaultContent: '' },
                 { data: 'USERID_LOCK', defaultContent: '' },

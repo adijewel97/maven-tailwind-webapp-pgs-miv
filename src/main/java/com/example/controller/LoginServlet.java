@@ -38,7 +38,7 @@ public class LoginServlet extends HttpServlet {
             String hashedPassword = md5ToBase64(password);
 
             // 2️⃣ Query user
-            String sql = "SELECT user_name, group_id, password FROM eis.user_id WHERE user_name = ?";
+            String sql = "SELECT user_name, group_id, password FROM eis.user_id WHERE IS_ACTIVE = '1' and user_name = ?";
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
                 ps.setString(1, username);
 

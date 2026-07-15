@@ -647,7 +647,7 @@
             scrollX: true, 
             paging: true,
             ordering: false,
-            searching: false, 
+            searching: true, 
             autoWidth: false,
             info: true,
             stripeClasses: [],

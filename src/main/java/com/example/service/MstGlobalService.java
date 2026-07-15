@@ -81,7 +81,6 @@ public class MstGlobalService {
             System.out.println("Pesan OUT: " + pesan+"-"+kd_dist);
 
         }
-
         return list;
     }
 

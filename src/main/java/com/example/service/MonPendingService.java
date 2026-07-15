@@ -137,6 +137,7 @@ public class MonPendingService {
                         row.put("STATUS_PENDING", rs.getString("STATUS_PENDING") == null ? "" : rs.getString("STATUS_PENDING"));
                         row.put("RPTAG", rs.getString("RPTAG") == null ? "" : rs.getString("RPTAG"));
                         row.put("RPBK", rs.getString("RPBK") == null ? "" : rs.getString("RPBK"));
+                        row.put("TGLBAYAR", rs.getString("TGLBAYAR") == null ? "" : rs.getString("TGLBAYAR"));
                         row.put("USERID", rs.getString("USERID") == null ? "" : rs.getString("USERID"));
                         row.put("KDPROSES", rs.getString("KDPROSES") == null ? "" : rs.getString("KDPROSES"));
                         row.put("USERID_LOCK", rs.getString("USERID_LOCK") == null ? "" : rs.getString("USERID_LOCK"));

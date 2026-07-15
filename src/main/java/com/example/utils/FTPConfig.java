@@ -22,5 +22,11 @@ public class FTPConfig {
     public static int getPort()        { return Integer.parseInt(props.getProperty("ftp.port")); }
     public static String getUsername() { return props.getProperty("ftp.username"); }
     public static String getPassword() { return props.getProperty("ftp.password"); }
-    public static String getBaseDir()  { return props.getProperty("ftp.base.dir","/"); }
+    public static String getBaseDir()  { return props.getProperty("ftp.base.dir", "/"); }
+    
+    // PERBAIKAN: Mengubah "properties" menjadi "props" agar sesuai dengan definisi di atas
+    public static boolean getUseTls() {
+        String tls = props.getProperty("ftp.use.tls", "false");
+        return Boolean.parseBoolean(tls.trim());
+    }
 }
