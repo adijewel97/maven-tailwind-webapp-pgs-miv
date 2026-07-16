@@ -444,6 +444,9 @@ public class Mon04ProsesRcnController extends HttpServlet {
         // 2. Ambil data range tanggal dari JSP
         String tglawal          = req.getParameter("vtglawal");       // format: YYYYMMDD
         String tglakhir         = req.getParameter("vtglakhir");     // format: YYYYMMDD
+
+        logger.info("Tglawal  : "+tglawal);
+        logger.info("tglakhir : "+tglakhir);
         
         // Validasi input parameter tanggal
         if (tglawal == null || tglawal.trim().isEmpty() || tglakhir == null || tglakhir.trim().isEmpty()) {

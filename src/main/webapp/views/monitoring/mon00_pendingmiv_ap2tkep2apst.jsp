@@ -390,6 +390,7 @@
             autoWidth: false,
             info: false,
             stripeClasses: [],
+            deferLoading: 0,   // <-- jangan load saat pertama kali
             ajax: {
                 url: getContextPath() + '/mon-pending-ap2tkep2apst',
                 type: 'POST',
@@ -806,12 +807,10 @@
         // ---------------------------------------------------------------------------------------------
         $('#btnTampil').on('click', function () {
             if (!$('#bln_usulan_value').val()) {
-                //alert("Silakan pilih Bulan Laporan terlebih dahulu!");
                 showMessageDlg("Warning", "Silakan pilih Bulan Laporan terlebih dahulu!");
                 return;
             }
-            // Tampilkan spinner Rekap secara manual sebelum reload
-            spinnerRekap.removeClass('hidden').addClass('flex');   
+            $('#rekapContainer').show();
             table_rekap_pending.ajax.reload();
         });
         

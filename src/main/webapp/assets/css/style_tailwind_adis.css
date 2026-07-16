@@ -860,6 +860,10 @@ video {
   height: 2.25rem;
 }
 
+.h-\[38px\] {
+  height: 38px;
+}
+
 .h-\[50px\] {
   height: 50px;
 }
@@ -878,10 +882,6 @@ video {
 
 .h-screen {
   height: 100vh;
-}
-
-.h-\[38px\] {
-  height: 38px;
 }
 
 .max-h-\[90vh\] {
@@ -2143,12 +2143,12 @@ video {
     width: 16rem;
   }
 
-  .md\:w-auto {
-    width: auto;
-  }
-
   .md\:w-\[980px\] {
     width: 980px;
+  }
+
+  .md\:w-auto {
+    width: auto;
   }
 
   .md\:grid-cols-12 {

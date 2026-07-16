@@ -40,7 +40,7 @@
         </a>
       </li>
 
-      <!-- SUBMENU 1: MIV -->
+      <!-- TRANSAKSI SUBMENU 1: MIV -->
       <li class="submenu-wrapper">
         <button class="flex items-center justify-between w-full px-4 py-2 text-left rounded-md transition
                        <%= mivActive
@@ -49,7 +49,7 @@
                 onclick="toggleSubmenu('submenuMiv', this)">
           <div class="flex items-center gap-3">
             <i class="fa fa-tasks w-5 text-center"></i>
-            <span class="sidebar-text">MIV</span>
+            <span class="sidebar-text">Progres MIV</span>
           </div>
           <i class="fa fa-angle-down dropdown-icon transition-transform duration-200 <%= mivActive ? "rotate-180" : "" %>"></i>
         </button>
@@ -58,7 +58,7 @@
         <ul id="submenuMiv"
             class="submenu-popover md:pl-6 mt-1 space-y-1 transition-all duration-300 ease-in-out <%= mivActive ? "" : "hidden" %>">
           <li>
-            <a href="index.jsp?page=/views/monitoring/mon04_upload_filercn_mivbank..jsp&menu=upload-filercn-bank"
+            <a href="index.jsp?page=/views/transaksi/mon04_upload_filercn_mivbank..jsp&menu=upload-filercn-bank"
                title="Upload File Pelunasan Dari Bank"
                class="block px-4 py-2 rounded-md transition text-sm
                       <%= "upload-filercn-bank".equals(menuAttr)

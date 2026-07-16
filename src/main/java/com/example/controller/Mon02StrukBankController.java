@@ -4,6 +4,8 @@ import com.example.service.FtpStrukService;
 import com.example.utils.FTPConfig;
 import com.google.gson.Gson;
 
+import javax.annotation.Resource;
+import javax.sql.DataSource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
@@ -19,15 +21,26 @@ public class Mon02StrukBankController extends HttpServlet {
     private static final Logger logger = Logger.getLogger(Mon02StrukBankController.class.getName());
     private static final Gson gson = new Gson();
 
+    // PERBAIKAN: Mengambil dataSource (contoh menggunakan standard Java EE Resource Injection)
+    // Jika Anda menggunakan Spring, gunakan @Autowired. Jika plain Servlet, sesuaikan cara fetch-nya.
+    @Resource(name = "jdbc/YourDataSource") 
+    private DataSource dataSource;
+
     @Override
     public void init() throws ServletException {
+        // PERBAIKAN: Tambahkan parameter useTls dan dataSource agar sesuai dengan constructor baru
+        // Asumsi di FTPConfig Anda memiliki method getUseTls() atau isUseTls() bernilai boolean
+        boolean useTls = FTPConfig.getUseTls(); 
+
         ftpStrukService = new FtpStrukService(
                 FTPConfig.getHost(),
                 FTPConfig.getPort(),
                 FTPConfig.getUsername(),
-                FTPConfig.getPassword()
+                FTPConfig.getPassword(),
+                useTls,         // Ditambahkan
+                dataSource      // Ditambahkan
         );
-        logger.info("=== Mon02StrukBankController INIT OK ===");
+        logger.info("=== Mon02StrukBankController INIT OK (TLS Mode: " + useTls + ") ===");
     }
 
     @Override
@@ -61,6 +74,7 @@ public class Mon02StrukBankController extends HttpServlet {
             // LIST FILES
             // =============================
             if ("list".equalsIgnoreCase(act)) {
+                // Sekarang melempar Exception, otomatis ditangkap oleh catch (Exception e) di bawah
                 List<String> listFiles = ftpStrukService.listStrukFiles(bank, swbank, up3, blth, idtrans);
                 Map<String, Object> result = new HashMap<>();
                 result.put("files", listFiles != null ? listFiles : Collections.emptyList());
@@ -86,6 +100,7 @@ public class Mon02StrukBankController extends HttpServlet {
                 response.setHeader("Content-Disposition",
                         "attachment; filename=\"" + filename + "\"");
 
+                // Menggunakan penanganan auto-close resource untuk OutputStream
                 try (OutputStream os = response.getOutputStream()) {
                     ftpStrukService.downloadFile(file, os);
                 }

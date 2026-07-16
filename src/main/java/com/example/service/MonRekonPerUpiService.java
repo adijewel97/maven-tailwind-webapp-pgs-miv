@@ -126,7 +126,6 @@ public class MonRekonPerUpiService {
                 try (ResultSet rs = (ResultSet) stmt.getObject(9)) {
                     while (rs.next()) {
                         Map<String, Object> row = new HashMap<>();
-                        row.put("TOTAL_COUNT", rs.getString("TOTAL_COUNT") == null ? "" : rs.getString("TOTAL_COUNT"));
                         row.put("URUT", rs.getString("URUT") == null ? "" : rs.getString("URUT"));
                         row.put("PRODUK", rs.getString("PRODUK") == null ? "" : rs.getString("PRODUK"));
                         row.put("TGLAPPROVE", rs.getString("TGLAPPROVE") == null ? "" : rs.getString("TGLAPPROVE"));
@@ -159,6 +158,7 @@ public class MonRekonPerUpiService {
                         row.put("SELISIH_BK", rs.getString("SELISIH_BK") == null ? "" : rs.getString("SELISIH_BK"));
                         row.put("KETERANGAN", rs.getString("KETERANGAN") == null ? "" : rs.getString("KETERANGAN"));
                         row.put("ROW_NUMBER", rs.getString("ROW_NUMBER") == null ? "" : rs.getString("ROW_NUMBER"));
+                        row.put("TOTAL_COUNT", rs.getString("TOTAL_COUNT") == null ? "" : rs.getString("TOTAL_COUNT"));
                         result.add(row);
                     }
                 }

@@ -860,6 +860,10 @@ video {
   height: 2.25rem;
 }
 
+.h-\[38px\] {
+  height: 38px;
+}
+
 .h-\[50px\] {
   height: 50px;
 }
@@ -2137,6 +2141,10 @@ video {
 
   .md\:w-64 {
     width: 16rem;
+  }
+
+  .md\:w-\[980px\] {
+    width: 980px;
   }
 
   .md\:w-auto {
