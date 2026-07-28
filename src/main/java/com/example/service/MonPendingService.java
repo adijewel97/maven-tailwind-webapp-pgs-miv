@@ -87,7 +87,7 @@ public class MonPendingService {
         return result;
     }
 
-    //3 service untuk panggil package/sql db "DETAIL LAORAN REKON PLN VS BANK"
+    //3 service untuk panggil package/sql db "Permohonan Pending AP2T ke P2APST"
     public List<Map<String, Object>> getDataMonDftPending(int start, int length, String sortBy, String sortDir, String search,
                                                         String vbln_usulan, String vkd_bank, String vkd_dist, 
                                                         List<String> pesanMsg, List<Boolean> statusMsg) {
@@ -115,72 +115,76 @@ public class MonPendingService {
                 stmt.registerOutParameter(9, OracleTypes.CURSOR);
                 stmt.registerOutParameter(10, Types.VARCHAR);
 
+                stmt.setQueryTimeout(300); // 5 Menit
+                
+                // ⚡ OPTIMASI UTAMA: Naikkan Fetch Size agar JDBC membaca buffer batch lebih cepat
+                stmt.setFetchSize(200);
+
                 // 2. Eksekusi Prosedur
                 stmt.execute();
                 logger.info("Prosedur Detail Pending berhasil dieksekusi");
 
-                // 3. Mapping ResultSet ke List Map (ResultSet otomatis close setelah blok ini)
+                // 3. Mapping ResultSet ke List Map
                 try (ResultSet rs = (ResultSet) stmt.getObject(9)) {
-                    while (rs.next()) {
-                        Map<String, Object> row = new HashMap<>();
-                        row.put("BLTH_USULAN", rs.getString("BLTH_USULAN") == null ? "" : rs.getString("BLTH_USULAN"));
-                        row.put("KD_DIST", rs.getString("KD_DIST") == null ? "" : rs.getString("KD_DIST"));
-                        row.put("NAMA_DIST", rs.getString("NAMA_DIST") == null ? "" : rs.getString("NAMA_DIST"));
-                        row.put("UNITAP", rs.getString("UNITAP") == null ? "" : rs.getString("UNITAP"));
-                        row.put("NAMA_UNITAP", rs.getString("NAMA_UNITAP") == null ? "" : rs.getString("NAMA_UNITAP"));
-                        row.put("UNITUP", rs.getString("UNITUP") == null ? "" : rs.getString("UNITUP"));
-                        row.put("NAMA_UNITUP", rs.getString("NAMA_UNITUP") == null ? "" : rs.getString("NAMA_UNITUP"));
-                        row.put("NOUSULAN", rs.getString("NOUSULAN") == null ? "" : rs.getString("NOUSULAN"));
-                        row.put("TGLUSULAN", rs.getString("TGLUSULAN") == null ? "" : rs.getString("TGLUSULAN"));
-                        row.put("IDPEL", rs.getString("IDPEL") == null ? "" : rs.getString("IDPEL"));
-                        row.put("BLTH", rs.getString("BLTH") == null ? "" : rs.getString("BLTH"));
-                        row.put("STATUS_PENDING", rs.getString("STATUS_PENDING") == null ? "" : rs.getString("STATUS_PENDING"));
-                        row.put("RPTAG", rs.getString("RPTAG") == null ? "" : rs.getString("RPTAG"));
-                        row.put("RPBK", rs.getString("RPBK") == null ? "" : rs.getString("RPBK"));
-                        row.put("TGLBAYAR", rs.getString("TGLBAYAR") == null ? "" : rs.getString("TGLBAYAR"));
-                        row.put("USERID", rs.getString("USERID") == null ? "" : rs.getString("USERID"));
-                        row.put("KDPROSES", rs.getString("KDPROSES") == null ? "" : rs.getString("KDPROSES"));
-                        row.put("USERID_LOCK", rs.getString("USERID_LOCK") == null ? "" : rs.getString("USERID_LOCK"));
-                        row.put("STATUS", rs.getString("STATUS") == null ? "" : rs.getString("STATUS"));
-                        row.put("KETERANGAN", rs.getString("KETERANGAN") == null ? "" : rs.getString("KETERANGAN"));
-                        row.put("VA", rs.getString("VA") == null ? "" : rs.getString("VA"));
-                        row.put("SATKER", rs.getString("SATKER") == null ? "" : rs.getString("SATKER"));
-                        row.put("KDBANK", rs.getString("KDBANK") == null ? "" : rs.getString("KDBANK"));
-                        row.put("NAMA_BANK", rs.getString("NAMA_BANK") == null ? "" : rs.getString("NAMA_BANK"));
-                        row.put("TGLINSERT", rs.getString("TGLINSERT") == null ? "" : rs.getString("TGLINSERT"));
-                        row.put("IDKIRIM", rs.getString("IDKIRIM") == null ? "" : rs.getString("IDKIRIM"));
-                        row.put("ROW_NUMBER", rs.getString("ROW_NUMBER") == null ? "" : rs.getString("ROW_NUMBER"));
-                        row.put("TOTAL_COUNT", rs.getString("TOTAL_COUNT") == null ? "" : rs.getString("TOTAL_COUNT"));
-                        result.add(row);
+                    if (rs != null) {
+                        // Beri hint fetch size pada ResultSet langsung
+                        rs.setFetchSize(200);
+                        
+                        while (rs.next()) {
+                            Map<String, Object> row = new HashMap<>();
+                            row.put("BLTH_USULAN", rs.getString("BLTH_USULAN") == null ? "" : rs.getString("BLTH_USULAN"));
+                            row.put("KD_DIST", rs.getString("KD_DIST") == null ? "" : rs.getString("KD_DIST"));
+                            row.put("NAMA_DIST", rs.getString("NAMA_DIST") == null ? "" : rs.getString("NAMA_DIST"));
+                            row.put("UNITAP", rs.getString("UNITAP") == null ? "" : rs.getString("UNITAP"));
+                            row.put("NAMA_UNITAP", rs.getString("NAMA_UNITAP") == null ? "" : rs.getString("NAMA_UNITAP"));
+                            row.put("UNITUP", rs.getString("UNITUP") == null ? "" : rs.getString("UNITUP"));
+                            row.put("NAMA_UNITUP", rs.getString("NAMA_UNITUP") == null ? "" : rs.getString("NAMA_UNITUP"));
+                            row.put("NOUSULAN", rs.getString("NOUSULAN") == null ? "" : rs.getString("NOUSULAN"));
+                            row.put("TGLUSULAN", rs.getString("TGLUSULAN") == null ? "" : rs.getString("TGLUSULAN"));
+                            row.put("IDPEL", rs.getString("IDPEL") == null ? "" : rs.getString("IDPEL"));
+                            row.put("BLTH", rs.getString("BLTH") == null ? "" : rs.getString("BLTH"));
+                            row.put("STATUS_PENDING", rs.getString("STATUS_PENDING") == null ? "" : rs.getString("STATUS_PENDING"));
+                            row.put("RPTAG", rs.getString("RPTAG") == null ? "" : rs.getString("RPTAG"));
+                            row.put("RPBK", rs.getString("RPBK") == null ? "" : rs.getString("RPBK"));
+                            row.put("TGLBAYAR", rs.getString("TGLBAYAR") == null ? "" : rs.getString("TGLBAYAR"));
+                            row.put("USERID", rs.getString("USERID") == null ? "" : rs.getString("USERID"));
+                            row.put("KDPROSES", rs.getString("KDPROSES") == null ? "" : rs.getString("KDPROSES"));
+                            row.put("USERID_LOCK", rs.getString("USERID_LOCK") == null ? "" : rs.getString("USERID_LOCK"));
+                            row.put("STATUS", rs.getString("STATUS") == null ? "" : rs.getString("STATUS"));
+                            row.put("KETERANGAN", rs.getString("KETERANGAN") == null ? "" : rs.getString("KETERANGAN"));
+                            row.put("VA", rs.getString("VA") == null ? "" : rs.getString("VA"));
+                            row.put("SATKER", rs.getString("SATKER") == null ? "" : rs.getString("SATKER"));
+                            row.put("KDBANK", rs.getString("KDBANK") == null ? "" : rs.getString("KDBANK"));
+                            row.put("NAMA_BANK", rs.getString("NAMA_BANK") == null ? "" : rs.getString("NAMA_BANK"));
+                            row.put("TGLINSERT", rs.getString("TGLINSERT") == null ? "" : rs.getString("TGLINSERT"));
+                            row.put("IDKIRIM", rs.getString("IDKIRIM") == null ? "" : rs.getString("IDKIRIM"));
+                            row.put("ROW_NUMBER", rs.getString("ROW_NUMBER") == null ? "" : rs.getString("ROW_NUMBER"));
+                            row.put("TOTAL_COUNT", rs.getString("TOTAL_COUNT") == null ? "" : rs.getString("TOTAL_COUNT"));
+                            result.add(row);
+                        }
                     }
                 }
 
-                // AMBIL PESAN DARI OUT PARAMETER DB (JIKA ADA) ATAU DEFAULT 200
+                // AMBIL PESAN DARI OUT PARAMETER DB
                 String pesanDb = stmt.getString(10);
                 if (pesanDb != null && !pesanDb.trim().isEmpty()) {
-                    pesanMsg.add(pesanDb); // Pakai pesan kustom bawaan store procedure jika ada
+                    pesanMsg.add(pesanDb);
                 } else {
                     StatusInfo successInfo = HttpStatusHelper.getInfo(200);
-                    pesanMsg.add(successInfo.getCodeMessage()); // "Berhasil"
+                    pesanMsg.add(successInfo.getCodeMessage());
                 }
                 statusMsg.add(true);
 
             } catch (SQLException e) {
-                // SKENARIO 1: KONEKSI AMAN, TAPI QUERY/PARAMETER SALAH (HTTP 400)
                 logger.severe("Kesalahan Eksekusi Query/Parameter: " + e.getMessage());
-                
                 StatusInfo badRequestInfo = HttpStatusHelper.getInfo(400);
-                // Anda bisa menggabungkan pesan standar util dengan detail log error asli dari DB
                 pesanMsg.add("400|" + badRequestInfo.getCodeMessage() + " -> " + e.getMessage()); 
                 statusMsg.add(false);
             }
 
         } catch (SQLException e) {
-            // SKENARIO 2: GAGAL KONEKSI DATABASE (HTTP 503)
-            logger.severe("Kesalahan Koneksi Database: " + e.getMessage());     
-
-            // StatusInfo dbDownInfo = HttpStatusHelper.getInfo(503);
-            pesanMsg.add("503|" +"Terjadi kesalahan koneksi ke database: " + e.getMessage());
+            logger.severe("Kesalahan Koneksi Database: " + e.getMessage()); 
+            pesanMsg.add("503|Terjadi kesalahan koneksi ke database: " + e.getMessage());
             statusMsg.add(false);
         }
 

@@ -22,69 +22,89 @@ public class MonRekonPerUpiService {
     //2 service untuk panggil package/sql db "REKAP LAORAN REKON PLN VS BANK"
     public List<Map<String, Object>> getDataMonRkpPerPerUpi(String vbln_usulan, List<String> pesanMsg, List<Boolean> statusMsg) {
         List<Map<String, Object>> result = new ArrayList<>();
-        String sql = "{call OPHARTDE.VER_MON_LAP.monlap_rkp_mivfalg_plnvsbank_uiw( ?, ?, ?)}";
+        String sql = "{call OPHARTDE.VER_MON_LAP.monlap_rkp_mivfalg_plnvsbank_uiw(?, ?, ?)}";
         
         logger.info("Memulai panggilan prosedur Oracle: " + sql);
         logger.info("Parameter vbln_usulan: " + vbln_usulan);        
 
-        try (Connection conn = dataSource.getConnection();
-            CallableStatement stmt = conn.prepareCall(sql)) {
-            
-            // 1. Set Parameter Input dan Register Parameter Output
-            stmt.setString(1, vbln_usulan);
-            stmt.registerOutParameter(2, OracleTypes.CURSOR); // out_data (SYS_REFCURSOR)
-            stmt.registerOutParameter(3, Types.VARCHAR);      // pesan
+        int maxRetry = 2;
 
-            // 2. Eksekusi Prosedur
-            stmt.execute();
-            logger.info("Prosedur Rekap Rekon PPLN VS BANK berhasil dieksekusi");
+        for (int i = 1; i <= maxRetry; i++) {
+            try (Connection conn = dataSource.getConnection();
+                CallableStatement stmt = conn.prepareCall(sql)) {
+                
+                // 1. Set Parameter Input dan Register Parameter Output
+                stmt.setString(1, vbln_usulan);
+                stmt.registerOutParameter(2, OracleTypes.CURSOR); // out_data (SYS_REFCURSOR)
+                stmt.registerOutParameter(3, Types.VARCHAR);      // pesan
+                
+                stmt.setQueryTimeout(300); // 5 Menit
+                
+                // Eksekusi Stored Procedure
+                stmt.execute();
+                logger.info("Prosedur Rekap Rekon PLN VS BANK berhasil dieksekusi pada percobaan ke-" + i);
 
-            // 3. Mapping ResultSet ke List Map (ResultSet otomatis close setelah blok ini)
-            try (ResultSet rs = (ResultSet) stmt.getObject(2)) {
-                if (rs != null) {
-                    while (rs.next()) {
-                        Map<String, Object> row = new HashMap<>();
-                        row.put("KD_DIST", rs.getString("KD_DIST"));
-                        row.put("NAMA_DIST", rs.getString("NAMA_DIST"));
-                        row.put("URUT", rs.getString("URUT"));
-                        row.put("PRODUK", rs.getString("PRODUK"));
-                        row.put("BANK", rs.getString("BANK"));
-                        row.put("BLN_USULAN", rs.getString("BLN_USULAN"));
-                        row.put("PLN_IDPEL", rs.getString("PLN_IDPEL"));
-                        row.put("PLN_RPTAG", rs.getString("PLN_RPTAG"));
-                        row.put("PLN_LEBAR_LUNAS", rs.getString("PLN_LEBAR_LUNAS"));
-                        row.put("PLN_RPTAG_LUNAS", rs.getString("PLN_RPTAG_LUNAS"));
-                        row.put("BANK_IDPEL", rs.getString("BANK_IDPEL"));
-                        row.put("BANK_RPTAG", rs.getString("BANK_RPTAG"));
-                        row.put("SELISIH_RPTAG", rs.getString("SELISIH_RPTAG"));
+                // 2. Mapping ResultSet ke List Map
+                Object cursorObj = stmt.getObject(2);
+                if (cursorObj instanceof ResultSet) {
+                    try (ResultSet rs = (ResultSet) cursorObj) {
                         
-                        result.add(row);
+                        // ⚡ OPTIMASI UTAMA YANG BENAR: Set Fetch Size LANGSUNG pada ResultSet RefCursor
+                        rs.setFetchSize(500); 
+
+                        while (rs.next()) {
+                            Map<String, Object> row = new HashMap<>();
+                            row.put("KD_DIST", rs.getString("KD_DIST"));
+                            row.put("NAMA_DIST", rs.getString("NAMA_DIST"));
+                            row.put("URUT", rs.getString("URUT"));
+                            row.put("PRODUK", rs.getString("PRODUK"));
+                            row.put("BANK", rs.getString("BANK"));
+                            row.put("BLN_USULAN", rs.getString("BLN_USULAN"));
+                            row.put("PLN_IDPEL", rs.getString("PLN_IDPEL"));
+                            row.put("PLN_RPTAG", rs.getString("PLN_RPTAG"));
+                            row.put("PLN_LEBAR_LUNAS", rs.getString("PLN_LEBAR_LUNAS"));
+                            row.put("PLN_RPTAG_LUNAS", rs.getString("PLN_RPTAG_LUNAS"));
+                            row.put("BANK_IDPEL", rs.getString("BANK_IDPEL"));
+                            row.put("BANK_RPTAG", rs.getString("BANK_RPTAG"));
+                            row.put("SELISIH_RPTAG", rs.getString("SELISIH_RPTAG"));
+                            
+                            result.add(row);
+                        }
                     }
                 }
-            } catch (SQLException e) {
-                // Skenario: Koneksi aman, tapi gagal saat membaca/mapping data (HTTP 400 atau 500 internal mapping)
-                logger.severe("Kesalahan Eksekusi Query/Mapping Parameter: " + e.getMessage());
-                StatusInfo badRequestInfo = HttpStatusHelper.getInfo(400);
-                pesanMsg.add("400|" + badRequestInfo.getCodeMessage() + " -> " + e.getMessage()); 
-                statusMsg.add(false);
-                return result; // Langsung return agar tidak mengeksekusi logika success di bawah
-            }
 
-            // 4. Ambil Parameter OUT (Dilakukan SETELAH ResultSet close demi keamanan data)
-            String pesanDb = stmt.getString(3);
-            if (pesanDb != null && !pesanDb.trim().isEmpty()) {
-                pesanMsg.add(pesanDb); 
-            } else {
-                StatusInfo successInfo = HttpStatusHelper.getInfo(200);
-                pesanMsg.add("200|" + successInfo.getCodeMessage()); 
-            }
-            statusMsg.add(true);
+                // 3. Ambil Parameter OUT Pesan jika ResultSet selesai dibaca tanpa error
+                String pesanDb = stmt.getString(3);
+                if (pesanDb != null && !pesanDb.trim().isEmpty()) {
+                    pesanMsg.add(pesanDb); 
+                } else {
+                    StatusInfo successInfo = HttpStatusHelper.getInfo(200);
+                    pesanMsg.add("200|" + successInfo.getCodeMessage()); 
+                }
+                statusMsg.add(true);
+                
+                // Sukses, keluar dari loop retry
+                return result;
 
-        } catch (SQLException e) {
-            // Skenario: Gagal koneksi ke database atau error fatal level atas (HTTP 503)
-            logger.severe("Kesalahan database M_BPBLPRASURVEY_PROV (Rekap PLN vs Bank): " + e.getMessage());
-            pesanMsg.add("503|Terjadi kesalahan koneksi ke database: " + e.getMessage());
-            statusMsg.add(false);
+            } catch (SQLException ex) {
+                // Jika terjadi Socket Read Timeout / Closed Connection saat rs.next(), catch ini akan menangkapnya
+                // dan melempar ke Retry Attempt ke-2
+                logger.warning("Percobaan ke-" + i + " gagal (Koneksi/DB/Fetch): " + ex.getMessage());
+
+                if (i == maxRetry) {
+                    logger.severe("Kesalahan database (Rekap PLN vs Bank) setelah " + maxRetry + " retry: " + ex.getMessage());
+                    StatusInfo serviceUnavailable = HttpStatusHelper.getInfo(503);
+                    pesanMsg.add("503|" + serviceUnavailable.getCodeMessage() + " -> " + ex.getMessage());
+                    statusMsg.add(false);
+                    return new ArrayList<>(); // Kembalikan list kosong yang aman
+                }
+
+                try {
+                    Thread.sleep(1000); // Wait sebelum retry
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                }
+            }
         }
 
         return result;

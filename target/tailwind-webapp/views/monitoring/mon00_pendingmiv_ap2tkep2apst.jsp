@@ -290,14 +290,18 @@
     // Tampilkan spinner
     function showSpinner() {
         const spinner = document.getElementById('spinnerOverlay');
-        spinner.classList.remove('hidden');
-        spinner.classList.add('flex');
+        if (spinner) {
+            spinner.classList.remove('hidden');
+            spinner.classList.add('flex');
+        }
     }
 
     function hideSpinner() {
         const spinner = document.getElementById('spinnerOverlay');
-        spinner.classList.add('hidden');
-        spinner.classList.remove('flex');
+        if (spinner) {
+            spinner.classList.add('hidden');
+            spinner.classList.remove('flex');
+        }
     }
 
     // --- GLOBAL VARIABLES (Diambil dari JSP context) ---
@@ -330,9 +334,6 @@
     // --- END UTILITY FUNCTIONS ---
 
     document.addEventListener('DOMContentLoaded', function() {
-        // Mendapatkan referensi spinner
-        const spinnerRekap = $('#spinnerOverlay');
-        const spinnerDetail = $('#spinnerOverlay');
         
         // 1) --- Modal Setup ---
         const modal = document.getElementById('dataModal');
@@ -377,12 +378,14 @@
             }
         });
 
-        calendarIcon.addEventListener('click', () => fp.open());
+        if (calendarIcon) {
+            calendarIcon.addEventListener('click', () => fp.open());
+        }
         
         // 3) --- DataTables Rekap (table_monrkp_pendingupi) ---
         var table_rekap_pending = $('#table_monrkp_pendingupi').DataTable({
-            processing: false,
-            serverSide: true,
+            processing: false, // 🌟 Ubah ke true agar siklus event processing berjalan sempurna
+            serverSide: true, 
             scrollX: true, 
             paging: false,
             ordering: false,
@@ -390,7 +393,7 @@
             autoWidth: false,
             info: false,
             stripeClasses: [],
-            deferLoading: 0,   // <-- jangan load saat pertama kali
+            deferLoading: 0, 
             ajax: {
                 url: getContextPath() + '/mon-pending-ap2tkep2apst',
                 type: 'POST',
@@ -398,46 +401,42 @@
                     const yyyymm = $('#bln_usulan_value').val();
                     d.vbln_usulan = yyyymm;
                 },
-                // 1. Tangkap error jika server sukses merespons tapi membawa data error (JSON status)
+                // 🚀 PUSAT LOGIKA DATA & ERROR
                 dataSrc: function (json) {
-                    // Cek apakah ada code_message atau status bukan sukses
+                    // Sembunyikan spinner karena server sudah merespons
+                    hideSpinner();
+
+                    // 1. Tangkap jika backend mengirim kode error custom di dalam body JSON
                     if (json.code && json.code !== 200) {
-                        spinnerRekap.removeClass('flex').addClass('hidden');
-                        
-                        // Panggil fungsi showmessage Anda di sini
-                        // Contoh format: showMessage(Judul, Pesan, Tipe)
+                        let errorMsg = json.code_message || "Terjadi kesalahan pada server.";
                         if (typeof showMessage === "function") {
-                            showMessageDlg("Error", "Error " + json.code + " - " + json.code_message);
+                            showMessage("Error", errorMsg, "error");
                         } else {
-                            // alert(json.code_message); // Fallback jika fungsi belum terdefinisi
-                             showMessageDlg("Warning", json.code_message);
+                            showMessageDlg(errorMsg);
                         }
-                        
-                        return []; // Kembalikan array kosong agar DataTables tidak crash
+                        return []; // Kembalikan array kosong agar tabel tidak rusak
                     }
-                    return json.data; // Jika normal, kembalikan datanya
+
+                    // 2. Normalisasi format data dari server
+                    var actualData = json.data ? json.data : json;
+                    
+                    if (!Array.isArray(actualData)) {
+                        console.error("Format data dari server bukan Array:", actualData);
+                        return [];
+                    }
+
+                    return actualData; 
                 },
-                // 2. Tangkap error jika koneksi HTTP benar-benar putus / server mati (HTTP 500, 404, dll)
+                // 🛠️ Meredam callback error bawaan jQuery agar tidak bentrok dengan dataSrc
                 error: function (xhr, error, thrown) {
-                    spinnerRekap.removeClass('flex').addClass('hidden'); 
-                    
-                    let errorMsg = "Terjadi kesalahan pada server.";
-                    if (xhr.responseJSON && xhr.responseJSON.code_message) {
-                        errorMsg = xhr.responseJSON.code_message;
-                    }
-                    
-                    if (typeof showMessage === "function") {
-                        showMessage("Error", errorMsg, "error");
-                    } else {
-                        alert(errorMsg);
-                    }
+                    hideSpinner();
+                    console.log("DataTables Ajax Error dipadamkan (di-handle oleh dataSrc):", error, thrown);
                 }
             },
             columns: [
                 {
-                    data: null, // NO
+                    data: null, 
                     render: function (data, type, row, meta) {
-                        // Hanya tampilkan nomor jika bukan baris total (URUT 5)
                         if (row.URUT != 5) {
                             return meta.row + 1;
                         } else {
@@ -447,11 +446,9 @@
                     width: '30px'
                 },
                 {
-                    data: null, // NAMA_DIST
+                    data: null, 
                     render: function (data, type, row) {
                         const text = row.KD_DIST && row.NAMA_DIST ? row.KD_DIST + ' - ' + row.NAMA_DIST : '';
-                        // return row.URUT == 5 ? ' ' : text;
-                        // return row.URUT == 5 ? `<strong>XXXX</strong>` : text;
                          if (row.URUT != 5) {
                             return text;
                         } else {
@@ -460,35 +457,26 @@
                     },
                     width: '250px'
                 },
-                // { data: 'NAMA_DIST', defaultContent: '', width: '80px' },
                 { data: 'BLTH_USULAN' , defaultContent: '', width: '60px'},
-                // Angka
                 { data: 'JML_USULAN', render: function (data) { return formatNumber(data, 0); }, width: '80px' },
                 { data: 'JML_LBR', render: function (data) { return formatNumber(data, 0); }, width: '120px' },
                 { data: 'RPTAG', render: function (data) { return formatNumber(data, 0); }, width: '120px' },
                 { data: 'RPBK', render: function (data) { return formatNumber(data, 0); }, width: '120px' },
-
                 { data: 'NAMA_BANK' , defaultContent: '', width: '200px'},
                 { data: 'KET_PENDING' , defaultContent: '', width: '200px'},
             ],
             columnDefs: [
                 { targets: '_all', className: 'text-center' },
-                { targets: [1, 2, 7, 8], className: '!text-left' }, // Tambahkan tanda seru (!) untuk Tailwind
+                { targets: [1, 2, 7, 8], className: '!text-left' }, 
                 { targets: [3, 4, 5, 6], className: '!text-right' }
             ],
             createdRow: function (row, data, dataIndex) {
-                // Styling untuk baris TOTAL
                 if (data.URUT == 5) {
                     $(row).addClass('font-bold bg-gray-200');
                     $('td', row).css('border-top', '3px solid #000');
-                    console.log(data);
-                    console.log($('td', row).eq(1).html());
                 }
                 
-                // Logic untuk klik/link
-                // const clickableColumns = [5, 6, 9, 10]; // Index kolom: PLN_IDPEL, PLN_RPTAG, BANK_IDPEL, BANK_RPTAG
-                // const columnNames = ['PLN_IDPEL', 'PLN_RPTAG', 'BANK_IDPEL', 'BANK_RPTAG'];
-                const clickableColumns = [4, 5]; // Index kolom: PLN_IDPEL, PLN_RPTAG
+                const clickableColumns = [4, 5]; 
                 const columnNames = ['JML_LBR', 'RPTAG'];
 
                 $('td', row).each(function (colIndex) {
@@ -496,28 +484,21 @@
                         const columnName = columnNames[clickableColumns.indexOf(colIndex)];
                         const cellValue = data[columnName];
                         
-                        // Cek jika nilainya > 0 dan bukan baris total (URUT 5)
                         if (data.URUT != 5 && cellValue && parseFloat(String(cellValue).replace(/\./g, '').replace(/,/g, '.')) > 0) {
                             $(this).addClass('cursor-pointer text-blue-600 underline').off('click').on('click', function () {
-                                // Set parameter filter global
                                 detailFilterParams = {
                                     vbln_usulan: data.BLTH_USULAN,
-                                    vkd_bank: data.NAMA_BANK ? data.NAMA_BANK.substring(0, 3) : '', // Ambil 3 karakter pertama bank
+                                    vkd_bank: data.NAMA_BANK ? data.NAMA_BANK.substring(0, 3) : '', 
                                     vkd_dist: data.KD_DIST,
                                     vproduk: 'POS'
                                 };
                                 
-                                // Update judul modal
                                 detailTitle.textContent = "("+data.KD_DIST+" - "+data.NAMA_DIST+" | "+data.NAMA_BANK+")";
-
-                                // Tampilkan Modal
                                 modal.classList.remove('hidden');
                                 modal.classList.add('flex');
                                 
-                                // Muat ulang tabel detail dengan parameter baru
                                 if(table_detail_upi) {
-                                    // Tampilkan spinner detail saat memuat ulang
-                                    spinnerDetail.removeClass('hidden').addClass('flex');
+                                    showSpinner(); // Tampilkan spinner yang sudah dibuat
                                     table_detail_upi.ajax.reload();
                                 }
                             });
@@ -532,7 +513,6 @@
                     'vertical-align': 'middle'
                 });
             },
-            // Konfigurasi Export
             dom: 'lfrtip', 
             buttons: [{
                 extend: 'excelHtml5',
@@ -545,11 +525,9 @@
                 exportOptions: {
                     format: {
                         body: function (data, row, column, node) {
-                            // Kolom angka (index 5 sampai 11) di-export tanpa format ribuan
-                            const columnsRaw = [5,6,7,8,9,10,11]; 
+                            const columnsRaw = [4,5,6,7]; 
                             if (columnsRaw.includes(column)) {
                                 if (typeof data === 'string') {
-                                    // Hapus format ribuan (titik) sebelum diekspor
                                     return data.replace(/\./g, '').replace(/,/g, ''); 
                                 }
                             }
@@ -559,11 +537,8 @@
                 },
                 customize: function (xlsx) {
                     var sheet = xlsx.xl.worksheets['sheet1.xml'];
-                    
-                    // Mengubah nama Tab Sheet di Excel
                     $('sheet', xlsx.xl['workbook.xml']).attr('name', 'Rekap Pending');
                     
-                    // 1. Ambil nilai dinamis judul
                     var bulan = $('#bln_usulan_value').val() || 'ALL';
                     var now = new Date();
                     var tanggalCetak =
@@ -573,11 +548,10 @@
                         ("0" + now.getHours()).slice(-2) + ":" +
                         ("0" + now.getMinutes()).slice(-2);
 
-                    // 2. Geser indeks baris asli bawaan DataTables ke bawah sebanyak 5 baris
                     var vawalData = 5;
                     $('row', sheet).each(function () {
                         var currentAttrRow = parseInt($(this).attr('r'));
-                        var newAttrRow = currentAttrRow + vawalData; // Geser ke baris 6, dst
+                        var newAttrRow = currentAttrRow + vawalData; 
                         $(this).attr('r', newAttrRow);
                         
                         $('c', this).each(function () {
@@ -587,27 +561,21 @@
                         });
                     });
 
-                    // 🌟 PERBAIKAN AKURAT: Cari langsung string "TOTAL" di XML sheet Excel
                     $('row', sheet).each(function () {
                         var isTotalRow = false;
-                        
-                        // Cek apakah ada cell di baris ini yang berisi teks "TOTAL"
                         $(this).find('is t').each(function () {
                             if ($(this).text().trim() === 'TOTAL') {
                                 isTotalRow = true;
-                                return false; // break dari loop text
+                                return false; 
                             }
                         });
-                        
-                        // Jika ditemukan, ubah seluruh cell di baris ini menjadi BOLD (s="2")
                         if (isTotalRow) {
                             $(this).find('c').each(function () {
-                                $(this).attr('s', '2'); // s="2" adalah style default bold DataTables
+                                $(this).attr('s', '2'); 
                             });
                         }
                     });
 
-                    // 3. Susun XML baris judul baru dengan tambahan s="2" untuk BOLD
                     var header =
                         '<row r="1">' +
                             '<c t="inlineStr" r="B1" s="2">' +
@@ -641,82 +609,56 @@
                             '</c>' +
                         '</row>';
 
-                    // 4. Masukkan judul ke bagian paling atas sheetData
                     $('sheetData', sheet).prepend(header);
                 }
             }]
-
         });
 
         // 4) --- DataTables Detail (table_mondft_pendingupi) ---
         table_detail_upi = $('#table_mondft_pendingupi').DataTable({
-            processing: false, // Diganti dengan spinner manual
-            serverSide: true,
+            processing: false, 
+            serverSide: true, // Detail tetap Server-Side karena datanya jutaan/banyak
             scrollX: true, 
             paging: true,
             ordering: false,
-            searching: true, 
+            searching: true, // 🛠️ UBAH KE FALSE (Menghindari spamming query ke DB)
             autoWidth: false,
             info: true,
             stripeClasses: [],
             lengthMenu: [ [10, 25, 50, 1000], [10, 25, 50, "1000"] ],
             ajax: {
-                url: getContextPath() + '/mon-pending-ap2tkep2apst', // ✅ Double slash (//) sudah diperbaiki menjadi single slash (/)
+                url: getContextPath() + '/mon-pending-ap2tkep2apst', 
                 type: 'POST',
                 data: function (d) {
-                    // Gunakan parameter yang disimpan dari klik rekap
                     d.act         = 'detailData';
                     d.vbln_usulan = detailFilterParams.vbln_usulan || ''; 
                     d.vkd_bank    = detailFilterParams.vkd_bank || '';
                     d.vkd_dist    = detailFilterParams.vkd_dist || '';
                     d.vproduk     = detailFilterParams.vproduk || '';
                 },
-                // 1. Tangkap error jika server sukses merespons tapi membawa data error (JSON status)
                 dataSrc: function (json) {
-                    // Cek apakah ada code_message atau status bukan sukses
+                    hideSpinner(); // Gunakan fungsi hideSpinner global
+                    
                     if (json.code && json.code !== 200) {
-                        // 1. Matikan spinner loading
-                        if (typeof hideSpinner === "function") {
-                            hideSpinner();
-                        } else if (typeof spinnerDetail !== 'undefined') {
-                            spinnerDetail.removeClass('flex').addClass('hidden');
-                        }
-                        
-                        // 2. Tutup modal detail agar user tidak melihat tabel kosong
                         const modalDetail = document.getElementById('dataModal');
                         if (modalDetail) {
                             modalDetail.classList.add('hidden');
                             modalDetail.classList.remove('flex');
                         }
                         
-                        // Panggil fungsi showmessage Anda di sini
-                        // Contoh format: showMessage(Judul, Pesan, Tipe)
-                        if (typeof showMessage === "function") {
+                        if (typeof showMessageDlg === "function") {
                             showMessageDlg("Error", "Error " + json.code + " - " + json.code_message);
                         } else {
-                            // alert(json.code_message); // Fallback jika fungsi belum terdefinisi
                             showMessageDlg("Warning", json.code_message);
                         }
-                        
-                        return []; // Kembalikan array kosong agar DataTables tidak crash
+                        return []; 
                     }
-                    return json.data; // Jika normal, kembalikan datanya
+                    return json.data; 
                 },
-                // 2. Tangkap error jika koneksi HTTP benar-benar putus / server mati (HTTP 500, 404, dll)
                 error: function (xhr, error, thrown) {
-                    spinnerRekap.removeClass('flex').addClass('hidden'); 
-                    
-                    let errorMsg = "Terjadi kesalahan pada server.";
-                    if (xhr.responseJSON && xhr.responseJSON.code_message) {
-                        errorMsg = xhr.responseJSON.code_message;
-                    }
-                    
-                    if (typeof showMessage === "function") {
-                        showMessage("Error", errorMsg, "error");
-                    } else {
-                        // alert(errorMsg);
-                        showMessageDlg("Warning", errorMsg);
-                    }
+                    hideSpinner(); // Gunakan fungsi hideSpinner global
+                    let errorMsg = "Terjadi kesalahan pada detail server.";
+                    showMessageDlg(errorMsg);
                 }
             },
             columns: [
@@ -746,9 +688,7 @@
                 { data: 'KDBANK', defaultContent: '' },
                 { data: 'NAMA_BANK', defaultContent: '' },
                 { data: 'TGLINSERT', defaultContent: '' },
-                { data: 'IDKIRIM', defaultContent: '' },
-                // { data: 'ROW_NUMBER', defaultContent: '' },
-                // { data: 'TOTAL_COUNT', defaultContent: '' }
+                { data: 'IDKIRIM', defaultContent: '' }
             ],
             columnDefs: [
                 { targets: [13, 14], className: 'text-right' }, // Kolom angka
@@ -765,52 +705,42 @@
                 {
                     extend: 'excelHtml5',
                     title: function() {
-                        const bln = detailFilterParams.vbln_usulan || 'ALL';
-                        const dist = detailFilterParams.vkd_dist || 'UNDEF';
-                        return 'MIV_PENDING_DETAIL_'+ dist +'_' + bln;
+                        const vbln_usulan = detailFilterParams.vbln_usulan || '';
+                        const vkd_dist    = detailFilterParams.vkd_dist || '';
+                        return 'MIV_PENDING_DETAIL_' + vkd_dist + '_' + vbln_usulan;
                     },
                     className: 'd-none',
                     exportOptions: {
-                        // Export semua kolom
+                        columns: ':visible'
                     }
                 }
             ]
         });
 
-        // 5) --- Event Handlers (Spinner) ---
-        // Spinner Rekap (hanya untuk area tabel rekap)
-        // table.on('preXhr.dt', function () {
-        //     spinnerRekap.removeClass('hidden').addClass('flex');  
-        // });
+        // 5) --- Event Handlers (Siklus Proses DataTables Spinner) ---
+        // Spinner untuk Tabel Rekap
         table_rekap_pending.on('preXhr.dt', function() {
             showSpinner();
         }).on('xhr.dt', function() {
             hideSpinner();
         });
 
-        table_rekap_pending.on('xhr.dt', function () {
-            spinnerRekap.removeClass('flex').addClass('hidden');   
-        });
-
-
-        // Spinner Detail (hanya untuk area modal detail)
+        // Spinner untuk Tabel Detail
         $('#table_mondft_pendingupi').on('preXhr.dt', function() {
              showSpinner();
         }).on('xhr.dt', function() {
             hideSpinner();
         });
 
-
         // 6) --- Event Handlers (Tombol) ---       
-        // ---------------------------------------------------------------------------------------------
-        // 1A-1) Tampilkan monitoring Rekap
-        // ---------------------------------------------------------------------------------------------
+        // Tampilkan monitoring Rekap
         $('#btnTampil').on('click', function () {
             if (!$('#bln_usulan_value').val()) {
                 showMessageDlg("Warning", "Silakan pilih Bulan Laporan terlebih dahulu!");
                 return;
             }
             $('#rekapContainer').show();
+            showSpinner(); // Tampilkan sebelum reload AJAX rekap
             table_rekap_pending.ajax.reload();
         });
         
@@ -819,10 +749,7 @@
             table_rekap_pending.button(0).trigger();
         });
 
-        // ----------------------------------------------------------------------------
-        // 1B-2) Export ke exel semua data MON Detail
-        // ----------------------------------------------------------------------------
-        // Fungsi format angka ribuan (lokal Indonesia)
+        // Export ke excel semua data MON Detail
         const formatRibuan = (angka) => new Intl.NumberFormat('id-ID').format(angka);
 
         // Ambil nama Bank MIV dari DB
@@ -870,32 +797,27 @@
             const btn = $(this);
             let totalLoaded = 0;
 
-            spinnerDetail.removeClass('hidden').addClass('flex');
+            showSpinner();
             await new Promise(resolve => setTimeout(resolve, 30));
 
-            btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> <span>Memuat... (' + formatRibuan(totalLoaded) + " data)</span>");
+            btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> <span>Memuat...</span>');
 
-            const vbln_usulan = detailFilterParams.vbln_usulan;
-            const vkd_bank = detailFilterParams.vkd_bank;
-            const vkd_dist = detailFilterParams.vkd_dist;
-            const vproduk = detailFilterParams.vproduk;
+            const vbln_usulan   = detailFilterParams.vbln_usulan;
+            const vkd_bank      = detailFilterParams.vkd_bank;
+            const vkd_dist      = detailFilterParams.vkd_dist;
+            const vproduk       = detailFilterParams.vproduk || '';
 
             if (!vbln_usulan || !vkd_bank || !vkd_dist) {
                 showMessageDlg("Warning", "Silakan lengkapi filter terlebih dahulu!");
                 btn.prop('disabled', false).html('<i class="fa fa-file-excel"></i> <span>Export Detail Per-UPI</span>');
-                spinnerDetail.removeClass('flex').addClass('hidden');
+                hideSpinner();
                 return;
             }
 
-            let namaBank = '';
-            let namaUPI  = '';
             try {
-                namaBank = await fetchNamaBank(vkd_bank);
-                if (vkd_dist === '00') {
-                    namaUPI  = '00 - SAKTI'
-                } else {
-                    namaUPI  = (await fetchNamaUnitUPI(vkd_dist));
-                }
+                let namaBank = await fetchNamaBank(vkd_bank);
+                let namaUPI  = (vkd_dist === '00') ? '00 - SAKTI' : (await fetchNamaUnitUPI(vkd_dist));
+                
                 const pageSize = 1000;
                 let start = 0;
                 let allData = [];
@@ -914,6 +836,7 @@
                 
                 let totalRecords = 0;
 
+                // 1. Looping Fetch Data All Pages (Chunk 1000)
                 while (true) {
                     const params = new URLSearchParams();
                     params.append('act', 'detailData');
@@ -924,10 +847,6 @@
                     params.append('start', start);
                     params.append('length', pageSize);
                     params.append('draw', drawCounter++);
-                    params.append('order[0][column]', '0');
-                    params.append('order[0][dir]', 'asc');
-                    params.append('columns[0][data]', 'KD_DIST');
-                    params.append('search[value]', '');
 
                     const response = await fetch(getContextPath() + '/mon-pending-ap2tkep2apst', {
                         method: 'POST',
@@ -942,7 +861,7 @@
 
                     const json = await response.json();
                     const data = json.data;
-                    totalRecords = json.recordsTotal;
+                    totalRecords = json.recordsTotal || 0;
                     
                     if (!data || data.length === 0) break;
 
@@ -965,113 +884,122 @@
                     await new Promise(resolve => setTimeout(resolve, 10));
 
                     if (data.length < pageSize || totalLoaded >= totalRecords) break;
-
                     start += pageSize;
                 }
 
                 if (allData.length === 0) {
                     showMessageDlg("Warning", "Tidak ada data untuk diekspor!");
+                    btn.prop('disabled', false).html('<i class="fa fa-file-excel"></i> <span>Export Detail Per-UPI</span>');
+                    hideSpinner();
                     return;
                 }
 
-                // 🟢 PEMBUATAN TIMESTAMP KEMBALI DISEDIAKAN DI SINI
+                // 2. Format Timestamp
                 const now = new Date();
-                const dd = String(now.getDate()).padStart(2, '0');
-                const mm = String(now.getMonth() + 1).padStart(2, '0');
-                const yyyy = now.getFullYear();
-                const hh = String(now.getHours()).padStart(2, '0');
-                const mi = String(now.getMinutes()).padStart(2, '0');
-                const ss = String(now.getSeconds()).padStart(2, '0');
-                const timestamp = dd + "/" + mm + "/" + yyyy + " " + hh + ":" + mi + ":" + ss;
+                const timestamp = String(now.getDate()).padStart(2, '0') + "/" + 
+                                String(now.getMonth() + 1).padStart(2, '0') + "/" + 
+                                now.getFullYear() + " " + 
+                                String(now.getHours()).padStart(2, '0') + ":" + 
+                                String(now.getMinutes()).padStart(2, '0') + ":" + 
+                                String(now.getSeconds()).padStart(2, '0');
 
-                // --- PROSES EXPORT MENGGUNAKAN EXCELJS ---
+                // 3. Buat Document ExcelJS
                 const workbook = new ExcelJS.Workbook();
                 const worksheet = workbook.addWorksheet('Detail Pending');
 
-                // 1. Susun Judul & Info di Kolom B (Baris 1 - 8)
+                // Information Header Metadata
                 worksheet.getCell('B1').value = "MANAGEMENT INSTANSI VERTIKAL";
                 worksheet.getCell('B2').value = "DETAIL PENDING Ap2T KE P2APST";
-                
                 worksheet.getCell('B3').value = "UID/UIW";
                 worksheet.getCell('C3').value = ": " + namaUPI;
-                
                 worksheet.getCell('B4').value = "BANK MIV";
                 worksheet.getCell('C4').value = ": " + vkd_bank + (namaBank ? " - " + namaBank : '');
-                
                 worksheet.getCell('B5').value = "PRODUK";
                 worksheet.getCell('C5').value = ": " + vproduk;
-
                 worksheet.getCell('B6').value = "BULAN";
                 worksheet.getCell('C6').value = ": " + vbln_usulan.substring(4, 6) + '/' + vbln_usulan.substring(0, 4);
-            
-                
                 worksheet.getCell('B7').value = "TOTAL DATA";
                 worksheet.getCell('C7').value = ": " + formatRibuan(totalLoaded);
-                
                 worksheet.getCell('B8').value = "TANGGAL DOWNLOAD";
                 worksheet.getCell('C8').value = ": " + timestamp;
 
-                // Styling untuk Judul Utama (B1 & B2) -> BOLD & UKURAN BESAR
                 ['B1', 'B2'].forEach(cellRef => {
                     worksheet.getCell(cellRef).font = { bold: true, size: 12, name: 'Arial' };
                 });
-
-                // Styling untuk Label Info (B3 sampai B8) -> BOLD
                 for (let i = 3; i <= 8; i++) {
                     worksheet.getCell('B' + i).font = { bold: true, name: 'Arial' };
                 }
 
-                // 2. Tambahkan Header Tabel di Baris 10 (Mulai Kolom A / Kolom 1)
-                const tableHeaders = ['NO', ...Object.values(headers)];
+                // Table Header (Baris 10)
+                const headerKeys = Object.keys(headers);
+                const tableHeaders = ['NO', ...headerKeys.map(k => headers[k])];
                 const headerRow = worksheet.getRow(10);
                 headerRow.values = tableHeaders;
                 
-                // Styling untuk Header Tabel -> BOLD, Background Biru Lembut, Text Center
-                headerRow.eachCell((cell) => {
+                // Style Table Header (Baris 10)
+                headerRow.eachCell({ includeEmpty: true }, (cell) => {
                     cell.font = { bold: true, color: { argb: 'FFFFFF' }, name: 'Arial' };
                     cell.fill = {
                         type: 'pattern',
                         pattern: 'solid',
-                        fgColor: { argb: '4F81BD' }
+                        fgColor: { argb: '1F4E78' } // Warna Biru Header
                     };
-                    cell.alignment = { vertical: 'middle', horizontal: 'center' };
+                    cell.alignment = { horizontal: 'center', vertical: 'middle' };
                 });
-                headerRow.height = 25;
 
-                // 3. Tambahkan Data Detail (Mulai Baris 11)
-                allData.forEach((row, index) => {
-                    const dataRowValues = [index + 1];
-                    Object.keys(headers).forEach(key => {
-                        dataRowValues.push(row[key]);
-                    });
+                // ⚡ FIX UTAMA: Inject All Rows Data ke dalam Excel
+                allData.forEach((item, index) => {
+                    const rowValues = [
+                        index + 1, // Kolom NO
+                        ...headerKeys.map(key => item[key]) // Mengambil value sesuai urutan header
+                    ];
                     
-                    worksheet.addRow(dataRowValues);
+                    const addedRow = worksheet.addRow(rowValues);
+
+                    // Styling per sel data
+                    addedRow.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+                        cell.font = { name: 'Arial', size: 10 };
+                        
+                        // Alignment dan Format Angka (RPTAG & RPBK berada di kolom 14 & 15 termasuk NO)
+                        const headerKeyName = headerKeys[colNumber - 2]; 
+                        if (['RPTAG', 'RPBK'].includes(headerKeyName)) {
+                            cell.numFmt = '#,##0';
+                            cell.alignment = { horizontal: 'right', vertical: 'middle' };
+                        } else {
+                            cell.alignment = { horizontal: 'center', vertical: 'middle' };
+                        }
+                    });
                 });
 
-                // 4. Auto-fit lebar kolom agar rapi tidak terpotong (###)
+                // Auto-fit Column Width
                 worksheet.columns.forEach(column => {
                     let maxLen = 0;
-                    column.eachCell({ includeEmpty: false }, (cell) => {
-                        const cellLen = cell.value ? cell.value.toString().length : 0;
-                        if (cellLen > maxLen) maxLen = cellLen;
+                    column.eachCell({ includeEmpty: true }, cell => {
+                        const len = cell.value ? String(cell.value).length : 10;
+                        if (len > maxLen) maxLen = len;
                     });
-                    column.width = maxLen < 10 ? 10 : maxLen + 3;
+                    column.width = Math.min(Math.max(maxLen + 3, 12), 40);
                 });
 
-                // 5. Generate File dan Trigger Download via FileSaver.js
-                const fileName = "MIV_PENDING_DETAIL_" + vkd_dist + "_" + vbln_usulan + ".xlsx";
+                // 4. Trigger Download File Excel
                 const buffer = await workbook.xlsx.writeBuffer();
-                saveAs(new Blob([buffer]), fileName);
+                const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'MIV_PENDING_DETAIL_' + vkd_dist + '_' + vbln_usulan + '.xlsx';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
 
             } catch (error) {
-                console.error("Error during full export:", error);
-                showMessageDlg("Warning", "Gagal mengekspor data: " + error.message);
+                console.error("Export Error: ", error);
+                showMessageDlg("Error", "Gagal melakukan export data detail: " + error.message);
             } finally {
                 btn.prop('disabled', false).html('<i class="fa fa-file-excel"></i> <span>Export Detail Per-UPI</span>');
-                spinnerDetail.removeClass('flex').addClass('hidden');
+                hideSpinner();
             }
         });
 
     });
 </script>
-

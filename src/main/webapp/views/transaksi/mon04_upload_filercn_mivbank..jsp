@@ -314,10 +314,13 @@ document.addEventListener("DOMContentLoaded", function() {
             type: 'POST',
             data: function (d) {
                 d.act       = 'getlogdbrcn';
-                let tglAwalRaw  = typeof getTglAwal === 'function' ? getTglAwal() : new Date().toISOString().slice(0,10);
-                let tglAkhirRaw = typeof getTglAkhir === 'function' ? getTglAkhir() : new Date().toISOString().slice(0,10);                
-                d.vtglawal  = tglAwalRaw.replace(/-/g, '');
-                d.vtglakhir = tglAkhirRaw.replace(/-/g, '');
+                // Menggunakan trik offset timezone lokal
+                let todayLocal = new Date(new Date().getTime() - (new Date().getTimezoneOffset() * 60000)).toISOString().slice(0,10);
+                // Atau cara yang lebih modern:
+                let todayFormatter = new Intl.DateTimeFormat('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date()); 
+                // fr-CA menghasilkan format YYYY-MM-DD sesuai waktu lokal komputer
+                d.vtglawal  = (typeof getTglAwal === 'function' ? getTglAwal() : todayFormatter).replace(/-/g, '');
+                d.vtglakhir = (typeof getTglAkhir === 'function' ? getTglAkhir() : todayFormatter).replace(/-/g, '');
             },
             dataSrc: function (json) {
                 if (json.status === "error") {
