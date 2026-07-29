@@ -17,6 +17,7 @@
 
 <div class="flex flex-col h-full">
 
+  <!-- BRAND LOGO -->
   <a href="index.jsp?page=/views/dashboard/dashboard.jsp&menu=dashboard"
      class="flex items-center gap-2 px-4 py-3 border-b border-gray-700">
     <img src="${pageContext.request.contextPath}/assets/img/logo-mivPLNBANK.png"
@@ -24,6 +25,7 @@
     <span class="text-lg font-semibold text-white sidebar-text">MIV-P2APST</span>
   </a>
 
+  <!-- NAVIGATION -->
   <nav class="flex-1 overflow-y-auto">
     <ul class="mt-3 space-y-1">
 
@@ -35,7 +37,7 @@
                   <%= "dashboard".equals(menuAttr)
                       ? "bg-gray-700 text-white font-semibold"
                       : "text-gray-300 hover:bg-gray-700 hover:text-white" %>">
-          <i class="fa fa-tachometer-alt w-5 text-center"></i>
+          <i class="fas fa-chart-pie w-5 text-center"></i>
           <span class="sidebar-text">Dashboard</span>
         </a>
       </li>
@@ -48,22 +50,23 @@
                            : "text-gray-300 hover:bg-gray-700 hover:text-white" %>"
                 onclick="toggleSubmenu('submenuMiv', this)">
           <div class="flex items-center gap-3">
-            <i class="fa fa-tasks w-5 text-center"></i>
+            <i class="fas fa-tasks w-5 text-center"></i>
             <span class="sidebar-text">Progres MIV</span>
           </div>
-          <i class="fa fa-angle-down dropdown-icon transition-transform duration-200 <%= mivActive ? "rotate-180" : "" %>"></i>
+          <i class="fas fa-angle-down dropdown-icon transition-transform duration-200 <%= mivActive ? "rotate-180" : "" %>"></i>
         </button>
 
-        <!-- Menggunakan ID 'submenuMiv' -->
+        <!-- Submenu Items -->
         <ul id="submenuMiv"
             class="submenu-popover md:pl-6 mt-1 space-y-1 transition-all duration-300 ease-in-out <%= mivActive ? "" : "hidden" %>">
           <li>
             <a href="index.jsp?page=/views/transaksi/mon04_upload_filercn_mivbank..jsp&menu=upload-filercn-bank"
                title="Upload File Pelunasan Dari Bank"
-               class="block px-4 py-2 rounded-md transition text-sm
+               class="flex items-center gap-2 px-4 py-2 rounded-md transition text-sm
                       <%= "upload-filercn-bank".equals(menuAttr)
                           ? "bg-cyan-800 text-white font-semibold"
                           : "text-gray-300 hover:bg-cyan-600 hover:text-white" %>">
+              <i class="fas fa-file-upload w-4 text-center text-xs opacity-80"></i>
               <span class="sidebar-text">Upload File (RCN)</span>
             </a>
           </li>
@@ -78,23 +81,24 @@
                            : "text-gray-300 hover:bg-gray-700 hover:text-white" %>"
                 onclick="toggleSubmenu('submenuMonitoring', this)">
           <div class="flex items-center gap-3">
-            <i class="fa fa-tasks w-5 text-center"></i>
+            <i class="fas fa-desktop w-5 text-center"></i>
             <span class="sidebar-text">Monitoring</span>
           </div>
-          <i class="fa fa-angle-down dropdown-icon transition-transform duration-200 <%= monitoringActive ? "rotate-180" : "" %>"></i>
+          <i class="fas fa-angle-down dropdown-icon transition-transform duration-200 <%= monitoringActive ? "rotate-180" : "" %>"></i>
         </button>
 
-        <!-- Menggunakan ID 'submenuMonitoring' -->
+        <!-- Submenu Items -->
         <ul id="submenuMonitoring"
             class="submenu-popover md:pl-6 mt-1 space-y-1 transition-all duration-300 ease-in-out <%= monitoringActive ? "" : "hidden" %>">
 
           <li>
             <a href="index.jsp?page=/views/monitoring/mon00_pendingmiv_ap2tkep2apst.jsp&menu=monitoring-pending-ap2t-p2apst"
                title="Mon Mohon Pending MIV AP2T Ke P2APST"
-               class="block px-4 py-2 rounded-md transition text-sm
+               class="flex items-center gap-2 px-4 py-2 rounded-md transition text-sm
                       <%= "monitoring-pending-ap2t-p2apst".equals(menuAttr)
                           ? "bg-cyan-800 text-white font-semibold"
                           : "text-gray-300 hover:bg-cyan-600 hover:text-white" %>">
+              <i class="fas fa-clock w-4 text-center text-xs opacity-80"></i>
               <span class="sidebar-text">Mon Mohon Pending MIV AP2T Ke P2APST</span>
             </a>
           </li>
@@ -102,10 +106,11 @@
           <li>
             <a href="index.jsp?page=/views/monitoring/mon01_rekonflag_pln_vs_bank.jsp&menu=monitoring-rekon-bank-upi"
                title="Mon Rekon BANK vs PLN"
-               class="block px-4 py-2 rounded-md transition text-sm
+               class="flex items-center gap-2 px-4 py-2 rounded-md transition text-sm
                       <%= "monitoring-rekon-bank-upi".equals(menuAttr)
                           ? "bg-cyan-800 text-white font-semibold"
                           : "text-gray-300 hover:bg-cyan-600 hover:text-white" %>">
+              <i class="fas fa-balance-scale w-4 text-center text-xs opacity-80"></i>
               <span class="sidebar-text">Mon Rekon PLN vs BANK</span>
             </a>
           </li>
@@ -113,10 +118,11 @@
           <li>
             <a href="index.jsp?page=/views/monitoring/mon02_cetak_struk_mivbank.jsp&menu=Struk-bank-miv"
                title="Cetak Struk"
-               class="block px-4 py-2 rounded-md transition text-sm
+               class="flex items-center gap-2 px-4 py-2 rounded-md transition text-sm
                       <%= "Struk-bank-miv".equals(menuAttr)
                           ? "bg-cyan-800 text-white font-semibold"
                           : "text-gray-300 hover:bg-cyan-600 hover:text-white" %>">
+              <i class="fas fa-print w-4 text-center text-xs opacity-80"></i>
               <span class="sidebar-text">Cetak Struk - BANK MIV</span>
             </a>
           </li>
@@ -124,33 +130,25 @@
           <li>
             <a href="index.jsp?page=/views/monitoring/mon03_chek_filetxtrcn_mivbank.jsp&menu=chek-filertxt-bank"
                title="Chek File Daftar Ke Bank"
-               class="block px-4 py-2 rounded-md transition text-sm
+               class="flex items-center gap-2 px-4 py-2 rounded-md transition text-sm
                       <%= "chek-filertxt-bank".equals(menuAttr)
                           ? "bg-cyan-800 text-white font-semibold"
                           : "text-gray-300 hover:bg-cyan-600 hover:text-white" %>">
+              <i class="fas fa-search w-4 text-center text-xs opacity-80"></i>
               <span class="sidebar-text">Chek File (TXT & RCN)</span>
             </a>
           </li>
         </ul>
       </li>
 
-      <!-- LOGOUT -->
-      <li>
-        <a href="${pageContext.request.contextPath}/LogoutServlet"
-           title="Logout"
-           class="flex items-center gap-3 px-4 py-2 rounded-md transition text-gray-300 hover:bg-gray-700 hover:text-white">
-          <i class="fa fa-sign-out-alt w-5 text-center"></i>
-          <span class="sidebar-text">Logout</span>
-        </a>
-      </li>
-
     </ul>
   </nav>
 
+  <!-- FOOTER / LOGOUT -->
   <div class="mt-auto border-t border-gray-700">
     <a href="${pageContext.request.contextPath}/LogoutServlet"
        class="flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition">
-      <i class="fa fa-sign-out-alt w-5 text-center"></i>
+      <i class="fas fa-sign-out-alt w-5 text-center"></i>
       <span class="sidebar-text">Logout</span>
     </a>
   </div>
