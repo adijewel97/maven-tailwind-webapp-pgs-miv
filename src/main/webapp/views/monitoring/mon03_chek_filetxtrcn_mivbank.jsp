@@ -112,10 +112,18 @@
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4 w-full max-w-[1100px] mx-auto px-2">
 
+    <!-- FIELDSET SUKSES -->
     <fieldset class="border border-gray-300 rounded-xl p-5 bg-white shadow-sm w-full flex flex-col">
-        <h3 id="label_sukses" class="text-base font-semibold mb-3 text-gray-800 text-center flex items-center justify-center gap-2">
+        <h3 id="label_sukses" class="text-base font-semibold mb-1 text-gray-800 text-center flex items-center justify-center gap-2">
             📂 Daftar File TXT dari AP2T
         </h3>
+
+        <!-- ➕ LABEL TOTAL SUKSES -->
+        <div class="flex justify-between items-center w-full mb-2 text-xs font-semibold text-green-700">
+            <span id="count_sukses" class="bg-green-50 px-2 py-1 rounded border border-green-200">
+                Total File Sukses: 0 file
+            </span>
+        </div>
 
         <div id="loading_sukses" class="text-sm text-blue-600 animate-pulse mb-2 text-center" style="display:none;">
             Memuat daftar file dari FTP...
@@ -136,10 +144,18 @@
         </div>
     </fieldset>
 
+    <!-- FIELDSET GAGAL -->
     <fieldset class="border border-gray-300 rounded-xl p-5 bg-white shadow-sm w-full flex flex-col">
-        <h3 id="label_gagal" class="text-base font-semibold mb-3 text-gray-800 text-center flex items-center justify-center gap-2">
+        <h3 id="label_gagal" class="text-base font-semibold mb-1 text-gray-800 text-center flex items-center justify-center gap-2">
             📂 Daftar/Gagal File TXT dari AP2T
         </h3>
+
+        <!-- ➕ LABEL TOTAL GAGAL -->
+        <div class="flex justify-between items-center w-full mb-2 text-xs font-semibold text-red-700">
+            <span id="count_gagal" class="bg-red-50 px-2 py-1 rounded border border-red-200">
+                Total File Gagal: 0 file
+            </span>
+        </div>
 
         <div id="loading_gagal" class="text-sm text-blue-600 animate-pulse mb-2 text-center" style="display:none;">
             Memuat daftar file dari FTP...
@@ -178,19 +194,18 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // -----------------------------------------------------
-    // 0) Inisialisasi Instance Select2 untuk Bank MIV (Menggantikan Tom Select)
+    // 0) Inisialisasi Instance Select2 untuk Bank MIV
     // -----------------------------------------------------
-    // Menggunakan jQuery ($) karena Select2 membutuhkan jQuery
     $('#bank_miv').select2({
         placeholder: "-- Pilih Bank MIV --",
         allowClear: true,
-        width: '100%' // Memastikan lebar penuh mengikuti grid Tailwind
+        width: '100%'
     }); 
 
-     $('#idtxt_rcn').select2({
+    $('#idtxt_rcn').select2({
         placeholder: "-- Pilih File TXT Untuk BANK--",
         allowClear: true,
-        width: '100%' // Memastikan lebar penuh mengikuti grid Tailwind
+        width: '100%'
     }); 
 
     function convertBulanTahunToYYYYMM(input) {
@@ -267,13 +282,14 @@ document.addEventListener("DOMContentLoaded", function() {
     function clearList() {
         document.getElementById("list_sukses").innerHTML = "";
         document.getElementById("list_gagal").innerHTML = "";
+        document.getElementById("count_sukses").textContent = "Total File Sukses: 0 file";
+        document.getElementById("count_gagal").textContent = "Total File Gagal: 0 file";
     }
 
     async function loadFiles(jenis) {
         var bank = document.getElementById("bank_miv").value;
         if (!bank) 
         { 
-            // alert("Silakan pilih BANK MIV!"); 
             showMessageDlg("Info", "Silakan pilih BANK MIV!");
             return; 
         }
@@ -295,11 +311,15 @@ document.addEventListener("DOMContentLoaded", function() {
             var loading_gagal = document.getElementById('loading_gagal');
             var list_sukses = document.getElementById('list_sukses');
             var list_gagal = document.getElementById('list_gagal');
+            var count_sukses = document.getElementById('count_sukses');
+            var count_gagal = document.getElementById('count_gagal');
 
             loading_sukses.style.display = 'block';
             loading_gagal.style.display = 'block';
             list_sukses.innerHTML = "";
             list_gagal.innerHTML = "";
+            count_sukses.textContent = "Memuat data...";
+            count_gagal.textContent = "Memuat data...";
 
             const res = await fetch(url);
             const json = await res.json();
@@ -316,6 +336,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 gagalFiles  = gagalFiles.filter(f => f.toLowerCase().includes(pola));
             }
 
+            // ➕ Update label jumlah file Sukses
+            count_sukses.textContent = "Total File Sukses: " + suksesFiles.length + " file";
+
             // isi list sukses
             if(suksesFiles.length === 0){
                 var opt = document.createElement('option');
@@ -330,6 +353,9 @@ document.addEventListener("DOMContentLoaded", function() {
                     list_sukses.appendChild(opt);
                 });
             }
+
+            // ➕ Update label jumlah file Gagal
+            count_gagal.textContent = "Total File Gagal: " + gagalFiles.length + " file";
 
             // isi list gagal
             if(gagalFiles.length === 0){
@@ -348,7 +374,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
         } catch(err) {
             console.error("❌ Error load files:", err);
-            // alert("Terjadi kesalahan: " + err.message);
+            document.getElementById("count_sukses").textContent = "Total File Sukses: Gagal memuat";
+            document.getElementById("count_gagal").textContent = "Total File Gagal: Gagal memuat";
             showMessageDlg("Error", "Terjadi kesalahan: " + err.message);
         } finally {
             hideSpinner();
@@ -358,7 +385,6 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById('btnTampil').addEventListener('click', function () {
         var jenis = document.getElementById("idtxt_rcn").value.trim().toUpperCase();
         if(jenis === "") { 
-            // alert("Silakan pilih jenis file (TXT/RCN)!"); 
             showMessageDlg("Error", "Silakan pilih jenis file (TXT/RCN)!");
             return; 
         }
@@ -369,7 +395,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function downloadFile(path){
         if(!path || path.substring(0, 9) === "Tidak ada"){ 
-            // alert("Pilih file valid dulu!"); 
             showMessageDlg("Info", "Pilih file valid dulu!");
             return; 
         }

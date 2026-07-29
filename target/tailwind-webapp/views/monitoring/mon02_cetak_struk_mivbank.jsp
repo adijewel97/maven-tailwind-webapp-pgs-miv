@@ -45,7 +45,7 @@
 }
 
 /* 
-   KUSTOMISASI SELECT2 AGAR MATCING DENGAN TAILWIND 
+   KUSTOMISASI SELECT2 AGAR MATCHING DENGAN TAILWIND 
    Menggantikan style .ts-wrapper lama Anda
 */
 .select2-container--default .select2-selection--single {
@@ -130,7 +130,6 @@
                 <!-- Bulan Laporan -->
                 <div class="col-span-12 md:col-span-3">
                     <label for="bln_usulan" class="block text-gray-700 mb-1 font-medium">Bulan Laporan :</label>
-                    <!-- TAMBAHKAN ID DISINI (bln_usulanAndCalendarWrapper) dan class h-[38px] -->
                     <div id="bln_usulanAndCalendarWrapper" class="flex border border-gray-300 rounded items-center h-[38px] bg-white">
                         <input type="text" id="bln_usulan"
                             class="flex-1 px-3 py-2 text-sm uppercase focus:outline-none focus:ring-1 focus:ring-blue-500"
@@ -140,10 +139,9 @@
                     <input type="hidden" id="bln_usulan_value" name="bln_usulan_value">
                 </div>
 
-                <!-- Bank MIV (Sekarang Menggunakan Select2) -->
+                <!-- Bank MIV -->
                 <div class="col-span-12 md:col-span-3">
                     <label for="bank_miv" class="block text-gray-700 mb-1 font-medium">Bank MIV :</label>
-                    <!-- Hapus placeholder & autocomplete bawaan karena akan di-handle Select2 via JS -->
                     <select id="bank_miv" name="bank_miv" class="w-full text-sm">
                         <option value="">-- Pilih Bank MIV --</option>
                     </select>
@@ -193,6 +191,14 @@
             <fieldset class="border border-gray-300 p-5 mt-4 w-full text-center bg-white shadow">
                 <h3 class="text-xl font-semibold mb-4">📂 Daftar File PDF</h3>
                 <div id="loading" class="text-blue-600 animate-pulse mb-3">Memuat daftar file dari FTP...</div>
+                
+                <!-- ➕ LABEL HASIL JUMLAH FILE PDF -->
+                <div class="flex justify-between items-center w-full md:w-[980px] mx-auto mb-2 text-sm font-semibold text-gray-700">
+                    <span id="fileCountInfo" class="text-blue-700 bg-blue-50 px-3 py-1 rounded border border-blue-200">
+                        Total File: 0 file ditemukan
+                    </span>
+                </div>
+
                 <div class="flex justify-center">
                     <select id="thelist" size="10" class="border border-gray-300 rounded w-full md:w-[980px] p-2" multiple></select>
                 </div>
@@ -205,9 +211,6 @@
             </fieldset>
         </div>
 </fieldset>
-
-<!-- 2. Tambahkan Select2 JS Link jika belum ada -->
-<!-- <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> -->
 
 <!-- ========================= SCRIPT ========================= -->
 <script>
@@ -222,25 +225,24 @@ document.addEventListener("DOMContentLoaded", function () {
     function hideSpinner(){ spinner.style.display='none'; }
 
     // -----------------------------------------------------
-    // 0) Inisialisasi Instance Select2 untuk Bank MIV (Menggantikan Tom Select)
+    // 0) Inisialisasi Instance Select2 untuk Bank MIV
     // -----------------------------------------------------
-    // Menggunakan jQuery ($) karena Select2 membutuhkan jQuery
     $('#bank_miv').select2({
         placeholder: "-- Pilih Bank MIV --",
         allowClear: true,
-        width: '100%' // Memastikan lebar penuh mengikuti grid Tailwind
+        width: '100%'
     }); 
 
     $('#diswil').select2({
         placeholder: "-- Pilih Distribusi/Wilayah --",
         allowClear: true,
-        width: '100%' // Memastikan lebar penuh mengikuti grid Tailwind
+        width: '100%'
     });
     
      $('#up3').select2({
         placeholder: "-- Pilih UP3 --",
         allowClear: true,
-        width: '100%' // Agar mengikuti grid Tailwind Anda
+        width: '100%'
     });
 
     // -------------------------
@@ -249,10 +251,13 @@ document.addEventListener("DOMContentLoaded", function () {
     async function loadStrukFiles() {
         const loading = document.getElementById('loading');
         const list = document.getElementById('thelist');
+        const fileCountInfo = document.getElementById('fileCountInfo');
+        
         showSpinner();
         loading.style.display = 'block';
         loading.textContent = "Memuat daftar file dari FTP...";
         list.innerHTML = '';
+        fileCountInfo.textContent = "Memuat data...";
 
         try {
             const raw = document.getElementById("bln_usulan").value;
@@ -284,8 +289,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 const opt = document.createElement('option');
                 opt.textContent = "Tidak ada file sesuai filter.";
                 list.appendChild(opt);
+                fileCountInfo.textContent = "Total File: 0 file ditemukan";
                 return;
             }
+
+            // ➕ Update label jumlah file yang ditemukan
+            fileCountInfo.textContent = "Total File: " + filteredFiles.length + " file ditemukan";
 
             filteredFiles.forEach(filePath => {
                 const opt = document.createElement('option');
@@ -297,6 +306,7 @@ document.addEventListener("DOMContentLoaded", function () {
             loading.style.display = 'none';
         } catch (err) {
             loading.innerHTML = '<span class="text-red-600">Terjadi kesalahan: ' + err.message + '</span>';
+            fileCountInfo.textContent = "Total File: Gagal memuat data";
             console.error("ERROR loadStrukFiles:", err);
         } finally {
             hideSpinner();
@@ -359,7 +369,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // -------------------------
-    // 4) Load Bank MIV (Diubah penuh ke Gaya Manipulasi DOM Select2)
+    // 4) Load Bank MIV
     // -------------------------
     async function loadBankMIV() {
         console.log("🔄 Memuat daftar bank MIV...");
@@ -376,23 +386,15 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!res.ok) throw new Error("HTTP Error " + res.status);
             const json = await res.json();
 
-            // Ambil element native select
             const $bankSelect = $('#bank_miv');
-            
-            // Bersihkan data lama dengan cara standard Select2
             $bankSelect.empty().trigger("change");
-            
-            // Tambahkan kembali default placeholder option
             $bankSelect.append(new Option('-- Pilih Bank MIV --', ''));
 
             if (json.status === 'success' && Array.isArray(json.data)) {
-                // Loop data dan masukkan ke element via Select2 Option constructor
                 json.data.forEach(bank => {
                     const newOption = new Option(bank.NAMA_BANK, bank.KODE_ERP, false, false);
                     $bankSelect.append(newOption);
                 });
-                
-                // Beri tahu Select2 untuk me-render ulang UI-nya setelah DOM berubah
                 $bankSelect.trigger('change');
                 console.log("✅ Bank MIV berhasil dimuat ke Select2:", json.data.length, "data");
             } else {
@@ -405,7 +407,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // -------------------------
-    // 5) Load DIS/WIL (Disinkronkan dengan Select2)
+    // 5) Load DIS/WIL
     // -------------------------
     async function loadDisWilMIV() {
         console.log("🔄 Memuat daftar DIS/WIL...");
@@ -443,7 +445,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // -------------------------
-    // 6) Load UP3 berdasarkan DIS/WIL (Disinkronkan dengan Select2)
+    // 6) Load UP3 berdasarkan DIS/WIL
     // -------------------------
     async function loadUP3MIV(kd_dist) {
         console.log("🔄 Memuat daftar UP3 untuk kd_dist:", kd_dist);
@@ -490,7 +492,7 @@ document.addEventListener("DOMContentLoaded", function () {
     loadDisWilMIV();
 
     // -------------------------
-    // 8) Event listeners (Menggunakan Event Listener Select2 jQuery)
+    // 8) Event listeners
     // -------------------------
     $('#diswil').on('select2:select select2:unselect change', function (e) {
         const kd_dist = $(this).val();
