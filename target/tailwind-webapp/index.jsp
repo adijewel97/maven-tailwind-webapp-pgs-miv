@@ -194,7 +194,7 @@
             border-top: 1px solid #d1d5db;
             height: var(--footer-height);
             background: #ffffff;
-            z-index: 45;
+            z-index: 20;
         }
 
         #mainContent{

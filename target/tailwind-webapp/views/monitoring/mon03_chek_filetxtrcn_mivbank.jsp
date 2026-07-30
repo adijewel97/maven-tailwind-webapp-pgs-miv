@@ -330,15 +330,22 @@ document.addEventListener("DOMContentLoaded", function() {
             var suksesFiles = json.listSukses || [];
             var gagalFiles = json.listGagal || [];
 
+            // Filter berdasarkan idtrans jika ada
             if(idtrans && idtrans !== "*"){
                 var pola = idtrans.toLowerCase();
                 suksesFiles = suksesFiles.filter(f => f.toLowerCase().includes(pola));
                 gagalFiles  = gagalFiles.filter(f => f.toLowerCase().includes(pola));
             }
 
+            // =========================================================
+            // ➕ PROSES SORTING JS: Urutkan berdasarkan Nama File & Ekstensi
+            // =========================================================
+            suksesFiles.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base', numeric: true }));
+            gagalFiles.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base', numeric: true }));
+
             // ➕ Update label jumlah file Sukses
             count_sukses.textContent = "Total File Sukses: " + suksesFiles.length + " file";
-
+            
             // isi list sukses
             if(suksesFiles.length === 0){
                 var opt = document.createElement('option');
