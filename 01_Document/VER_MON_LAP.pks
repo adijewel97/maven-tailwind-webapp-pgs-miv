@@ -9,15 +9,7 @@ CREATE OR REPLACE PACKAGE OPHARTDE.VER_MON_LAP AS
     -----------------------------------------------------------------------------------------
     --1a) Mon Rekap Rekon MIV/SAKTI PLN vs BANK
     PROCEDURE monlap_rkp_mivfalg_plnvsbank_uiw(vbln_usulan IN NUMBER, out_data out sys_refcursor, pesan out varchar2);
-    --1b) Mon Daftar Rekon MIV/SAKTI PLN vs BANK
-    PROCEDURE monlap_mivfalg_plnvsbank_uiw_pgs(
-                    in_start         in number,
-                    in_lenght        in number,
-                    in_sort_by       in varchar2,
-                    in_sort_dir      in varchar2,
-                    in_search        in varchar2,
-                    vbln_usulan IN NUMBER, vkdbank in VARCHAR, vkd_dist in VARCHAR, out_data out sys_refcursor, pesan out varchar2);  
-                    
+    --1b) Mon Daftar Rekon MIV/SAKTI PLN vs BANK                    
     PROCEDURE monlap_dft_mivfalg_plnvsbank_uiw_pgs(
                     in_start         in number,
                     in_lenght        in number,
@@ -38,6 +30,7 @@ CREATE OR REPLACE PACKAGE OPHARTDE.VER_MON_LAP AS
         vbln_usulan IN NUMBER, 
         vkdbank     IN VARCHAR2, 
         vkd_dist    IN VARCHAR2, 
+        vket_pending IN VARCHAR2, 
         out_cursor  OUT SYS_REFCURSOR, 
         pesan       OUT VARCHAR2
     );                     

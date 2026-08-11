@@ -214,365 +214,7 @@ CREATE OR REPLACE PACKAGE BODY OPHARTDE.VER_MON_LAP IS
            pesan:='Gagal Tampilkan Data ' ||SQLERRM || DBMS_UTILITY.FORMAT_ERROR_BACKTRACE; 
     END;
     
-    --1b) Mon Daftar Rekon MIV/SAKTI PLN vs BANK
-    PROCEDURE monlap_mivfalg_plnvsbank_uiw_pgs(
-                    in_start         in number,
-                    in_lenght        in number,
-                    in_sort_by       in varchar2,
-                    in_sort_dir      in varchar2,
-                    in_search        in varchar2,
-                    vbln_usulan IN NUMBER, vkdbank in VARCHAR, vkd_dist in VARCHAR, out_data out sys_refcursor, pesan out varchar2) is
-        vEmsg varchar2(50) default null;
-    BEGIN
-        vEmsg := 'Gagal Tampilkan Data ';
-        pesan := 'Gagal Tampilkan Data ';
-        open out_data for
-            -- PGS DAFTAR
-            SELECT *
-            FROM (
-              SELECT x.*, ROWNUM AS ROW_NUMBER
-              FROM (
-                ----------------------------------------------------------------------------    
-                -- begin query utama
-                --------------------------------------------------------------------
-                --  contoh input tarik data rekon sakti BANK vs P2APST
-                --  Tekan ctrl+enter mausukan :
-                ---    bln_usulan : 202503 -- Tahun Bulan Falging Sakti yang diminta
-                ---    bank       : 111    -- kode bank DKI 3 digit
-                ---    apj        : 00     -- sakti seluruh UID/UIW seindonesia
-                --------------------------------------------------------------------
-                With pln_data as
-                    (
-                        select to_char(tglinsert,'YYYYMMDD HH24:MI') tglapprove, nvl(substr(a.nousulan,4,2),a.kd_dist) kddist,'pln_data' proses,a.va, a.nousulan, a.kdproses, a.status,a.idpel, a.blth,
-                               nvl(b.rptag,0) rptag, nvl(b.rpbk,0) rpbk,b.tglbayar,b.jambayar, b.userid, a.kdbank kdbank
-                               ,a.satker,  (b.tglbayar||'  '||b.jambayar||'  '||b.userid) lunas_H0
-                        from ophartde.ver_temp_data_locking a, olap.h2h b
-                        where a.idpel       = b.idpel (+)
-                        and   a.blth        = b.blth  (+)
-                        and   a.kdproses    = '2'
-                        and   substr(a.nousulan,9,6)       = vbln_usulan
-                        and  a.kdbank                      = vkdbank
-                        and   a.status                     = '1'
-                        --and   nvl(b.suspect,0)  in ('0','2')
-                        and   b.suspect  in ('0','2')
-                        union
-                        select to_char(tglinsert,'YYYYMMDD  HH24:MI') tglapprove, nvl(substr(a.nousulan,4,2),a.kd_dist) kddist,'pln_data' proses,a.va, a.nousulan, a.kdproses, a.status,a.idpel, a.blth,
-                                0 rptag, 0 rpbk,null tglbayar, null jambayar,null userid, a.kdbank kdbank
-                               ,a.satker,  (b.tglbayar||' '||b.jambayar||' '||b.userid) lunas_H0
-                        from ophartde.ver_temp_data_locking a, olap.h2h b
-                        where a.idpel       = b.idpel (+)
-                        and   a.blth        = b.blth  (+)
-                        and   a.kdproses    = '2'
-                        and   substr(a.nousulan,9,6)       = vbln_usulan
-                        and   a.kdbank                     = vkdbank
-                        and   a.status                     = '1'
-                        and   b.suspect is null
-                    ),
-                   bank_data as
-                    (
-                        select
-                          'bank_data' proses,a.va, a.nousulan, '2' kdproses, '1'  status,a.idpel, a.blth,
-                          nvl(a.rptag,0) rptag, nvl(a.rpbk,0) rpbk,a.tglbayar,a.jambayar, a.userid, a.kdbank kdbank
-                        from ophartde.ver_data_locking_bank a
-                        where   substr(a.nousulan,9,6)  = vbln_usulan
-                        -- and tglbayar = '$tglbayar'
-                        and a.kdbank                    = vkdbank
-                    ),
-                   pln_data_ntl as
-                    (
-                        select to_char(tglinsert,'YYYYMMDD  HH24:MI') tglapprove, nvl(substr(a.nousulan,4,2),a.kd_dist) kddist,'pln_data' proses,a.va, a.nousulan, a.kdproses, a.status,a.noreg idpel, null blth
-                               ,nvl(b.rptag,0) rptag, 0 rpbk,b.tglbayar,b.jambayar, b.userid, a.kdbank kdbank
-                               ,a.satker,  (b.tglbayar||' '||b.jambayar||' '||b.userid) lunas_H0
-                        from ophartde.ver_temp_data_locking_ntl a, olap.transaksi_nontaglis b
-                        where a.noreg       = b.nomor_registrasi (+)
-                        and   a.kdproses    = '2'
-                        and   substr(a.nousulan,9,6)    = vbln_usulan
-                        and   a.kdbank                  = vkdbank
-                        and   a.status                  = '1'
-                        and   b.suspect  in ('0','2')
-                        union
-                        select to_char(tglinsert,'YYYYMMDD  HH24:MI') tglapprove, nvl(substr(a.nousulan,4,2),a.kd_dist) kddist,'pln_data' proses,a.va, a.nousulan,
-                         a.kdproses, a.status,a.noreg idpel, null blth,
-                          0 rptag, 0 rpbk, null tglbayar, null jambayar, null userid, a.kdbank kdbank
-                         ,a.satker,  (b.tglbayar||' '||b.jambayar||' '||b.userid) lunas_H0
-                        from ophartde.ver_temp_data_locking_ntl a, olap.transaksi_nontaglis b
-                        where a.noreg       = b.nomor_registrasi (+)
-                        and   a.kdproses    = '2'
-                        and   substr(a.nousulan,9,6)   =  vbln_usulan
-                        and   a.kdbank                 =  vkdbank
-                        and   a.status                 =  '1'
-                        and   b.suspect is null
-                    ),
-                   bank_data_ntl as
-                    (
-                        select
-                          'bank_data' proses,a.va, a.nousulan, '2' kdproses, '1'  status,a.noreg idpel, null blth,
-                          nvl(a.rptag,0) rptag, 0 rpbk,a.tglbayar,a.jambayar, a.userid, a.kdbank kdbank
-                        from ophartde.ver_data_locking_bank_ntl a
-                        where   substr(a.nousulan,9,6)    = vbln_usulan
-                        and a.kdbank                      = vkdbank
-                    ),
-                   pln_data_pre as
-                    (
-                        select (select distinct to_char(tglinsert,'YYYYMMDD  HH24:MI') from OPHARTDE.VER_TEMP_DATA_LOCKING_PRE where nousulan = z.nousulan) tglapprove,
-                                z.kddist, z.proses, z.va, z.nousulan, z.kdproses, z.status, z.idpel, null blth,
-                               nvl(z.rptag,0) rptag, 0 rpbk, z.tglbayar, z.jambayar, z.userid, z.kdbank, z.satker, z.lunas_H0
-                        from
-                        (
-                            (
-                                select
-                                    rownum baris, f.kddist,f.proses,
-                                    f.va, f.nousulan, f.kdproses, f.status, f.idpel, f.rptag,
-                                    null tglbayar, null jambayar,
-                                    f.userid,  f.KDBANK, f.satker, decode(f.lunas_H0,1,null,f.lunas_H0) lunas_H0
-                                from
-                                (
-                                        select  substr(a.nousulan,4,2) kddist,'pln_data_pre' proses,a.va,
-                                                a.nousulan, '2' kdproses, a.status,a.idpel,
-                                                a.rptag, A.KDBANK||'CA01' userid,A.KDBANK,a.satker, '1' lunas_H0
-                                        from OPHARTDE.VER_TEMP_DATA_LOCKING_PRE a
-                                        where to_char(tglinsert,'YYYYMM') =  vbln_usulan
-                                        and    substr(a.nousulan,4,2)     = vkd_dist
-                                        minus
-                                        select  substr(a.nousulan,4,2) kddist,'pln_data_pre' proses,a.va,
-                                        a.nousulan, '2' kdproses, a.status,a.idpel, a.rptag,
-                                        b.userid,  a.KDBANK,a.satker,  '1' lunas_H0
-                                        from
-                                            (
-                                               select  count(*) jml,  substr(m.nousulan,4,2) kd_dist, m.nousulan, m.tglusulan, m.idpel, m.rptag ,
-                                                     m.kdbank, m.satker, m.va, m.status, m.KDBANK userid,
-                                                     to_char(tglinsert,'YYYYMMDD') tglapprove
-                                               -- to_char(tglinsert,'YYYYMMDD') tglapprove, to_char(tglinsert+4,'YYYYMMDD') maxtgltgltrans
-                                               from OPHARTDE.VER_TEMP_DATA_LOCKING_PRE m
-                                               where to_char(tglinsert,'YYYYMM') =  vbln_usulan
-                                               group by  substr(m.nousulan,4,2) , m.nousulan, m.tglusulan, m.idpel, m.rptag,m.kdbank,
-                                                        m.satker, m.va, status, m.KDBANK,
-                                                        to_char(m.tglinsert,'YYYYMMDD')
-                                            ) a, OLAP.TRANSAKSI_PREPAID b
-                                            where  a.idpel    = b.idpel(+)
-                                            and    a.rptag    = b.rptag
-                                            and    a.TGLAPPROVE <= b.tglbayar
-                                            and    substr(b.tglbayar,1,6)  = vbln_usulan
-                                            and    substr(a.nousulan,4,2)  = vkd_dist
-                                            and    a.kdbank                =  vkdbank
-                                            and    b.UNSOLD is null
-                                            and    B.TGL_REKON is not null
-                                    ) f
-                            )
-                            union
-                            (
-                               select rownum baris, nvl(substr(a.nousulan,4,2),a.kd_dist) kddist,'pln_data_pre' proses,
-                                 a.va, a.nousulan, '2' kdproses, a.status,a.idpel, a.rptag,
-                                 b.tglbayar,b.jambayar,
-                                 b.userid,  a.KDBANK, a.satker,  (b.tglbayar||' '||b.Jambayar||' '||b.Userid) lunas_H0
-                                from
-                                    (
-                                       select  count(*) jml, substr(m.nousulan,4,2) kd_dist, m.nousulan, m.tglusulan, m.idpel, m.rptag ,
-                                             m.kdbank, m.satker, m.va, m.status, m.KDBANK userid,
-                                             to_char(tglinsert,'YYYYMMDD') tglapprove
-                                       from OPHARTDE.VER_TEMP_DATA_LOCKING_PRE m
-                                       where to_char(tglinsert,'YYYYMM') =  vbln_usulan
-                                       group by  substr(m.nousulan,4,2), m.nousulan, m.tglusulan, m.idpel, m.rptag,m.kdbank,
-                                                m.satker, m.va, status, m.KDBANK,
-                                                to_char(m.tglinsert,'YYYYMMDD')
-                                    ) a, OLAP.TRANSAKSI_PREPAID b
-                                    where  a.idpel    = b.idpel(+)
-                                    and    a.rptag    = b.rptag
-                                    and    a.TGLAPPROVE <= b.tglbayar
-                                    and    substr(b.tglbayar,1,6)  = vbln_usulan
-                                    and    substr(a.nousulan,4,2)  = vkd_dist
-                                    and    a.kdbank                = vkdbank
-                                    and    b.UNSOLD is null
-                                    and    B.TGL_REKON is not null
-                               )
-                        ) z
-                    ),
-                   bank_data_pre as
-                    (
-                        select
-                          'bank_data' proses,a.va, a.nousulan, '2' kdproses, '1'  status,a.idpel, null blth,
-                          nvl(a.rptag,0) rptag, 0 rpbk,a.tglbayar,a.jambayar, a.userid, a.kdbank kdbank
-                        from ophartde.ver_data_locking_bank_pre a
-                        where substr(a.nousulan,9,6)    = vbln_usulan
-                        and   a.kdbank                  = vkdbank
-                    )
-                select  count(x.KD_DIST) over () TOTAL_COUNT, x.* 
-                from
-                (
-                    (
-                    select 1 urut,'POSTPAID' produk, x.*,
-                    nvl(x.pln_rptag,0)-nvl(x.bank_rptag,0) selisih_rptag,
-                    nvl(x.pln_rpbk,0)-nvl(x.bank_rpbk,0) selisih_bk,
-                    case
-                        when ((nvl(x.pln_rptag,0) - nvl(x.bank_rptag,0)) = 0) and (pln_idpel = bank_idpel )
-                             and (pln_blth = bank_blth )
-                           then ''
-                        when (pln_idpel is null) and (bank_idpel is not null)
-                           then 'selisih - data usulan pln (tidak ada), data pelunasan bank (ada)'
-                        when (pln_idpel is not null) and (pln_tglbayar is null) and (bank_idpel is null)
-                           then 'selisih - data usulan pln (ada)/tidak lunas, data pelunasan bank (tidak ada)/tidak lunas (Belum Flag Bank/belum rekon)'
-                        when (pln_idpel is not null and bank_idpel is not null ) and (pln_tglbayar is null and bank_tglbayar is not null)
-                           then 'selisih - data usulan pln (ada)/tidak lunas , data pelunasan bank (ada)/lunas (Chek Reversal Sukses Dijawab PLN)'
-                        when ((nvl(x.pln_rptag,0) - nvl(x.bank_rptag,0)) > 0) and (substr(pln_userid,1,3) = PLN_KDBANK)
-                            then 'selisih - data usulan pln (ada)/lunas , data pelunasan bank (Tidak ada)/Tidak lunas (Konfirmasi/Log Bank/Belum Rekon)'
-                        when ((nvl(x.pln_rptag,0) - nvl(x.bank_rptag,0)) > 0) and (substr(pln_userid,1,3) <> PLN_KDBANK) and (bank_tglbayar is null)
-                            then 'selisih - data usulan pln (ada)/lunas (ppob/bukan miv), data pelunasan bank (Tidak ada)/Tidak lunas'
-                        when ((nvl(x.pln_rptag,0) - nvl(x.bank_rptag,0)) > 0) and (substr(pln_userid,1,3) <> PLN_KDBANK) and (bank_tglbayar is not null)
-                            then 'selisih - data usulan pln (ada)/lunas (Bank Lain), data pelunasan bank (ada)/lunas (Konfirmasi/Log Bank)'
-                        else 'selisih - belum teridentifikasi'
-                     end as keterangan
-                    from
-                     (
-                        select a.tglapprove,
-                             nvl(a.kddist,substr(b.nousulan,4,2)) kd_dist,nvl(a.va,b.va) va, a.satker, a.nousulan pln_nousulan, a.kdproses pln_kdproses, a.status pln_status, a.idpel pln_idpel, a.blth pln_blth
-                             , lunas_H0 pln_lunas_H0,a.rptag pln_rptag, a.rpbk pln_rpbk, a.tglbayar pln_tglbayar,a.jambayar pln_jambayar,a.userid pln_userid,a.kdbank pln_kdbank,
-                             b. Proses bank_keterangan, b.nousulan bank_nousulan, b.idpel bank_idpel, b.blth bank_blth,
-                             nvl(b.rptag,0) bank_rptag, nvl(b.rpbk,0) bank_rpbk, b.tglbayar bank_tglbayar,b.jambayar bank_jambayar,b.userid bank_userid,
-                             b.kdbank bank_kdbank
-                        from pln_data a, bank_data b
-                        where a.nousulan = b.nousulan (+)
-                        and   a.idpel    = b.idpel (+)
-                        and   a.blth     = b.blth (+)
-                    union
-                    select a.tglapprove,
-                         nvl(a.kddist,substr(b.nousulan,4,2)) kd_dist,nvl(a.va,b.va) va,a.satker,nvl(a.nousulan,b.nousulan) pln_nousulan, nvl(a.kdproses,'2') pln_kdproses, nvl(a.status,1) pln_status, a.idpel pln_idpel, a.blth pln_blth
-                         ,lunas_H0 pln_lunas_H0, nvl(a.rptag,0) pln_rptag, nvl(a.rpbk,0) pln_rpbk, a.tglbayar pln_tglbayar,a.jambayar pln_jambayar,a.userid pln_userid,nvl(a.kdbank,b.kdbank) pln_kdbank,
-                         b.proses bank_keterangan, b.nousulan bank_nousulan, b.idpel bank_idpel, b.blth bank_blth,
-                         nvl(b.rptag,0) bank_rptag, nvl(b.rpbk,0) bank_rpbk, b.tglbayar bank_tglbayar,b.jambayar bank_jambayar,b.userid bank_userid,nvl(b.kdbank,a.kdbank) bank_kdbank
-                    from pln_data a, bank_data b
-                    where b.nousulan = a.nousulan (+)
-                    and   b.idpel    = a.idpel (+)
-                    and   b.blth     = a.blth (+)
-                    and   a.kdbank is null
-                    ) x
-                    where kd_dist =   vkd_dist
-                    )
-                    union
-                    (
-                    select 2 urut,'NONTAGLIS' produk, x.*,
-                    nvl(x.pln_rptag,0)-nvl(x.bank_rptag,0) selisih_rptag,
-                    nvl(x.pln_rpbk,0)-nvl(x.bank_rpbk,0) selisih_bk,
-                    case
-                        when ((nvl(x.pln_rptag,0) - nvl(x.bank_rptag,0)) = 0) and (pln_idpel = bank_idpel )
-                           then ''
-                        when (pln_idpel is null) and (bank_idpel is not null)
-                           then 'selisih - data usulan pln (tidak ada), data pelunasan bank (ada)'
-                        when (pln_idpel is not null) and (pln_tglbayar is null) and (bank_idpel is null)
-                           then 'selisih - data usulan pln (ada), data pelunasan bank (tidak ada)/tidak lunas'
-                        when (pln_idpel is not null and bank_idpel is not null ) and (pln_tglbayar is null and bank_tglbayar is not null)
-                           then 'selisih - data usulan pln (ada)/tidak lunas , data pelunasan bank (ada)/lunas (Chek Reversal Sukses Dijawab PLN)'
-                        when ((nvl(x.pln_rptag,0) - nvl(x.bank_rptag,0)) > 0) and (substr(pln_userid,1,3) = PLN_KDBANK)
-                            then 'selisih - data usulan pln (ada)/lunas , data pelunasan bank (Tidak ada)/Tidak lunas (Konfirmasi/Log Bank/Belum Rekon)'
-                        when ((nvl(x.pln_rptag,0) - nvl(x.bank_rptag,0)) > 0) and (substr(pln_userid,1,3) <> PLN_KDBANK) and (bank_tglbayar is null)
-                            then 'selisih - data usulan pln (ada)/lunas (ppob/bukan miv), data pelunasan bank (Tidak ada)/Tidak lunas'
-                        when ((nvl(x.pln_rptag,0) - nvl(x.bank_rptag,0)) > 0) and (substr(pln_userid,1,3) <> PLN_KDBANK) and (bank_tglbayar is not null)
-                            then 'selisih - data usulan pln (ada)/lunas (Bank Lain), data pelunasan bank (ada)/lunas (Konfirmasi/Log Bank)'
-                        else 'selisih - belum teridentifikasi'
-                     end as keterangan
-                    from
-                    (
-                        select a.tglapprove,
-                             nvl(a.kddist,substr(b.nousulan,4,2)) kd_dist,nvl(a.va,b.va) va,a.satker, a.nousulan pln_nousulan, a.kdproses pln_kdproses, a.status pln_status,
-                             a.idpel pln_idpel, a.blth pln_blth
-                             ,lunas_H0 pln_lunas_H0,
-                             a.rptag pln_rptag, a.rpbk pln_rpbk, a.tglbayar pln_tglbayar,a.jambayar pln_jambayar,a.userid pln_userid,a.kdbank pln_kdbank,
-                             b. Proses bank_keterangan, b.nousulan bank_nousulan, b.idpel bank_idpel, b.blth bank_blth,
-                             nvl(b.rptag,0) bank_rptag, nvl(b.rpbk,0) bank_rpbk, b.tglbayar bank_tglbayar,b.jambayar bank_jambayar,b.userid bank_userid,
-                             b.kdbank bank_kdbank
-                        from pln_data_ntl a, bank_data_ntl b
-                        where a.nousulan = b.nousulan (+)
-                        and   a.idpel    = b.idpel (+)
-                        union
-                        select a.tglapprove,
-                             nvl(a.kddist,substr(b.nousulan,4,2)) kd_dist,nvl(a.va,b.va) va, a.satker,nvl(a.nousulan,b.nousulan) pln_nousulan, nvl(a.kdproses,'2') pln_kdproses, nvl(a.status,1) pln_status, a.idpel pln_idpel, a.blth pln_blth
-                             ,lunas_H0 pln_lunas_H0,nvl(a.rptag,0) pln_rptag, nvl(a.rpbk,0) pln_rpbk, a.tglbayar pln_tglbayar,a.jambayar pln_jambayar,a.userid pln_userid,nvl(a.kdbank,b.kdbank) pln_kdbank,
-                             b.proses bank_keterangan, b.nousulan bank_nousulan, b.idpel bank_idpel, b.blth bank_blth,
-                             nvl(b.rptag,0) bank_rptag, nvl(b.rpbk,0) bank_rpbk, b.tglbayar bank_tglbayar,b.jambayar bank_jambayar,b.userid bank_userid,nvl(b.kdbank,a.kdbank) bank_kdbank
-                        from pln_data_ntl a, bank_data_ntl b
-                        where b.nousulan = a.nousulan (+)
-                        and   b.idpel    = a.idpel (+)
-                        and   a.kdbank is null
-                     ) x
-                    where kd_dist =   vkd_dist
-                    )
-                    union
-                    (
-                    select 3 urut,'PREPAID' produk, x.*,
-                    nvl(x.pln_rptag,0)-nvl(x.bank_rptag,0) selisih_rptag,
-                    nvl(x.pln_rpbk,0)-nvl(x.bank_rpbk,0) selisih_bk,
-                    case
-                        when ((nvl(x.pln_rptag,0) - nvl(x.bank_rptag,0)) = 0) and (pln_idpel = bank_idpel )
-                           then ''
-                        when (pln_idpel is null) and (bank_idpel is not null)
-                           then 'selisih - data usulan pln (tidak ada), data pelunasan bank (ada)'
-                        when (pln_idpel is not null) and (pln_tglbayar is null) and (bank_idpel is null)
-                           then 'selisih - data usulan pln (ada), data pelunasan bank (tidak ada)/tidak lunas'
-                        when (pln_idpel is not null and bank_idpel is not null ) and (pln_tglbayar is null and bank_tglbayar is not null)
-                           then 'selisih - data usulan pln (ada)/tidak lunas , data pelunasan bank (ada)/lunas (Chek Reversal Sukses Dijawab PLN)'
-                        when ((nvl(x.pln_rptag,0) - nvl(x.bank_rptag,0)) > 0) and (substr(pln_userid,1,3) = PLN_KDBANK)
-                            then 'selisih - data usulan pln (ada)/lunas , data pelunasan bank (Tidak ada)/Tidak lunas (Konfirmasi/Log Bank/Belum Rekon)'
-                        when ((nvl(x.pln_rptag,0) - nvl(x.bank_rptag,0)) > 0) and (substr(pln_userid,1,3) <> PLN_KDBANK) and (bank_tglbayar is null)
-                            then 'selisih - data usulan pln (ada)/lunas (ppob/bukan miv), data pelunasan bank (Tidak ada)/Tidak lunas'
-                        when ((nvl(x.pln_rptag,0) - nvl(x.bank_rptag,0)) > 0) and (substr(pln_userid,1,3) <> PLN_KDBANK) and (bank_tglbayar is not null)
-                            then 'selisih - data usulan pln (ada)/lunas (Bank Lain), data pelunasan bank (ada)/lunas (Konfirmasi/Log Bank)'
-                        else 'selisih - belum teridentifikasi'
-                     end as keterangan
-                    from
-                    (
-                        select a.tglapprove,
-                             nvl(a.kddist,substr(b.nousulan,4,2)) kd_dist,nvl(a.va,b.va) va, a.satker, a.nousulan pln_nousulan, a.kdproses pln_kdproses, a.status pln_status,
-                             a.idpel pln_idpel, a.blth pln_blth
-                             ,lunas_H0 pln_lunas_H0,a.rptag pln_rptag, a.rpbk pln_rpbk, a.tglbayar pln_tglbayar,a.jambayar pln_jambayar,a.userid pln_userid,a.kdbank pln_kdbank,
-                             b. Proses bank_keterangan, b.nousulan bank_nousulan, b.idpel bank_idpel, b.blth bank_blth,
-                             nvl(b.rptag,0) bank_rptag, nvl(b.rpbk,0) bank_rpbk, b.tglbayar bank_tglbayar,b.jambayar bank_jambayar,b.userid bank_userid,
-                             b.kdbank bank_kdbank
-                        from pln_data_pre a, bank_data_pre b
-                        where a.nousulan = b.nousulan (+)
-                        and   a.idpel    = b.idpel (+)
-                        union
-                        select a.tglapprove,
-                             nvl(a.kddist,substr(b.nousulan,4,2)) kd_dist,nvl(a.va,b.va) va, a.satker,nvl(a.nousulan,b.nousulan) pln_nousulan, nvl(a.kdproses,'2') pln_kdproses, nvl(a.status,1) pln_status, a.idpel pln_idpel, a.blth pln_blth
-                             ,lunas_H0 pln_lunas_H0, nvl(a.rptag,0) pln_rptag, nvl(a.rpbk,0) pln_rpbk, a.tglbayar pln_tglbayar,a.jambayar pln_jambayar,a.userid pln_userid,nvl(a.kdbank,b.kdbank) pln_kdbank,
-                             b.proses bank_keterangan, b.nousulan bank_nousulan, b.idpel bank_idpel, b.blth bank_blth,
-                             nvl(b.rptag,0) bank_rptag, nvl(b.rpbk,0) bank_rpbk, b.tglbayar bank_tglbayar,b.jambayar bank_jambayar,b.userid bank_userid,nvl(b.kdbank,a.kdbank) bank_kdbank
-                        from pln_data_pre a, bank_data_pre b
-                        where b.nousulan = a.nousulan (+)
-                        and   b.idpel    = a.idpel (+)
-                        and   a.kdbank is null
-                     ) x
-                     where kd_dist =   vkd_dist
-                    )
-                ) x
-                ORDER BY
-                  CASE WHEN in_sort_dir = 'ASC'  AND in_sort_by = 'KD_DIST' THEN x.KD_DIST END ASC,
-                  CASE WHEN in_sort_dir = 'DESC' AND in_sort_by = 'KD_DIST' THEN x.KD_DIST END DESC 
-                -- end query utama
-                ----------------------------------------------------------------------------    
-              ) x
-              WHERE ROWNUM <= (in_start + in_lenght)
-            )
-            WHERE ROW_NUMBER > in_start
-            AND (
-              in_search IS NULL OR
-              TO_CHAR(PLN_IDPEL) LIKE '%' || in_search || '%' OR
-              TO_CHAR(BANK_IDPEL) LIKE '%' || in_search || '%' OR
-              LOWER(PLN_NOUSULAN) LIKE '%' || LOWER(in_search) || '%' OR
-              LOWER(TGLAPPROVE) LIKE '%' || LOWER(in_search) || '%' OR
-              LOWER(VA) LIKE '%' || LOWER(in_search) || '%' OR
-              LOWER(SATKER) LIKE '%' || LOWER(in_search) || '%' OR
-              LOWER(BANK_NOUSULAN) LIKE '%' || LOWER(in_search) || '%' OR
-              LOWER(BANK_USERID) LIKE '%' || LOWER(in_search) || '%' 
-            );
-                      
-        pesan := 'Sukses tampilkan data.';
-    
-    EXCEPTION
-        WHEN NO_DATA_FOUND THEN
-           pesan:='Gagal Tampilkan Data Tdak Ada, '||vEmsg||'  '||SQLERRM;
-        WHEN OTHERS THEN
-           pesan:='Gagal Tampilkan Data ' ||SQLERRM || DBMS_UTILITY.FORMAT_ERROR_BACKTRACE; 
-    END;
-                    
+    --1b) Mon Daftar Rekon MIV/SAKTI PLN vs BANK                   
     PROCEDURE monlap_dft_mivfalg_plnvsbank_uiw_pgs(
                     in_start         in number,
                     in_lenght        in number,
@@ -589,10 +231,12 @@ CREATE OR REPLACE PACKAGE BODY OPHARTDE.VER_MON_LAP IS
             --  DETAIL MIV/SAKTI PerDISTRIBUSI/PerWILAYAH 
             --------------------------------------------------------------------
             WITH pln_data AS (
-                SELECT to_char(a.tglinsert,'YYYYMMDD HH24:MI') tglapprove, nvl(substr(a.nousulan,4,2),a.kd_dist) kddist, 'pln_data' proses, a.va, a.nousulan, a.kdproses, a.status, a.idpel, a.blth,
+                SELECT to_char(a.tglinsert,'YYYYMMDD HH24:MI') tglapprove, nvl(substr(a.nousulan,4,2),a.kd_dist) kddist, 'pln_data' proses, a.va, 
+                       a.nousulan, a.kdproses, a.status, a.idpel, a.blth, c.nama,
                        nvl(b.rptag,0) rptag, nvl(b.rpbk,0) rpbk, b.tglbayar, b.jambayar, b.userid, a.kdbank, a.satker, 
                        (b.tglbayar||'  '||b.jambayar||'  '||b.userid) lunas_H0
                 FROM ophartde.ver_temp_data_locking a
+                LEFT JOIN plngatepost.dpp c ON a.idpel = c.idpel AND a.blth = c.blth
                 LEFT JOIN olap.h2h b ON a.idpel = b.idpel AND a.blth = b.blth
                 WHERE a.kdproses = '2'
                   AND a.status = '1'
@@ -608,7 +252,8 @@ CREATE OR REPLACE PACKAGE BODY OPHARTDE.VER_MON_LAP IS
                   AND substr(a.nousulan,9,6) = vbln_usulan
             ),
             pln_data_ntl AS (
-                SELECT to_char(a.tglinsert,'YYYYMMDD  HH24:MI') tglapprove, nvl(substr(a.nousulan,4,2),a.kd_dist) kddist, 'pln_data' proses, a.va, a.nousulan, a.kdproses, a.status, a.noreg idpel, null blth,
+                SELECT to_char(a.tglinsert,'YYYYMMDD  HH24:MI') tglapprove, nvl(substr(a.nousulan,4,2),a.kd_dist) kddist, 'pln_data' proses, a.va, 
+                       a.nousulan, a.kdproses, a.status, a.noreg idpel, null blth, B.NAMA,
                        nvl(b.rptag,0) rptag, 0 rpbk, b.tglbayar, b.jambayar, b.userid, a.kdbank, a.satker, 
                        (b.tglbayar||' '||b.jambayar||' '||b.userid) lunas_H0
                 FROM ophartde.ver_temp_data_locking_ntl a
@@ -627,7 +272,8 @@ CREATE OR REPLACE PACKAGE BODY OPHARTDE.VER_MON_LAP IS
                   AND substr(a.nousulan,9,6) = vbln_usulan
             ),
             pln_data_pre AS (
-                SELECT to_char(a.tglinsert,'YYYYMMDD  HH24:MI') tglapprove, substr(a.nousulan,4,2) kddist, 'pln_data_pre' proses, a.va, a.nousulan, '2' kdproses, a.status, a.idpel, null blth,
+                SELECT to_char(a.tglinsert,'YYYYMMDD  HH24:MI') tglapprove, substr(a.nousulan,4,2) kddist, 'pln_data_pre' proses, a.va, 
+                       a.nousulan, '2' kdproses, a.status, a.idpel, null blth, B.NAMA,
                        nvl(a.rptag,0) rptag, 0 rpbk, b.tglbayar, b.jambayar, b.userid, a.kdbank, a.satker,
                        CASE WHEN b.tglbayar IS NOT NULL THEN (b.tglbayar||' '||b.jambayar||' '||b.userid) ELSE NULL END lunas_H0
                 FROM OPHARTDE.VER_TEMP_DATA_LOCKING_PRE a
@@ -651,7 +297,8 @@ CREATE OR REPLACE PACKAGE BODY OPHARTDE.VER_MON_LAP IS
             all_products AS (
                 -- 1. POSTPAID
                 SELECT 1 urut, 'POSTPAID' produk, nvl(a.tglapprove, b.tglbayar) tglapprove, nvl(a.kddist, substr(b.nousulan,4,2)) kd_dist, nvl(a.va, b.va) va, a.satker,
-                       a.nousulan pln_nousulan, a.kdproses pln_kdproses, a.status pln_status, a.idpel pln_idpel, a.blth pln_blth, a.lunas_H0 pln_lunas_H0,
+                       a.nousulan pln_nousulan, a.kdproses pln_kdproses, a.status pln_status, a.idpel pln_idpel, a.blth pln_blth, a.nama pln_nama, 
+                       a.lunas_H0 pln_lunas_H0,
                        nvl(a.rptag,0) pln_rptag, nvl(a.rpbk,0) pln_rpbk, a.tglbayar pln_tglbayar, a.jambayar pln_jambayar, a.userid pln_userid, a.kdbank pln_kdbank,
                        b.proses bank_keterangan, b.nousulan bank_nousulan, b.idpel bank_idpel, b.blth bank_blth,
                        nvl(b.rptag,0) bank_rptag, nvl(b.rpbk,0) bank_rpbk, b.tglbayar bank_tglbayar, b.jambayar bank_jambayar, b.userid bank_userid, b.kdbank bank_kdbank
@@ -660,7 +307,8 @@ CREATE OR REPLACE PACKAGE BODY OPHARTDE.VER_MON_LAP IS
                 UNION ALL    
                 -- 2. NONTAGLIS
                 SELECT 2 urut, 'NONTAGLIS' produk, nvl(a.tglapprove, b.tglbayar) tglapprove, nvl(a.kddist, substr(b.nousulan,4,2)) kd_dist, nvl(a.va, b.va) va, a.satker,
-                       a.nousulan pln_nousulan, a.kdproses pln_kdproses, a.status pln_status, a.idpel pln_idpel, a.blth pln_blth, a.lunas_H0 pln_lunas_H0,
+                       a.nousulan pln_nousulan, a.kdproses pln_kdproses, a.status pln_status, a.idpel pln_idpel, a.blth pln_blth, a.nama pln_nama, 
+                       a.lunas_H0 pln_lunas_H0,
                        nvl(a.rptag,0) pln_rptag, 0 pln_rpbk, a.tglbayar pln_tglbayar, a.jambayar pln_jambayar, a.userid pln_userid, a.kdbank pln_kdbank,
                        b.proses bank_keterangan, b.nousulan bank_nousulan, b.idpel bank_idpel, b.blth bank_blth,
                        nvl(b.rptag,0) bank_rptag, nvl(b.rpbk,0) bank_rpbk, b.tglbayar bank_tglbayar, b.jambayar bank_jambayar, b.userid bank_userid, b.kdbank bank_kdbank
@@ -669,7 +317,8 @@ CREATE OR REPLACE PACKAGE BODY OPHARTDE.VER_MON_LAP IS
                 UNION ALL    
                 -- 3. PREPAID
                 SELECT 3 urut, 'PREPAID' produk, nvl(a.tglapprove, b.tglbayar) tglapprove, nvl(a.kddist, substr(b.nousulan,4,2)) kd_dist, nvl(a.va, b.va) va, a.satker,
-                       a.nousulan pln_nousulan, a.kdproses pln_kdproses, a.status pln_status, a.idpel pln_idpel, a.blth pln_blth, a.lunas_H0 pln_lunas_H0,
+                       a.nousulan pln_nousulan, a.kdproses pln_kdproses, a.status pln_status, a.idpel pln_idpel, a.blth pln_blth, a.nama pln_nama, 
+                       a.lunas_H0 pln_lunas_H0,
                        nvl(a.rptag,0) pln_rptag, 0 pln_rpbk, a.tglbayar pln_tglbayar, a.jambayar pln_jambayar, a.userid pln_userid, a.kdbank pln_kdbank,
                        b.proses bank_keterangan, b.nousulan bank_nousulan, b.idpel bank_idpel, b.blth bank_blth,
                        nvl(b.rptag,0) bank_rptag, nvl(b.rpbk,0) bank_rpbk, b.tglbayar bank_tglbayar, b.jambayar bank_jambayar, b.userid bank_userid, b.kdbank bank_kdbank
@@ -859,6 +508,7 @@ CREATE OR REPLACE PACKAGE BODY OPHARTDE.VER_MON_LAP IS
         vbln_usulan IN NUMBER, 
         vkdbank     IN VARCHAR2, 
         vkd_dist    IN VARCHAR2, 
+        vket_pending IN VARCHAR2, 
         out_cursor  OUT SYS_REFCURSOR, 
         pesan       OUT VARCHAR2
     ) AS
@@ -868,16 +518,16 @@ CREATE OR REPLACE PACKAGE BODY OPHARTDE.VER_MON_LAP IS
         pesan := 'Gagal Tampilkan Data';
 
         OPEN out_cursor FOR
-            --2b) Menapilkan daftar per prob/bank pengaujuan pending dari AP2T ke P2APST
+            --2b) monlap_miv_dft_mohon_pending -- Menapilkan daftar per prob/bank pengaujuan pending dari AP2T ke P2APST
             WITH v_params AS 
             (
                 -- Pre-calculate variabel tanggal, string, dan offset pagination
                 SELECT 
                     TO_CHAR(vbln_usulan) AS BLN_STR,
                     TO_DATE(TO_CHAR(vbln_usulan), 'YYYYMM') AS BLN_DT,
-                    -- Kalkulasi batas baris berdasarkan nomor halaman (in_start) dan ukuran halaman (in_length)
+                    -- Kalkulasi batas baris berdasarkan nomor halaman (:in_start) dan ukuran halaman (:in_length)
                     ((NVL(in_start, 1) - 1) * NVL(in_length, 10)) + 1 AS START_ROW,
-                    (NVL(in_start, 1) * NVL(in_length, 10)) AS END_ROW
+                     (NVL(in_start, 1) *      NVL(in_length, 10)) AS END_ROW
                 FROM DUAL
             ),
             v_raw_data AS
@@ -890,7 +540,8 @@ CREATE OR REPLACE PACKAGE BODY OPHARTDE.VER_MON_LAP IS
                     a.ID_USUL AS NOUSULAN, 
                     a.BLTH_USUL AS TGLUSULAN, 
                     a.IDPEL, 
-                    a.BLTH, 
+                    a.BLTH,
+                    b.NAMA, 
                     b.RPTAG, 
                     b.TGLJTTEMPO, b.RPBK1, b.RPBK2, b.RPBK3,
                     b.TGLBAYAR,
@@ -909,11 +560,12 @@ CREATE OR REPLACE PACKAGE BODY OPHARTDE.VER_MON_LAP IS
                 CROSS JOIN v_params p
                 INNER JOIN PLNGATEPOST.DPP b 
                     ON a.IDPEL = b.IDPEL AND a.BLTH = b.BLTH
-                WHERE a.TGLINSERT >= p.BLN_DT
-                  AND a.TGLINSERT < ADD_MONTHS(p.BLN_DT, 1)
-                  AND a.KDPROSES = '1'
-                  AND '00' = vkd_dist
-                  AND (a.KDBANK = vkdbank OR (vkdbank IS NULL AND a.KDBANK IS NULL))
+                WHERE a.TGLINSERT   >= p.BLN_DT
+                  AND a.TGLINSERT   < ADD_MONTHS(p.BLN_DT, 1)
+                  AND a.KDPROSES    = '1'
+                  AND b.PRAQTIS     = DECODE(vket_pending,'PENDING',0,1)
+                  AND '00'          = vkd_dist
+                  AND (a.KDBANK     = vkdbank OR (vkdbank IS NULL AND a.KDBANK IS NULL))
                   AND NOT EXISTS 
                   (
                     SELECT 1 
@@ -941,6 +593,7 @@ CREATE OR REPLACE PACKAGE BODY OPHARTDE.VER_MON_LAP IS
                     a.TGLUSULAN, 
                     a.IDPEL, 
                     a.BLTH, 
+                    b.NAMA,
                     b.RPTAG, 
                     b.TGLJTTEMPO, b.RPBK1, b.RPBK2, b.RPBK3,
                     b.TGLBAYAR,
@@ -959,12 +612,13 @@ CREATE OR REPLACE PACKAGE BODY OPHARTDE.VER_MON_LAP IS
                 CROSS JOIN v_params p
                 INNER JOIN PLNGATEPOST.DPP b 
                     ON a.IDPEL = b.IDPEL AND a.BLTH = b.BLTH
-                WHERE a.TGLINSERT >= p.BLN_DT
-                  AND a.TGLINSERT < ADD_MONTHS(p.BLN_DT, 1)
-                  AND a.KDPROSES  = '1' 
-                  AND a.KD_DIST   = vkd_dist
-                  AND a.NOUSULAN LIKE 'POS' || vkd_dist || '%'
-                  AND (a.KDBANK = vkdbank OR (vkdbank IS NULL AND a.KDBANK IS NULL))
+                WHERE a.TGLINSERT   >= p.BLN_DT
+                  AND a.TGLINSERT   < ADD_MONTHS(p.BLN_DT, 1)
+                  AND a.KDPROSES    = '1' 
+                  AND a.KD_DIST     = vkd_dist
+                  AND a.NOUSULAN LIKE 'POS' ||     vkd_dist || '%'
+                  AND (a.KDBANK     = vkdbank OR (vkdbank IS NULL AND a.KDBANK IS NULL))
+                  AND  b.PRAQTIS    = DECODE(vket_pending,'PENDING',0,1)
                   AND NOT EXISTS 
                   (
                       SELECT 1 
@@ -985,7 +639,7 @@ CREATE OR REPLACE PACKAGE BODY OPHARTDE.VER_MON_LAP IS
                     U.NAMA_AREA AS NAMA_UNITAP,
                     Y.UNITUP, 
                     U.NAMA_UNIT AS NAMA_UNITUP,
-                    Y.NOUSULAN, Y.TGLUSULAN, Y.IDPEL, Y.BLTH,
+                    Y.NOUSULAN, Y.TGLUSULAN, Y.IDPEL, Y.BLTH, Y.NAMA,
                     Y.KET_PENDING AS STATUS_PENDING, 
                     Y.RPTAG, 
                     Y.TGLJTTEMPO, Y.RPBK1, Y.RPBK2, Y.RPBK3,
@@ -1020,21 +674,21 @@ CREATE OR REPLACE PACKAGE BODY OPHARTDE.VER_MON_LAP IS
                 FROM v_core_data x
                 WHERE (
                     in_search IS NULL OR
-                    UPPER(x.NOUSULAN) LIKE '%' || UPPER(in_search) || '%' OR
-                    UPPER(x.KD_DIST) LIKE '%' || UPPER(in_search) || '%' OR
-                    UPPER(x.NAMA_DIST) LIKE '%' || UPPER(in_search) || '%' OR
-                    UPPER(x.IDPEL) LIKE '%' || UPPER(in_search) || '%' OR 
-                    UPPER(x.BLTH) LIKE '%' || UPPER(in_search) || '%' OR 
-                    UPPER(x.STATUS_PENDING) LIKE '%' || UPPER(in_search) || '%' OR
-                    UPPER(x.KETERANGAN) LIKE '%' || UPPER(in_search) || '%' OR 
-                    UPPER(x.KDBANK) LIKE '%' || UPPER(in_search) || '%' OR
-                    UPPER(x.SATKER) LIKE '%' || UPPER(in_search) || '%' OR             
-                    TO_CHAR(x.TGLINSERT, 'YYYY-MM-DD HH24:MI:SS') LIKE '%' || UPPER(in_search) || '%'
+                    UPPER(x.NOUSULAN) LIKE '%' ||                               UPPER(in_search) || '%' OR
+                    UPPER(x.KD_DIST) LIKE '%' ||                                UPPER(in_search) || '%' OR
+                    UPPER(x.NAMA_DIST) LIKE '%' ||                              UPPER(in_search) || '%' OR
+                    UPPER(x.IDPEL) LIKE '%' ||                                  UPPER(in_search) || '%' OR 
+                    UPPER(x.BLTH) LIKE '%' ||                                   UPPER(in_search) || '%' OR 
+                    UPPER(x.STATUS_PENDING) LIKE '%' ||                         UPPER(in_search) || '%' OR
+                    UPPER(x.KETERANGAN) LIKE '%' ||                             UPPER(in_search) || '%' OR 
+                    UPPER(x.KDBANK) LIKE '%' ||                                 UPPER(in_search) || '%' OR
+                    UPPER(x.SATKER) LIKE '%' ||                                 UPPER(in_search) || '%' OR             
+                    TO_CHAR(x.TGLINSERT, 'YYYY-MM-DD HH24:MI:SS') LIKE '%' ||   UPPER(in_search) || '%'
                 )
             )
             SELECT 
                 p.BLTH_USULAN, p.KD_DIST, p.NAMA_DIST, p.UNITAP, p.NAMA_UNITAP, 
-                p.UNITUP, p.NAMA_UNITUP, p.NOUSULAN, p.TGLUSULAN, p.IDPEL, p.BLTH, 
+                p.UNITUP, p.NAMA_UNITUP, p.NOUSULAN, p.TGLUSULAN, p.IDPEL, p.BLTH, p.NAMA,
                 p.STATUS_PENDING, p.RPTAG, 
                 OLAP.HITUNGBK(TO_CHAR(SYSDATE, 'ddmmyyyy'), p.BLTH, p.TGLJTTEMPO, p.RPBK1, p.RPBK2, p.RPBK3) AS RPBK,
                 p.TGLBAYAR, p.USERID, p.KDPROSES, p.USERID_LOCK, p.STATUS, p.KETERANGAN, 

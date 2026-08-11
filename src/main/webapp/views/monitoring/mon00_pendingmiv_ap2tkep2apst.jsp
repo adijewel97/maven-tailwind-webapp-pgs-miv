@@ -254,6 +254,7 @@
                             <th class="px-2 py-1">TGLUSULAN</th>
                             <th class="px-2 py-1">IDPEL</th>
                             <th class="px-2 py-1">BLTH</th>
+                            <th class="px-2 py-1">NAMA</th>
                             <th class="px-2 py-1">STATUS_PENDING</th>
                             <th class="px-2 py-1">RPTAG</th>
                             <th class="px-2 py-1">RPBK</th>
@@ -490,7 +491,8 @@
                                     vbln_usulan: data.BLTH_USULAN,
                                     vkd_bank: data.NAMA_BANK ? data.NAMA_BANK.substring(0, 3) : '', 
                                     vkd_dist: data.KD_DIST,
-                                    vproduk: 'POS'
+                                    vproduk: 'POS',
+                                    vket_pending: data.KET_PENDING
                                 };
                                 
                                 detailTitle.textContent = "("+data.KD_DIST+" - "+data.NAMA_DIST+" | "+data.NAMA_BANK+")";
@@ -635,6 +637,7 @@
                     d.vkd_bank    = detailFilterParams.vkd_bank || '';
                     d.vkd_dist    = detailFilterParams.vkd_dist || '';
                     d.vproduk     = detailFilterParams.vproduk || '';
+                    d.vket_pending= detailFilterParams.vket_pending || '';
                 },
                 dataSrc: function (json) {
                     hideSpinner(); // Gunakan fungsi hideSpinner global
@@ -665,18 +668,19 @@
                 { data: null, render: function (data, type, row, meta) { return meta.row + 1 + meta.settings._iDisplayStart; } },
                 { data: 'BLTH_USULAN', defaultContent: '' },
                 { data: 'KD_DIST', defaultContent: '' },
-                { data: 'NAMA_DIST', defaultContent: '' },
+                { className: 'text-left',  data: 'NAMA_DIST', defaultContent: '' },
                 { data: 'UNITAP', defaultContent: '' },
-                { data: 'NAMA_UNITAP', defaultContent: '' },
+                { className: 'text-left', data: 'NAMA_UNITAP', defaultContent: '' },
                 { data: 'UNITUP', defaultContent: '' },
-                { data: 'NAMA_UNITUP', defaultContent: '' },
+                { className: 'text-left', data: 'NAMA_UNITUP', defaultContent: '' },
                 { data: 'NOUSULAN', defaultContent: '' },
                 { data: 'TGLUSULAN', defaultContent: '' },
                 { data: 'IDPEL', defaultContent: '' },
                 { data: 'BLTH', defaultContent: '' },
+                { data: 'NAMA', defaultContent: '' },
                 { data: 'STATUS_PENDING', defaultContent: '' },
-                { data: 'RPTAG', render: function (data) { return formatNumber(data, 0); } },
-                { data: 'RPBK', render: function (data) { return formatNumber(data, 0); }},
+                { className: 'text-right', data: 'RPTAG', render: function (data) { return formatNumber(data, 0); } },
+                { className: 'text-right', data: 'RPBK', render: function (data) { return formatNumber(data, 0); }},
                 { data: 'TGLBAYAR', defaultContent: '' },
                 { data: 'USERID', defaultContent: '' },
                 { data: 'KDPROSES', defaultContent: '' },
@@ -690,10 +694,11 @@
                 { data: 'TGLINSERT', defaultContent: '' },
                 { data: 'IDKIRIM', defaultContent: '' }
             ],
-            columnDefs: [
-                { targets: [13, 14], className: 'text-right' }, // Kolom angka
-                { targets: '_all', className: 'text-center' }
-            ],
+            // columnDefs: [
+            //     { targets: '_all', className: 'text-center' },
+            //     { targets: [5, 7], className: 'text-left' }, // rata Kiri
+            //     { targets: [13, 14], className: 'text-right' }, // Kolom angka
+            // ],
             headerCallback: function(thead) {
                 $(thead).find('th').css({
                     'font-weight': 'bold',
@@ -805,7 +810,9 @@
             const vbln_usulan   = detailFilterParams.vbln_usulan;
             const vkd_bank      = detailFilterParams.vkd_bank;
             const vkd_dist      = detailFilterParams.vkd_dist;
+            const vket_pending  = detailFilterParams.vket_pending;
             const vproduk       = detailFilterParams.vproduk || '';
+
 
             if (!vbln_usulan || !vkd_bank || !vkd_dist) {
                 showMessageDlg("Warning", "Silakan lengkapi filter terlebih dahulu!");
@@ -827,7 +834,7 @@
                     BLTH_USULAN: 'BLTH_USULAN', KD_DIST: 'KD_DIST', NAMA_DIST: 'NAMA_DIST', 
                     UNITAP: 'UNITAP', NAMA_UNITAP: 'NAMA_UNITAP', UNITUP: 'UNITUP', 
                     NAMA_UNITUP: 'NAMA_UNITUP', NOUSULAN: 'NOUSULAN', TGLUSULAN: 'TGLUSULAN', 
-                    IDPEL: 'IDPEL', BLTH: 'BLTH', STATUS_PENDING: 'STATUS_PENDING', 
+                    IDPEL: 'IDPEL', BLTH: 'BLTH', NAMA: 'NAMA', STATUS_PENDING: 'STATUS_PENDING', 
                     RPTAG: 'RPTAG', RPBK: 'RPBK', USERID: 'USERID', KDPROSES: 'KDPROSES', 
                     USERID_LOCK: 'USERID_LOCK', STATUS: 'STATUS', KETERANGAN: 'KETERANGAN', 
                     VA: 'VA', SATKER: 'SATKER', KDBANK: 'KDBANK', NAMA_BANK: 'NAMA_BANK', 
@@ -841,9 +848,10 @@
                     const params = new URLSearchParams();
                     params.append('act', 'detailData');
                     params.append('vbln_usulan', vbln_usulan);
+                    params.append('vproduk', vproduk);
                     params.append('vkd_bank', vkd_bank);
                     params.append('vkd_dist', vkd_dist);
-                    params.append('vproduk', vproduk);
+                    params.append('vket_pending', vket_pending);
                     params.append('start', start);
                     params.append('length', pageSize);
                     params.append('draw', drawCounter++);
@@ -909,7 +917,7 @@
 
                 // Information Header Metadata
                 worksheet.getCell('B1').value = "MANAGEMENT INSTANSI VERTIKAL";
-                worksheet.getCell('B2').value = "DETAIL PENDING Ap2T KE P2APST";
+                worksheet.getCell('B2').value = "DETAIL PENDING AP2T KE P2APST";
                 worksheet.getCell('B3').value = "UID/UIW";
                 worksheet.getCell('C3').value = ": " + namaUPI;
                 worksheet.getCell('B4').value = "BANK MIV";
@@ -965,7 +973,10 @@
                         if (['RPTAG', 'RPBK'].includes(headerKeyName)) {
                             cell.numFmt = '#,##0';
                             cell.alignment = { horizontal: 'right', vertical: 'middle' };
-                        } else {
+                        } else if (['NAMA'].includes(headerKeyName)) {
+                            cell.numFmt = '#,##0';
+                            cell.alignment = { horizontal: 'left', vertical: 'middle' };
+                        }else {
                             cell.alignment = { horizontal: 'center', vertical: 'middle' };
                         }
                     });

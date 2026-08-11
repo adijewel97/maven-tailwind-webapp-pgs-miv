@@ -19,81 +19,94 @@ public class MonPendingService {
         this.dataSource = dataSource;
     }
     
-    //2 service untuk panggil package/sql db "REKAP LAORAN REKON PLN VS BANK"
-    public List<Map<String, Object>> getDataMonRkpPending(String vbln_usulan, List<String> pesanMsg, List<Boolean> statusMsg) {
-        List<Map<String, Object>> result = new ArrayList<>();
-        String sql = "{call OPHARTDE.VER_MON_LAP.monlap_miv_rkp_mohon_pending( ?, ?, ?)}";
+    public List<Map<String, Object>> getDataMonRkpPending(String vblnUsulan, List<String> pesanMsg, List<Boolean> statusMsg) {
+        String sql = "{call OPHARTDE.VER_MON_LAP.monlap_miv_rkp_mohon_pending(?, ?, ?)}";
         
         logger.info("Memulai panggilan prosedur Oracle: " + sql);
-        logger.info("Parameter vbln_usulan: " + vbln_usulan);        
+        logger.info("Parameter vbln_usulan: " + vblnUsulan);
 
-        try (Connection conn = dataSource.getConnection();
-            CallableStatement stmt = conn.prepareCall(sql)) {
-            
-            // 1. Set Parameter Input dan Register Parameter Output
-            stmt.setString(1, vbln_usulan);
-            stmt.registerOutParameter(2, OracleTypes.CURSOR); // out_data (SYS_REFCURSOR)
-            stmt.registerOutParameter(3, Types.VARCHAR);      // pesan
+        int maxRetry = 2;
 
-            // 2. Eksekusi Prosedur
-            stmt.execute();
-            logger.info("Prosedur Rekap Pending berhasil dieksekusi");
+        for (int i = 1; i <= maxRetry; i++) {
+            // Reset result setiap retry agar tidak ada data ganda dari percobaan sebelumnya yang gagal
+            List<Map<String, Object>> result = new ArrayList<>();
 
-            // 3. Mapping ResultSet ke List Map (ResultSet otomatis close setelah blok ini)
-            try (ResultSet rs = (ResultSet) stmt.getObject(2)) {
-                if (rs != null) {
-                    while (rs.next()) {
-                        Map<String, Object> row = new HashMap<>();
-                        row.put("URUT", rs.getString("URUT"));
-                        row.put("KD_DIST", rs.getString("KD_DIST"));
-                        row.put("NAMA_DIST", rs.getString("NAMA_DIST"));
-                        row.put("BLTH_USULAN", rs.getString("BLTH_USULAN"));
-                        row.put("JML_USULAN", rs.getString("JML_USULAN"));
-                        row.put("JML_LBR", rs.getString("JML_LBR"));
-                        row.put("RPTAG", rs.getString("RPTAG"));
-                        row.put("RPBK", rs.getString("RPBK"));
-                        row.put("NAMA_BANK", rs.getString("NAMA_BANK"));
-                        row.put("KET_PENDING", rs.getString("KET_PENDING"));
-                        
-                        result.add(row);
+            try (Connection conn = dataSource.getConnection();
+                CallableStatement stmt = conn.prepareCall(sql)) {
+
+                // 1. Set Parameter Input & Register Output Parameter
+                stmt.setString(1, vblnUsulan);
+                stmt.registerOutParameter(2, Types.REF_CURSOR); // Menggunakan standar JDBC REF_CURSOR
+                stmt.registerOutParameter(3, Types.VARCHAR);
+
+                // 2. Eksekusi Prosedur
+                stmt.execute();
+                logger.info("Prosedur Rekap Pending berhasil dieksekusi pada attempt ke-" + i);
+
+                // 3. Mapping ResultSet
+                try (ResultSet rs = (ResultSet) stmt.getObject(2)) {
+                    if (rs != null) {
+                        while (rs.next()) {
+                            Map<String, Object> row = new HashMap<>();
+                            row.put("URUT", rs.getString("URUT"));
+                            row.put("KD_DIST", rs.getString("KD_DIST"));
+                            row.put("NAMA_DIST", rs.getString("NAMA_DIST"));
+                            row.put("BLTH_USULAN", rs.getString("BLTH_USULAN"));
+                            row.put("JML_USULAN", rs.getObject("JML_USULAN")); // Menggunakan getObject agar preserve tipe data (BigDecimal/Long)
+                            row.put("JML_LBR", rs.getObject("JML_LBR"));
+                            row.put("RPTAG", rs.getObject("RPTAG"));
+                            row.put("RPBK", rs.getObject("RPBK"));
+                            row.put("NAMA_BANK", rs.getString("NAMA_BANK"));
+                            row.put("KET_PENDING", rs.getString("KET_PENDING"));
+
+                            result.add(row);
+                        }
                     }
                 }
-            } catch (SQLException e) {
-                // Skenario: Koneksi aman, tapi gagal saat membaca/mapping data (HTTP 400 atau 500 internal mapping)
-                logger.severe("Kesalahan Eksekusi Query/Mapping Parameter: " + e.getMessage());
-                StatusInfo badRequestInfo = HttpStatusHelper.getInfo(400);
-                pesanMsg.add("400|" + badRequestInfo.getCodeMessage() + " -> " + e.getMessage()); 
-                statusMsg.add(false);
-                return result; // Langsung return agar tidak mengeksekusi logika success di bawah
-            }
 
-            // 4. Ambil Parameter OUT (Dilakukan SETELAH ResultSet close demi keamanan data)
-            String pesanDb = stmt.getString(3);
-            if (pesanDb != null && !pesanDb.trim().isEmpty()) {
-                pesanMsg.add(pesanDb); 
-            } else {
-                StatusInfo successInfo = HttpStatusHelper.getInfo(200);
-                pesanMsg.add("200|" + successInfo.getCodeMessage()); 
-            }
-            statusMsg.add(true);
+                // 4. Ambil Parameter OUT Pesan DB
+                String pesanDb = stmt.getString(3);
+                if (pesanDb != null && !pesanDb.trim().isEmpty()) {
+                    pesanMsg.add(pesanDb);
+                } else {
+                    StatusInfo successInfo = HttpStatusHelper.getInfo(200);
+                    pesanMsg.add("200|" + successInfo.getCodeMessage());
+                }
+                statusMsg.add(true);
 
-        } catch (SQLException e) {
-            // Skenario: Gagal koneksi ke database atau error fatal level atas (HTTP 503)
-            logger.severe("Kesalahan database (Rekap PLN vs Bank): " + e.getMessage());
-            pesanMsg.add("503|Terjadi kesalahan koneksi ke database: " + e.getMessage());
-            statusMsg.add(false);
+                // Return sukses
+                return result;
+
+            } catch (SQLException ex) {
+                logger.warning("Percobaan ke-" + i + " gagal (Koneksi/DB/Fetch): " + ex.getMessage());
+
+                if (i == maxRetry) {
+                    logger.severe("Kesalahan database (Rekap PLN Pending) setelah " + maxRetry + " retry: " + ex.getMessage());
+                    StatusInfo serviceUnavailable = HttpStatusHelper.getInfo(503);
+                    pesanMsg.add("503|" + serviceUnavailable.getCodeMessage() + " -> " + ex.getMessage());
+                    statusMsg.add(false);
+                    return new ArrayList<>();
+                }
+
+                try {
+                    Thread.sleep(1000); // Jeda 1 detik sebelum retry
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                    break; // Keluar dari loop jika thread di-interrupt
+                }
+            }
         }
 
-        return result;
+        return new ArrayList<>();
     }
 
     //3 service untuk panggil package/sql db "Permohonan Pending AP2T ke P2APST"
     public List<Map<String, Object>> getDataMonDftPending(int start, int length, String sortBy, String sortDir, String search,
-                                                        String vbln_usulan, String vkd_bank, String vkd_dist, 
+                                                        String vbln_usulan, String vkd_bank, String vkd_dist, String vket_pending,
                                                         List<String> pesanMsg, List<Boolean> statusMsg) {
 
         List<Map<String, Object>> result = new ArrayList<>();
-        String sql = "{call OPHARTDE.VER_MON_LAP.monlap_miv_dft_mohon_pending(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
+        String sql = "{call OPHARTDE.VER_MON_LAP.monlap_miv_dft_mohon_pending(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
         
         logger.info("Memulai panggilan prosedur Oracle " + sql);
         
@@ -112,8 +125,9 @@ public class MonPendingService {
                 stmt.setString(6, vbln_usulan);
                 stmt.setString(7, vkd_bank);
                 stmt.setString(8, vkd_dist);
-                stmt.registerOutParameter(9, OracleTypes.CURSOR);
-                stmt.registerOutParameter(10, Types.VARCHAR);
+                stmt.setString(9, vket_pending);
+                stmt.registerOutParameter(10, OracleTypes.CURSOR);
+                stmt.registerOutParameter(11, Types.VARCHAR);
 
                 stmt.setQueryTimeout(300); // 5 Menit
                 
@@ -125,7 +139,7 @@ public class MonPendingService {
                 logger.info("Prosedur Detail Pending berhasil dieksekusi");
 
                 // 3. Mapping ResultSet ke List Map
-                try (ResultSet rs = (ResultSet) stmt.getObject(9)) {
+                try (ResultSet rs = (ResultSet) stmt.getObject(10)) {
                     if (rs != null) {
                         // Beri hint fetch size pada ResultSet langsung
                         rs.setFetchSize(200);
@@ -143,6 +157,7 @@ public class MonPendingService {
                             row.put("TGLUSULAN", rs.getString("TGLUSULAN") == null ? "" : rs.getString("TGLUSULAN"));
                             row.put("IDPEL", rs.getString("IDPEL") == null ? "" : rs.getString("IDPEL"));
                             row.put("BLTH", rs.getString("BLTH") == null ? "" : rs.getString("BLTH"));
+                            row.put("NAMA", rs.getString("NAMA") == null ? "" : rs.getString("NAMA"));
                             row.put("STATUS_PENDING", rs.getString("STATUS_PENDING") == null ? "" : rs.getString("STATUS_PENDING"));
                             row.put("RPTAG", rs.getString("RPTAG") == null ? "" : rs.getString("RPTAG"));
                             row.put("RPBK", rs.getString("RPBK") == null ? "" : rs.getString("RPBK"));
@@ -166,7 +181,7 @@ public class MonPendingService {
                 }
 
                 // AMBIL PESAN DARI OUT PARAMETER DB
-                String pesanDb = stmt.getString(10);
+                String pesanDb = stmt.getString(11);
                 if (pesanDb != null && !pesanDb.trim().isEmpty()) {
                     pesanMsg.add(pesanDb);
                 } else {
@@ -184,7 +199,7 @@ public class MonPendingService {
 
         } catch (SQLException e) {
             logger.severe("Kesalahan Koneksi Database: " + e.getMessage()); 
-            pesanMsg.add("503|Terjadi kesalahan koneksi ke database: " + e.getMessage());
+            pesanMsg.add("503|Terjadi kesalahan koneksi ke database: (Coba Beberapa Saat Lagi)" + e.getMessage());
             statusMsg.add(false);
         }
 

@@ -157,6 +157,7 @@ public class MonRekonPerUpiService {
                         row.put("PLN_STATUS", rs.getString("PLN_STATUS") == null ? "" : rs.getString("PLN_STATUS"));
                         row.put("PLN_IDPEL", rs.getString("PLN_IDPEL") == null ? "" : rs.getString("PLN_IDPEL"));
                         row.put("PLN_BLTH", rs.getString("PLN_BLTH") == null ? "" : rs.getString("PLN_BLTH"));
+                        row.put("PLN_NAMA", rs.getString("PLN_NAMA") == null ? "" : rs.getString("PLN_NAMA"));
                         row.put("PLN_LUNAS_H0", rs.getString("PLN_LUNAS_H0") == null ? "" : rs.getString("PLN_LUNAS_H0"));
                         row.put("PLN_RPTAG", rs.getString("PLN_RPTAG") == null ? "" : rs.getString("PLN_RPTAG"));
                         row.put("PLN_RPBK", rs.getString("PLN_RPBK") == null ? "" : rs.getString("PLN_RPBK"));
@@ -208,7 +209,7 @@ public class MonRekonPerUpiService {
             logger.severe("Kesalahan Koneksi Database: " + e.getMessage());     
 
             // StatusInfo dbDownInfo = HttpStatusHelper.getInfo(503);
-            pesanMsg.add("503|" +"Terjadi kesalahan koneksi ke database: " + e.getMessage());
+            pesanMsg.add("503|" +"Terjadi kesalahan koneksi ke database (Coba Beberapa Saat Lagi): " + e.getMessage());
             statusMsg.add(false);
         }
 

@@ -165,9 +165,10 @@ public class Mon00PendingController extends HttpServlet {
             sortBy = "KD_DIST";
             sortDir = "ASC";
         }
-        String vbln_usulan = req.getParameter("vbln_usulan");
-        String vkd_bank = req.getParameter("vkd_bank");
-        String vkd_dist = req.getParameter("vkd_dist");
+        String vbln_usulan  = req.getParameter("vbln_usulan");
+        String vkd_bank     = req.getParameter("vkd_bank");
+        String vkd_dist     = req.getParameter("vkd_dist");
+        String vket_pending = req.getParameter("vket_pending");
         
         int vkode = 200; // Default sukses
         int totalCount = 0;
@@ -183,6 +184,7 @@ public class Mon00PendingController extends HttpServlet {
         logger.info("vbln_usulan = " + vbln_usulan);
         logger.info("vkd_bank = " + vkd_bank);
         logger.info("vkd_dist = " + vkd_dist);
+        logger.info("vket_pending = " + vket_pending);
 
         // 🟢 DEKLARASI DI LUAR TRY AGAR BISA DIAKSES DI CATCH & KODE DI BAWAHNYA
         List<Map<String, Object>> data = new ArrayList<>(); 
@@ -190,7 +192,7 @@ public class Mon00PendingController extends HttpServlet {
         try {
             // Isi variabel data tanpa menuliskan tipe datanya lagi
             data = servicepending.getDataMonDftPending(
-                start, length, sortBy, sortDir, searchValue, vbln_usulan, vkd_bank, vkd_dist, pesanMsg, statusMsg
+                start, length, sortBy, sortDir, searchValue, vbln_usulan, vkd_bank, vkd_dist, vket_pending, pesanMsg, statusMsg
             );
         
             // Ambil status keberhasilan dari service
