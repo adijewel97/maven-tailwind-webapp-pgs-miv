@@ -881,7 +881,7 @@
                         if (['PLN_RPTAG', 'PLN_RPBK', 'BANK_RPTAG', 'BANK_RPBK', 'SELISIH_RPTAG', 'SELISIH_BK'].includes(headerKeyName)) {
                             cell.numFmt = '#,##0';
                             cell.alignment = { horizontal: 'right', vertical: 'middle' };
-                        } else if (['SATKER', 'KETERANGAN'].includes(headerKeyName)) {
+                        } else if (['SATKER', 'PLN_NAMA', 'KETERANGAN'].includes(headerKeyName)) {
                             cell.alignment = { horizontal: 'left', vertical: 'middle' };
                         } else {
                             cell.alignment = { horizontal: 'center', vertical: 'middle' };

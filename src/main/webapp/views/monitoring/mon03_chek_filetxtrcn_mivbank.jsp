@@ -424,10 +424,14 @@ document.addEventListener("DOMContentLoaded", function() {
     attachDownload('btnPrint_sukses','list_sukses');
     attachDownload('btnPrint_gagal','list_gagal');
 
-    document.getElementById("idtxt_rcn").addEventListener("change", function(){
-        var jenis = this.value;
+    // -----------------------------------------------------
+    // PERBAIKAN: Gunakan event change milik Select2
+    // -----------------------------------------------------
+    $('#idtxt_rcn').on('change', function(){
+        var jenis = $(this).val(); // Mengambil value menggunakan jQuery
         var labelSukses = document.getElementById("label_sukses");
         var labelGagal = document.getElementById("label_gagal");
+        
         if(jenis === "TXT"){
             labelSukses.innerHTML = "📂 Daftar File TXT dari AP2T";
             labelGagal.innerHTML  = "📂 Daftar/Gagal File RCN dari AP2T";
@@ -436,5 +440,6 @@ document.addEventListener("DOMContentLoaded", function() {
             labelGagal.innerHTML  = "📂 Lunas/Gagal File RCN dari AP2T";
         }
     });
+    
 });
 </script>
