@@ -437,7 +437,7 @@ document.addEventListener("DOMContentLoaded", function() {
             labelGagal.innerHTML  = "📂 Daftar/Gagal File RCN dari AP2T";
         } else if(jenis === "RCN"){
             labelSukses.innerHTML = "📂 Lunas File RCN dari BANK";
-            labelGagal.innerHTML  = "📂 Lunas/Gagal File RCN dari AP2T";
+            labelGagal.innerHTML  = "📂 Lunas/Gagal File RCN dari BANK";
         }
     });
     
