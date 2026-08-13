@@ -1,18 +1,18 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <style>
-   /* CSS TABLE REKAP - SAMAKAN DENGAN TABEL Detail */
+   /* CSS TABLE REKAP */
     #table_monrkp_pendingupi {
-        table-layout: auto; /* Sama seperti #dataModal table */
-        font-size: 0.75rem; /* Sama dengan modal-body */
-        width: 100%;
+        table-layout: auto;
+        font-size: 0.75rem;
+        width: 100% !important;
     }
 
     #table_monrkp_pendingupi th,
     #table_monrkp_pendingupi td {
-        font-size: 0.7rem;      /* Sama seperti table detail */
-        padding: 4px 6px;       /* Sama seperti table detail */
-        white-space: nowrap;    /* Hindari wrap */
+        font-size: 0.7rem;      
+        padding: 4px 8px;      
+        white-space: nowrap;    
         overflow: hidden;
         text-overflow: ellipsis;
     }
@@ -391,7 +391,7 @@
             paging: false,
             ordering: false,
             searching: false, 
-            autoWidth: false,
+            autoWidth: true, // 🌟 Ubah jadi true agar kalkulasi lebar otomatis aktif
             info: false,
             stripeClasses: [],
             deferLoading: 0, 
@@ -728,6 +728,11 @@
             showSpinner();
         }).on('xhr.dt', function() {
             hideSpinner();
+            
+            // ✅ TAMBAHKAN INI agar header otomatis menyesuaikan ulang
+            setTimeout(function() {
+                table_rekap_pending.columns.adjust();
+            }, 50);
         });
 
         // Spinner untuk Tabel Detail

@@ -960,6 +960,10 @@ video {
   width: 24rem;
 }
 
+.w-\[250px\] {
+  width: 250px;
+}
+
 .w-\[300px\] {
   width: 300px;
 }

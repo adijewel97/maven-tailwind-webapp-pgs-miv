@@ -5,14 +5,14 @@
     #table_monrkp_rekonupi {
         table-layout: auto;
         font-size: 0.75rem;
-        width: 100%;
+        width: 100% !important;
     }
 
     #table_monrkp_rekonupi th,
     #table_monrkp_rekonupi td {
-        font-size: 0.7rem;
-        padding: 4px 6px;
-        white-space: nowrap;
+        font-size: 0.7rem;      
+        padding: 4px 8px;      
+        white-space: nowrap;    
         overflow: hidden;
         text-overflow: ellipsis;
     }
@@ -175,14 +175,14 @@
                     <thead class="bg-gray-100">
                         <tr>
                             <th class="px-2 py-1 text-center border">NO</th>
-                            <th class="px-2 py-1 text-center border">NAMA_DIST</th>
+                            <th class="px-2 py-1 text-center border w-[250px]">NAMA_DIST</th>
                             <th class="px-2 py-1 text-center border">PRODUK</th>
                             <th class="px-2 py-1 text-center border">BANK</th>
                             <th class="px-2 py-1 text-center border">BULAN</th>
                             <th class="px-2 py-1 text-center border">PLN_IDPEL</th>
                             <th class="px-2 py-1 text-center border">PLN_RPTAG</th>
-                            <th class="px-2 py-1 text-center border">PLN_LB_LUNAS</th>
-                            <th class="px-2 py-1 text-center border">PLN_RP_LUNAS</th>
+                            <th class="px-2 py-1 text-center border">PLN_LEBAR_LUNAS</th>
+                            <th class="px-2 py-1 text-center border">PLN_RPTAG_LUNAS</th>
                             <th class="px-2 py-1 text-center border">BANK_IDPEL</th>
                             <th class="px-2 py-1 text-center border">BANK_RPTAG</th>
                             <th class="px-2 py-1 text-center border">SELISIH_RPTAG</th>
@@ -345,18 +345,18 @@
             calendarIcon.addEventListener('click', () => fp.open());
         }
         
-        // 3) DataTables Rekap
+        // 3) DataTables Rekap (Menggunakan pola struktur yang sama persis seperti script pembanding)
         var table_rekap_upi = $('#table_monrkp_rekonupi').DataTable({
-            processing: false,
-            serverSide: true,
-            scrollX: true,
+            processing: true, 
+            serverSide: true, 
+            scrollX: true, 
             paging: false,
             ordering: false,
             searching: false, 
-            autoWidth: false,
+            autoWidth: true, 
             info: false,
             stripeClasses: [],
-            deferLoading: 0,
+            deferLoading: 0, 
             ajax: {
                 url: getContextPath() + '/mon-rekon-bankvsperupi',
                 type: 'POST',
@@ -387,26 +387,39 @@
                 },
                 error: function (xhr, error, thrown) {
                     hideSpinner();
-                    console.log("DataTables Ajax Error:", error, thrown);
+                    console.log("DataTables Ajax Error dipadamkan (di-handle oleh dataSrc):", error, thrown);
                 }
             },
             columns: [
-                { data: null, render: function (data, type, row, meta) { return row.URUT != 5 ? meta.row + 1 : ''; } },
-                { data: null, render: function (data, type, row) { const text = row.KD_DIST && row.NAMA_DIST ? row.KD_DIST + ' - ' + row.NAMA_DIST : ''; return row.URUT != 5 ? text : ''; } },
-                { data: 'PRODUK', defaultContent: '' },
-                { data: 'BANK', defaultContent: '' },
-                { data: 'BLN_USULAN', defaultContent: '' },
-                { data: 'PLN_IDPEL', render: function (data) { return formatNumber(data, 0); } },
-                { data: 'PLN_RPTAG', render: function (data) { return formatNumber(data, 0); } },
-                { data: 'PLN_LEBAR_LUNAS', render: function (data) { return formatNumber(data, 0); } },
-                { data: 'PLN_RPTAG_LUNAS', render: function (data) { return formatNumber(data, 0); } },
-                { data: 'BANK_IDPEL', render: function (data) { return formatNumber(data, 0); } },
-                { data: 'BANK_RPTAG', render: function (data) { return formatNumber(data, 0); } },
-                { data: 'SELISIH_RPTAG', render: function (data) { return formatNumber(data, 0); } }
+                { 
+                    data: null, 
+                    render: function (data, type, row, meta) { 
+                        return row.URUT != 5 ? meta.row + 1 : ''; 
+                    }, 
+                    width: '30px' 
+                },
+                { 
+                    data: null, 
+                    render: function (data, type, row) { 
+                        const text = row.KD_DIST && row.NAMA_DIST ? row.KD_DIST + ' - ' + row.NAMA_DIST : ''; 
+                        return row.URUT != 5 ? text : ''; 
+                    }, 
+                    width: '250px' 
+                },
+                { data: 'PRODUK', defaultContent: '', width: '80px' },
+                { data: 'BANK', defaultContent: '', width: '200px' },
+                { data: 'BLN_USULAN', defaultContent: '', width: '60px' },
+                { data: 'PLN_IDPEL', render: function (data) { return formatNumber(data, 0); }, width: '80px' },
+                { data: 'PLN_RPTAG', render: function (data) { return formatNumber(data, 0); }, width: '120px' },
+                { data: 'PLN_LEBAR_LUNAS', render: function (data) { return formatNumber(data, 0); }, width: '100px' },
+                { data: 'PLN_RPTAG_LUNAS', render: function (data) { return formatNumber(data, 0); }, width: '120px' },
+                { data: 'BANK_IDPEL', render: function (data) { return formatNumber(data, 0); }, width: '80px' },
+                { data: 'BANK_RPTAG', render: function (data) { return formatNumber(data, 0); }, width: '120px' },
+                { data: 'SELISIH_RPTAG', render: function (data) { return formatNumber(data, 0); }, width: '120px' }
             ],
             columnDefs: [
                 { targets: '_all', className: 'text-center' },
-                { targets: [1, 2, 3], className: '!text-left' }, 
+                { targets: [1, 2, 3], className: '!text-left whitespace-nowrap' },
                 { targets: [5, 6, 7, 8, 9, 10, 11], className: '!text-right' }
             ],
             createdRow: function (row, data, dataIndex) {
@@ -553,7 +566,7 @@
             }]
         });
 
-        // 🌟 4) DataTables Detail (table_mondaf_rekonupi) - SESUAIKAN DENGAN PENDING
+        // 4) DataTables Detail (table_mondaf_rekonupi)
         table_detail_upi = $('#table_mondaf_rekonupi').DataTable({
             processing: false,
             serverSide: true,
@@ -569,7 +582,7 @@
                 url: getContextPath() + '/mon-rekon-bankvsperupi',
                 type: 'POST',
                 data: function (d) {
-                    d.act         = 'detailData';
+                    d.act          = 'detailData';
                     d.vbln_usulan = detailFilterParams.vbln_usulan || ''; 
                     d.vkd_bank    = detailFilterParams.vkd_bank || '';
                     d.vkd_dist    = detailFilterParams.vkd_dist || '';
@@ -585,10 +598,11 @@
                             modalDetail.classList.remove('flex');
                         }
                         
+                        let errorMsg = "Error " + json.code + " - " + json.code_message;
                         if (typeof showMessageDlg === "function") {
-                            showMessageDlg("Error", "Error " + json.code + " - " + json.code_message);
+                            showMessageDlg("Error", errorMsg);
                         } else {
-                            showMessageDlg("Warning", json.code_message);
+                            alert(errorMsg);
                         }
                         return []; 
                     }
@@ -597,7 +611,11 @@
                 error: function (xhr, error, thrown) {
                     hideSpinner();
                     let errorMsg = "Terjadi kesalahan pada detail server.";
-                    showMessageDlg(errorMsg);
+                    if (typeof showMessageDlg === "function") {
+                        showMessageDlg("Error", errorMsg);
+                    } else {
+                        alert(errorMsg);
+                    }
                 }
             },
             columns: [
@@ -654,11 +672,16 @@
             ]
         });
 
-        // 5) --- Event Handlers (Siklus Proses DataTables Spinner) ---
+        // 5) --- Event Handlers (Siklus Proses DataTables Spinner & Kolom Adjust) ---
         table_rekap_upi.on('preXhr.dt', function() {
             showSpinner();
         }).on('xhr.dt', function() {
             hideSpinner();
+            
+            // ✅ Penyesuaian lebar kolom header agar tidak melebar/bergeser
+            setTimeout(function() {
+                table_rekap_upi.columns.adjust();
+            }, 50);
         });
 
         $('#table_mondaf_rekonupi').on('preXhr.dt', function() {
@@ -670,7 +693,11 @@
         // 6) --- Event Handlers (Tombol) ---
         $('#btnTampil').on('click', function () {
             if (!$('#bln_usulan_value').val()) {
-                showMessageDlg("Warning", "Silakan pilih Bulan Laporan terlebih dahulu!");
+                if (typeof showMessageDlg === "function") {
+                    showMessageDlg("Warning", "Silakan pilih Bulan Laporan terlebih dahulu!");
+                } else {
+                    alert("Silakan pilih Bulan Laporan terlebih dahulu!");
+                }
                 return;
             }
 
@@ -734,7 +761,11 @@
             const vproduk = detailFilterParams.vproduk || '';
 
             if (!vbln_usulan || !vkd_bank || !vkd_dist) {
-                showMessageDlg("Warning", "Silakan lengkapi filter terlebih dahulu!");
+                if (typeof showMessageDlg === "function") {
+                    showMessageDlg("Warning", "Silakan lengkapi filter terlebih dahulu!");
+                } else {
+                    alert("Silakan lengkapi filter terlebih dahulu!");
+                }
                 btn.prop('disabled', false).html('<i class="fa fa-file-excel"></i> <span>Export Detail Per-UPI</span>');
                 hideSpinner();
                 return;
@@ -812,7 +843,11 @@
                 }
 
                 if (allData.length === 0) {
-                    showMessageDlg("Warning", "Tidak ada data untuk diekspor!");
+                    if (typeof showMessageDlg === "function") {
+                        showMessageDlg("Warning", "Tidak ada data untuk diekspor!");
+                    } else {
+                        alert("Tidak ada data untuk diekspor!");
+                    }
                     btn.prop('disabled', false).html('<i class="fa fa-file-excel"></i> <span>Export Detail Per-UPI</span>');
                     hideSpinner();
                     return;
@@ -910,7 +945,11 @@
 
             } catch (error) {
                 console.error("Export Error: ", error);
-                showMessageDlg("Error", "Gagal melakukan export data detail: " + error.message);
+                if (typeof showMessageDlg === "function") {
+                    showMessageDlg("Error", "Gagal melakukan export data detail: " + error.message);
+                } else {
+                    alert("Gagal melakukan export data detail: " + error.message);
+                }
             } finally {
                 btn.prop('disabled', false).html('<i class="fa fa-file-excel"></i> <span>Export Detail Per-UPI</span>');
                 hideSpinner();
